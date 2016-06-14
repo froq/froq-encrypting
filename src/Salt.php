@@ -38,9 +38,9 @@ abstract class Salt
     const LENGTH = 128;
 
     /**
-     * Generate a salt.
-     * @param  int $type
-     * @param  int $length
+     * Generate.
+     * @param  int  $length
+     * @param  bool $crop
      * @return string
      */
     final public static function generate(int $length = self::LENGTH, bool $crop = true): string
