@@ -39,10 +39,9 @@ abstract class Oneway
 
     /**
      * Generate a hash.
-     * @param  string $salt
      * @return string
      */
-    abstract public function hash(string $salt = null): string;
+    abstract public function hash(): string;
 
     /**
      * Verify a hash.
