@@ -29,13 +29,13 @@ namespace Froq\Encryption;
  * @object     Froq\Encryption\Salt
  * @author     Kerem Güneş <k-gun@mail.com>
  */
-abstract class Salt
+abstract /* static */ class Salt
 {
     /**
      * Salt length.
      * @const int
      */
-    const LENGTH = 128;
+    public const LENGTH = 128;
 
     /**
      * Generate.
