@@ -50,7 +50,7 @@ final class Password extends Oneway
      * @param int    $algo
      * @param array  $options
      */
-    public final function __construct(string $data, int $algo = null, array $options = [])
+    public function __construct(string $data, int $algo = null, array $options = [])
     {
         $this->data = $data;
 
@@ -65,7 +65,7 @@ final class Password extends Oneway
      * Generate a hash.
      * @return string
      */
-    public final function hash(): string
+    public function hash(): string
     {
         return password_hash($this->data, $this->algo, $this->options);
     }
@@ -76,7 +76,7 @@ final class Password extends Oneway
      * @param  string $hash
      * @return bool
      */
-    public final function verify(string $hash): bool
+    public function verify(string $hash): bool
     {
         return password_verify($this->data, $hash);
     }
