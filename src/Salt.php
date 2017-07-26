@@ -43,7 +43,7 @@ abstract class Salt
      * @param  bool $crop
      * @return string
      */
-    final public static function generate(int $length = self::LENGTH, bool $crop = true): string
+    public static final function generate(int $length = self::LENGTH, bool $crop = true): string
     {
         $salt = base64_encode(random_bytes($length));
         if ($crop) {
