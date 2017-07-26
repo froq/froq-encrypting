@@ -25,7 +25,7 @@ namespace Froq\Encryption\Oneway;
 
 /**
  * @package    Froq
- * @subpackage Froq\Encryption\Oneway
+ * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Oneway\OnewayException
  * @author     Kerem Güneş <k-gun@mail.com>
  */

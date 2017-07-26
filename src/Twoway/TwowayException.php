@@ -25,7 +25,7 @@ namespace Froq\Encryption\Twoway;
 
 /**
  * @package    Froq
- * @subpackage Froq\Encryption\Twoway
+ * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Twoway\TwowayException
  * @author     Kerem Güneş <k-gun@mail.com>
  */

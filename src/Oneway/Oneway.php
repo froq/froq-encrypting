@@ -25,7 +25,7 @@ namespace Froq\Encryption\Oneway;
 
 /**
  * @package    Froq
- * @subpackage Froq\Encryption\Oneway
+ * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Oneway\Oneway
  * @author     Kerem Güneş <k-gun@mail.com>
  */
@@ -39,9 +39,10 @@ abstract class Oneway
 
     /**
      * Generate a hash.
+     * @param  string $salt
      * @return string
      */
-    abstract public function hash(): string;
+    abstract public function hash(string $salt = null): string;
 
     /**
      * Verify a hash.
