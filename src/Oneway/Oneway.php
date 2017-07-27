@@ -38,14 +38,13 @@ abstract class Oneway
     protected $data;
 
     /**
-     * Generate a hash.
-     * @param  string $salt
+     * Hash.
      * @return string
      */
-    abstract public function hash(string $salt = null): string;
+    abstract public function hash(): string;
 
     /**
-     * Verify a hash.
+     * Verify.
      * @param  string $hash
      * @return bool
      */

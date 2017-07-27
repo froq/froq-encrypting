@@ -45,7 +45,6 @@ final class Password extends Oneway
 
     /**
      * Constructor.
-     *
      * @param string $data
      * @param int    $algo
      * @param array  $options
@@ -62,8 +61,7 @@ final class Password extends Oneway
     }
 
     /**
-     * Generate a hash.
-     * @return string
+     * @inheritDoc Froq\Encryption\Oneway\Oneway
      */
     public function hash(): string
     {
@@ -71,10 +69,7 @@ final class Password extends Oneway
     }
 
     /**
-     * Verify a hash.
-     *
-     * @param  string $hash
-     * @return bool
+     * @inheritDoc Froq\Encryption\Oneway\Oneway
      */
     public function verify(string $hash): bool
     {
