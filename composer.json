@@ -3,7 +3,7 @@
     "homepage": "https://github.com/froq/froq-encryption",
     "description": "Encryption module for Froq!",
     "keywords": ["froq", "encryption"],
-    "license": "GNU General Public License v3.0",
+    "license": "MIT",
     "authors": [
         {"name": "Kerem Güneş", "email": "k-gun@mail.com"}
     ],
