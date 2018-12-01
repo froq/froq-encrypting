@@ -32,7 +32,7 @@ namespace Froq\Encryption;
  * @object     Froq\Encryption\Salt
  * @author     Kerem Güneş <k-gun@mail.com>
  */
-abstract /* static */ class Salt
+final /* static */ class Salt
 {
     /**
      * Salt length.
