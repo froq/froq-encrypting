@@ -43,13 +43,15 @@ final /* static */ class Salt
     /**
      * Generate.
      * @param  int  $length
-     * @param  bool $crop
+     * @param  bool $doFixed
      * @return string
      */
-    public static final function generate(int $length = self::LENGTH, bool $crop = true): string
+    public static final function generate(int $length = null, bool $doFixed = true): string
     {
+        $length = $length ?? self::LENGTH;
+
         $salt = base64_encode(random_bytes($length));
-        if ($crop) {
+        if ($doFixed) {
             $salt = substr($salt, 0, $length);
         }
 
