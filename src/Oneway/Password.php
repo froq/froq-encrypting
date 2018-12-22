@@ -48,13 +48,11 @@ final class Password extends Oneway
 
     /**
      * Constructor.
-     * @param string $data
-     * @param int    $algo
-     * @param array  $options
+     * @param int   $algo
+     * @param array $options
      */
-    public function __construct(string $data, int $algo = null, array $options = [])
+    public function __construct(int $algo = null, array $options = [])
     {
-        $this->data = $data;
         $this->algo = $algo ?? $this->algo;
         $this->options = array_merge($this->options, $options);
     }
@@ -80,16 +78,16 @@ final class Password extends Oneway
     /**
      * @inheritDoc Froq\Encryption\Oneway\Oneway
      */
-    public function hash(): string
+    public function hash(string $data): string
     {
-        return (string) password_hash($this->data, $this->algo, $this->options);
+        return (string) password_hash($data, $this->algo, $this->options);
     }
 
     /**
      * @inheritDoc Froq\Encryption\Oneway\Oneway
      */
-    public function verify(string $hash): bool
+    public function verify(string $data, string $hashedData): bool
     {
-        return password_verify($this->data, $hash);
+        return password_verify($data, $hashedData);
     }
 }

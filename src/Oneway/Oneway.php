@@ -35,30 +35,17 @@ namespace Froq\Encryption\Oneway;
 abstract class Oneway
 {
     /**
-     * Data.
-     * @var string
-     */
-    protected $data;
-
-    /**
-     * Get data.
-     * @return string
-     */
-    public final function getData(): string
-    {
-        return $this->data;
-    }
-
-    /**
      * Hash.
+     * @param  string $data
      * @return string
      */
-    public abstract function hash(): string;
+    public abstract function hash(string $data): string;
 
     /**
      * Verify.
-     * @param  string $hash
+     * @param  string $data
+     * @param  string $hashedData
      * @return bool
      */
-    public abstract function verify(string $hash): bool;
+    public abstract function verify(string $data, string $hashedData): bool;
 }
