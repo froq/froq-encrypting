@@ -53,7 +53,7 @@ final /* static */ class Salt
      * @return string
      * @see    https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
      */
-    public static final function generate(int $length = null, bool $doTranslate = false): string
+    public static function generate(int $length = null, bool $doTranslate = false): string
     {
         $len = $length ?? self::LENGTH; // output length
         $bpc = 6; // bits per character
