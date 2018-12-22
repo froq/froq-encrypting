@@ -35,13 +35,13 @@ namespace Froq\Encryption\Oneway;
 final class Password extends Oneway
 {
     /**
-     * Hashing algorithm.
+     * Algo.
      * @var int
      */
     private $algo = PASSWORD_DEFAULT;
 
     /**
-     * Hashing options.
+     * Options.
      * @var array
      */
     private $options = ['cost' => 10];
@@ -55,20 +55,18 @@ final class Password extends Oneway
     public function __construct(string $data, int $algo = null, array $options = [])
     {
         $this->data = $data;
-
-        if ($algo != null) {
-            $this->algo = $algo;
-        }
-
+        $this->algo = $algo ?? $this->algo;
         $this->options = array_merge($this->options, $options);
     }
 
     /**
      * @inheritDoc Froq\Encryption\Oneway\Oneway
      */
-    public function hash(): string
+    public function hash(): bool
     {
-        return password_hash($this->data, $this->algo, $this->options);
+        $this->hash = password_hash($this->data, $this->algo, $this->options);
+
+        return !empty($this->hash);
     }
 
     /**

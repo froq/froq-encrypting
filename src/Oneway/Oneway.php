@@ -42,14 +42,38 @@ abstract class Oneway
 
     /**
      * Hash.
+     * @var ?string
+     */
+    protected $hash;
+
+    /**
+     * Get data.
      * @return string
      */
-    abstract public function hash(): string;
+    public final function getData(): string
+    {
+        return $this->data;
+    }
+
+    /**
+     * Get hash.
+     * @return ?string
+     */
+    public final function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * Hash.
+     * @return bool
+     */
+    public abstract function hash(): bool;
 
     /**
      * Verify.
      * @param  string $hash
      * @return bool
      */
-    abstract public function verify(string $hash): bool;
+    public abstract function verify(string $hash): bool;
 }
