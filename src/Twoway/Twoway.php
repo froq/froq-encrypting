@@ -27,12 +27,49 @@ declare(strict_types=1);
 namespace Froq\Encryption\Twoway;
 
 /**
- * @package     Froq
+ * @package    Froq
  * @subpackage Froq\Encryption
- * @object      Froq\Encryption\Twoway\Twoway
- * @author      Kerem Güneş <k-gun@mail.com>
+ * @object     Froq\Encryption\Twoway\Twoway
+ * @author     Kerem Güneş <k-gun@mail.com>
  */
 abstract class Twoway
 {
-    // @todo
+    /**
+     * Key.
+     * @var string
+     */
+    protected $key;
+
+    /**
+     * Get key.
+     * @return string
+     */
+    public final function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * Generate key.
+     * @param  int $length
+     * @return string
+     */
+    public static final function generateKey(int $length = 40): string
+    {
+        return \Froq\Encryption\Salt::generate($length);
+    }
+
+    /**
+     * Encode.
+     * @param  string $data
+     * @return string
+     */
+    public abstract function encode(string $data): string;
+
+    /**
+     * Decode.
+     * @param  string $encodedData
+     * @return string
+     */
+    public abstract function decode(string $encodedData): string;
 }

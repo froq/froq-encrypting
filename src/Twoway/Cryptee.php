@@ -34,5 +34,64 @@ namespace Froq\Encryption\Twoway;
  */
 final class Cryptee extends Twoway
 {
-    // @todo
+    /**
+     * Constructor.
+     * @param string $key
+     */
+    public function __construct(string $key)
+    {
+        $this->key = $key;
+    }
+
+    /**
+     * @inheritDoc Froq\Encryption\Twoway\Twoway
+     */
+    public function encode(string $data): string
+    {
+        return base64_encode($this->crypt($data));
+    }
+
+    /**
+     * @inheritDoc Froq\Encryption\Twoway\Twoway
+     */
+    public function decode(string $encodedData): string
+    {
+        return $this->crypt(base64_decode($encodedData));
+    }
+
+    /**
+     * Ccrypt.
+     * @param  string $data
+     * @return string
+     */
+    public function crypt(string $data): string
+    {
+        $out = b'';
+        $key = [];
+        $cnt = [];
+
+        for ($i = 0, $klen = strlen($this->key); $i < 255; $i++) {
+            $key[$i] = ord(substr($this->key, ($i % $klen) + 1, 1));
+            $cnt[$i] = $i;
+        }
+
+        for ($i = 0, $x = 0; $i < 255; $i++) {
+            $x = ($x + $cnt[$i] + $key[$i]) % 256;
+            $s = $cnt[$i];
+            $cnt[$i] = $cnt[$x] ?? 0;
+            $cnt[$x] = $s;
+        }
+
+        for ($i = 0, $x = -1, $y = -1, $dlen = strlen($data); $i < $dlen; $i++) {
+            $x = ($x + 1) % 256;
+            $y = ($y + $cnt[$x]) % 256;
+            $z = $cnt[$x];
+            $cnt[$x] = $cnt[$y] ?? 0;
+            $cnt[$y] = $z;
+            $ord  = ord(substr($data, $i, 1)) ^ $cnt[($cnt[$x] + $cnt[$y]) % 256];
+            $out .= chr($ord);
+        }
+
+        return $out;
+    }
 }
