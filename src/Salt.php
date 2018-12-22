@@ -35,26 +35,54 @@ namespace Froq\Encryption;
 final /* static */ class Salt
 {
     /**
-     * Salt length.
+     * Length.
      * @const int
      */
     public const LENGTH = 128;
 
     /**
+     * Characters.
+     * @const string
+     */
+    public const CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/';
+
+    /**
      * Generate.
      * @param  int  $length
-     * @param  bool $doFixed
+     * @param  bool $doTranslate
      * @return string
+     * @see    https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
      */
-    public static final function generate(int $length = null, bool $doFixed = true): string
+    public static final function generate(int $length = null, bool $doTranslate = false): string
     {
-        $length = $length ?? self::LENGTH;
+        $len = $length ?? self::LENGTH; // output length
+        $bpc = 6; // bits per character
 
-        $salt = base64_encode(random_bytes($length));
-        if ($doFixed) {
-            $salt = substr($salt, 0, $length);
+        $randomBytes = random_bytes((int) ceil($len * $bpc / 8));
+
+        $p = 0; $q = strlen($randomBytes);
+        $w = 0; $have = 0; $mask = (1 << $bpc) - 1;
+        $out = '';
+
+        while ($len--) {
+            if ($have < $bpc) {
+                if ($p < $q) {
+                    $byte = ord($randomBytes[$p++]);
+                    $w |= ($byte << $have);
+                    $have += 8;
+                } else {
+                    break;
+                }
+            }
+            $out .= self::CHARACTERS[$w & $mask];
+            $w >>= $bpc;
+            $have -= $bpc;
         }
 
-        return $salt;
+        if ($doTranslate) {
+            $out = strtr($out, '+/', '-_');
+        }
+
+        return $out;
     }
 }
