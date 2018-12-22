@@ -60,13 +60,29 @@ final class Password extends Oneway
     }
 
     /**
+     * Get algo.
+     * @return int
+     */
+    public function getAlgo(): int
+    {
+        return $this->algo;
+    }
+
+    /**
+     * Get option.
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
      * @inheritDoc Froq\Encryption\Oneway\Oneway
      */
-    public function hash(): bool
+    public function hash(): string
     {
-        $this->hash = password_hash($this->data, $this->algo, $this->options);
-
-        return !empty($this->hash);
+        return (string) password_hash($this->data, $this->algo, $this->options);
     }
 
     /**
