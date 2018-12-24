@@ -46,15 +46,15 @@ final /* static */ class Uuid
      * Generate.
      * @param  int $type
      * @return string
-     * @param  bool $doTranslate
+     * @param  bool $translate
      * @throws Froq\Encryption\EncryptionException
      */
-    public static function generate(int $type = null, bool $doTranslate = false): string
+    public static function generate(int $type = null, bool $translate = false): string
     {
-        $type = $type ?? self::TYPE_DEFAULT;
         $out = '';
+        $type = $type ?? self::TYPE_DEFAULT;
 
-        if ($type === self::TYPE_0) {
+        if ($type == self::TYPE_0) {
             $date = getdate();
             $uniq = preg_split('~([a-f0-9]{8})([a-f0-9]{6})~', uniqid('', true), -1,
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -62,9 +62,7 @@ final /* static */ class Uuid
 
             $out = sprintf('%08s-%04x-%04x-%04x-%6s%6s',
                 $uniq[0], $date['year'], $date['mon'], $date['mday'], $uniq[1], $rand);
-        }
-
-        if ($type === self::TYPE_4) {
+        } else if ($type == self::TYPE_4) {
             $rand = random_bytes(16);
             $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
             $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
@@ -74,7 +72,7 @@ final /* static */ class Uuid
 
         // valid type
         if ($out != '') {
-            if ($doTranslate) {
+            if ($translate) {
                 $out = str_replace('-', '', $out);
             }
             return $out;

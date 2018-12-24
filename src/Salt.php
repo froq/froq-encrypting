@@ -49,11 +49,11 @@ final /* static */ class Salt
     /**
      * Generate.
      * @param  int  $length
-     * @param  bool $doTranslate
+     * @param  bool $translate
      * @return string
      * @see    https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
      */
-    public static function generate(int $length = null, bool $doTranslate = false): string
+    public static function generate(int $length = null, bool $translate = false): string
     {
         $len = $length ?? self::LENGTH; // output length
         $bpc = 6; // bits per character
@@ -79,7 +79,7 @@ final /* static */ class Salt
             $have -= $bpc;
         }
 
-        if ($doTranslate) {
+        if ($translate) {
             $out = strtr($out, '+/', '-_');
         }
 

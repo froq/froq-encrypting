@@ -37,23 +37,23 @@ final class Encryption
     /**
      * Generate salt.
      * @param  int|null $length
-     * @param  bool     $doTranslate
+     * @param  bool     $translate
      * @return string
      */
-    public static function generateSalt(int $length = null, bool $doTranslate = false): string
+    public static function generateSalt(int $length = null, bool $translate = false): string
     {
-        return Salt::generate($length, $doTranslate);
+        return Salt::generate($length, $translate);
     }
 
     /**
      * Generate uuid.
-     * @param  int  $type
-     * @param  bool $doTranslate
+     * @param  int|null $type
+     * @param  bool     $translate
      * @return string
      */
-    public static function generateUuid(int $type = null, bool $doTranslate = false): string
+    public static function generateUuid(int $type = null, bool $translate = false): string
     {
-        return Uuid::generate($type, $doTranslate);
+        return Uuid::generate($type, $translate);
     }
 
     /**
