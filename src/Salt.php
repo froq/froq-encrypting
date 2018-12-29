@@ -51,7 +51,6 @@ final /* static */ class Salt
      * @param  int  $length
      * @param  bool $translate
      * @return string
-     * @see    https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
      */
     public static function generate(int $length = null, bool $translate = false): string
     {
@@ -60,6 +59,7 @@ final /* static */ class Salt
 
         $randomBytes = random_bytes((int) ceil($len * $bpc / 8));
 
+        // @see https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
         $p = 0; $q = strlen($randomBytes);
         $w = 0; $have = 0; $mask = (1 << $bpc) - 1;
         $out = '';
