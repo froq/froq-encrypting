@@ -44,9 +44,9 @@ final /* static */ class Uuid
 
     /**
      * Generate.
-     * @param  int $type
-     * @return string
+     * @param  int  $type
      * @param  bool $translate
+     * @return string
      * @throws Froq\Encryption\EncryptionException
      */
     public static function generate(int $type = null, bool $translate = false): string
