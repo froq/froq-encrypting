@@ -71,7 +71,7 @@ final class Encryption
             return hash($algos[$length], random_bytes($length / 2));
         }
 
-        throw new EncryptionException(sprintf("Given '{$length}' not implemented, '%s' are accepted!",
+        throw new EncryptionException(sprintf("Given '{$length}' not implemented, only '%s' are accepted",
             join(',', array_keys($algos))));
     }
 }

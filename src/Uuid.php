@@ -78,6 +78,6 @@ final /* static */ class Uuid
             return $out;
         }
 
-        throw new EncryptionException("Given '{$type}' not implemented, '0,4' are accepted!");
+        throw new EncryptionException("Given '{$type}' not implemented, only '0,4' are accepted");
     }
 }
