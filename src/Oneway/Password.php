@@ -31,6 +31,7 @@ namespace Froq\Encryption\Oneway;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Oneway\Password
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 final class Password extends Oneway
 {

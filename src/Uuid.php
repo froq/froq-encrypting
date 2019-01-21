@@ -31,6 +31,7 @@ namespace Froq\Encryption;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Uuid
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      3.0
  */
 final /* static */ class Uuid
 {

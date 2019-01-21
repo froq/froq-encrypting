@@ -31,6 +31,7 @@ namespace Froq\Encryption\Oneway;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Oneway\OnewayException
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 final class OnewayException extends \Exception
 {}

@@ -31,6 +31,7 @@ namespace Froq\Encryption;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\EncryptionException
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 final class EncryptionException extends \Exception
 {}

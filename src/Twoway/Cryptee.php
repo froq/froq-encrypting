@@ -31,6 +31,7 @@ namespace Froq\Encryption\Twoway;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Twoway\Cryptee
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      3.0
  */
 final class Cryptee extends Twoway
 {

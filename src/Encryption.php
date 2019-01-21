@@ -31,6 +31,7 @@ namespace Froq\Encryption;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Encryption
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 final class Encryption
 {
@@ -39,6 +40,7 @@ final class Encryption
      * @param  int|null $length
      * @param  bool     $translate
      * @return string
+     * @since  3.0
      */
     public static function generateSalt(int $length = null, bool $translate = false): string
     {
@@ -50,6 +52,7 @@ final class Encryption
      * @param  int|null $type
      * @param  bool     $translate
      * @return string
+     * @since  3.0
      */
     public static function generateUuid(int $type = null, bool $translate = false): string
     {
@@ -61,6 +64,7 @@ final class Encryption
      * @param  int $length
      * @return string
      * @throws Froq\Encryption\EncryptionException
+     * @since  3.0
      */
     public static function generateNonce(int $length = 40): string
     {

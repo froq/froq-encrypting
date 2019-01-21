@@ -31,6 +31,7 @@ namespace Froq\Encryption\Oneway;
  * @subpackage Froq\Encryption
  * @object     Froq\Encryption\Oneway\Oneway
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 abstract class Oneway
 {
