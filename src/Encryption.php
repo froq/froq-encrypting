@@ -36,6 +36,13 @@ namespace Froq\Encryption;
 final class Encryption
 {
     /**
+     * Nonce algos.
+     * @var array
+     */
+    private static $nonceAlgos = [8 => 'fnv132', 16 => 'fnv164', 32 => 'md5', 40 => 'sha1',
+        64 => 'sha256', 128 => 'sha512'];
+
+    /**
      * Generate salt.
      * @param  int|null $length
      * @param  bool     $translate
@@ -60,6 +67,17 @@ final class Encryption
     }
 
     /**
+     * Generate short uuid.
+     * @param  bool $hex
+     * @return string
+     * @since  3.0
+     */
+    public static function generateShortUuid(bool $hex = false): string
+    {
+        return Uuid::generateShort($hex);
+    }
+
+    /**
      * Generate nonce.
      * @param  int $length
      * @return string
@@ -68,14 +86,20 @@ final class Encryption
      */
     public static function generateNonce(int $length = 40): string
     {
-        static $algos = [8 => 'fnv132', 16 => 'fnv164', 32 => 'md5', 40 => 'sha1',
-            64 => 'sha256', 128 => 'sha512'];
-
-        if (isset($algos[$length])) {
-            return hash($algos[$length], random_bytes($length / 2));
+        $nonceAlgos = self::$nonceAlgos;
+        if (isset($nonceAlgos[$length])) {
+            return hash($nonceAlgos[$length], random_bytes($length / 2));
         }
 
-        throw new EncryptionException(sprintf("Given '{$length}' not implemented, only '%s' are accepted",
-            join(',', array_keys($algos))));
+        throw new EncryptionException(sprintf("Given length '{$length}' not implemented, only '%s' ".
+            "are accepted", join(',', array_keys($nonceAlgos))));
+    }
+
+    /**
+     * Alias of self::generateNonce()
+     */
+    public static function generateKey(int $length = 40): string
+    {
+        return self::generateNonce($length);
     }
 }
