@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace Froq\Encryption\Twoway;
 
+use Froq\Encryption\Encryption;
+
 /**
  * @package    Froq
  * @subpackage Froq\Encryption
@@ -55,22 +57,22 @@ abstract class Twoway
      * @param  int $length
      * @return string
      */
-    public static final function generateKey(int $length = 40): string
+    public static final function generateKey(int $length = 64): string
     {
-        return \Froq\Encryption\Salt::generate($length);
+        return Encryption::generateKey($length);
     }
 
     /**
      * Encode.
      * @param  string $data
-     * @return string
+     * @return ?string
      */
-    public abstract function encode(string $data): string;
+    public abstract function encode(string $data): ?string;
 
     /**
      * Decode.
-     * @param  string $encodedData
-     * @return string
+     * @param  string $data
+     * @return ?string
      */
-    public abstract function decode(string $encodedData): string;
+    public abstract function decode(string $data): ?string;
 }

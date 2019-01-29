@@ -47,17 +47,17 @@ final class Cryptee extends Twoway
     /**
      * @inheritDoc Froq\Encryption\Twoway\Twoway
      */
-    public function encode(string $data): string
+    public function encode(string $data): ?string
     {
-        return base64_encode($this->crypt($data));
+        return (string) base64_encode($this->crypt($data));
     }
 
     /**
      * @inheritDoc Froq\Encryption\Twoway\Twoway
      */
-    public function decode(string $encodedData): string
+    public function decode(string $data): ?string
     {
-        return $this->crypt(base64_decode($encodedData));
+        return $this->crypt((string) base64_decode($data));
     }
 
     /**
