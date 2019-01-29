@@ -81,7 +81,11 @@ final class Password extends Oneway
      */
     public function hash(string $data): string
     {
-        return (string) password_hash($data, $this->algo, $this->options);
+        $out = password_hash($data, $this->algo, $this->options);
+        if ($out !== false) {
+            return $out
+        }
+        return null;
     }
 
     /**
