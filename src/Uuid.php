@@ -81,4 +81,21 @@ final /* static */ class Uuid
 
         throw new EncryptionException("Given '{$type}' not implemented, only '0,4' are accepted");
     }
+
+    /**
+     * Generate short.
+     * @param  bool $hex
+     * @return string
+     */
+    public static function generateShort(bool $hex = false): string
+    {
+        $time = time();
+        $rand = random_int(0, PHP_INT_MAX);
+
+        if (!$hex) {
+            return sprintf('%.10s%.6s', $time, $rand);
+        }
+
+        return substr(sprintf('%.10s%.10s', dechex($time), dechex($rand)), 0, 16);
+    }
 }
