@@ -58,17 +58,17 @@ final /* static */ class Salt
         $len = $length ?? self::LENGTH; // output length
         $bpc = 6; // bits per character
 
-        $randomBytes = random_bytes((int) ceil($len * $bpc / 8));
+        $rand = random_bytes((int) ceil($len * $bpc / 8));
 
         // @see https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
-        $p = 0; $q = strlen($randomBytes);
+        $p = 0; $q = strlen($rand);
         $w = 0; $have = 0; $mask = (1 << $bpc) - 1;
         $out = '';
 
         while ($len--) {
             if ($have < $bpc) {
                 if ($p < $q) {
-                    $byte = ord($randomBytes[$p++]);
+                    $byte = ord($rand[$p++]);
                     $w |= ($byte << $have);
                     $have += 8;
                 } else {
