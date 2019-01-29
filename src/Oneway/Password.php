@@ -49,13 +49,13 @@ final class Password extends Oneway
 
     /**
      * Constructor.
-     * @param int   $algo
-     * @param array $options
+     * @param int|null   $algo
+     * @param array|null $options
      */
-    public function __construct(int $algo = null, array $options = [])
+    public function __construct(int $algo = null, array $options = null)
     {
         $this->algo = $algo ?? $this->algo;
-        $this->options = array_merge($this->options, $options);
+        $this->options = array_merge($this->options, $options ?? []);
     }
 
     /**
