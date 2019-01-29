@@ -53,28 +53,28 @@ final class OpenSsl extends Twoway
 
     /**
      * Constructor.
-     * @param  string      $key
-     * @param  string|null $method
+     * @param  string $key
+     * @param  string $method
      * @throws Froq\Encryption\EncryptionException
      */
-    public function __construct(string $key, string $method = null)
+    public function __construct(string $key, string $method = self::METHOD)
     {
         if (!extension_loaded('openssl')) {
             throw new EncryptionException('OpenSSL extension not found');
         }
 
-        $this->key = $key;
-        $this->method = $method ?? self::METHOD;
-
         // check key length
-        if (strlen($this->key) < 16) {
+        if (strlen($key) < 16) {
             throw new EncryptionException("Invalid key given, minimum key length is 16 (tip: use ".
                 "OpenSSL::generateKey() method to get a strong key)");
         }
         // check method validity
-        if (!in_array($this->method, openssl_get_cipher_methods())) {
-            throw new EncryptionException("Invalid method '{$this->method}' given");
+        if (!in_array($method, openssl_get_cipher_methods())) {
+            throw new EncryptionException("Invalid method '{$method}' given");
         }
+
+        $this->key = $key;
+        $this->method = $method;
     }
 
     /**
