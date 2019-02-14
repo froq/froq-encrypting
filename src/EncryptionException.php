@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace froq\encryption;
 
 /**
- * Encryption Exception.
+ * Encryption exception.
  * @package froq\encryption
  * @object  froq\encryption\EncryptionException
  * @author  Kerem Güneş <k-gun@mail.com>
