@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption\Oneway;
+namespace froq\encryption\oneway;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Oneway\Oneway
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Oneway.
+ * @package froq\encryption\oneway
+ * @object  froq\encryption\oneway\Oneway
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 abstract class Oneway
 {

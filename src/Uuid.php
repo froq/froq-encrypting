@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption;
+namespace froq\encryption;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Uuid
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      3.0
+ * Uuid.
+ * @package froq\encryption
+ * @object  froq\encryption\Uuid
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   3.0
  */
 final /* static */ class Uuid
 {
@@ -48,7 +48,7 @@ final /* static */ class Uuid
      * @param  int  $type
      * @param  bool $translate
      * @return string
-     * @throws Froq\Encryption\EncryptionException
+     * @throws froq\encryption\EncryptionException
      */
     public static function generate(int $type = null, bool $translate = false): string
     {

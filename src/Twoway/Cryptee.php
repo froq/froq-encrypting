@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption\Twoway;
+namespace froq\encryption\twoway;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Twoway\Cryptee
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      3.0
+ * Cryptee.
+ * @package froq\encryption\twoway
+ * @object  froq\encryption\twoway\Cryptee
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   3.0
  */
 final class Cryptee extends Twoway
 {
@@ -45,7 +45,7 @@ final class Cryptee extends Twoway
     }
 
     /**
-     * @inheritDoc Froq\Encryption\Twoway\Twoway
+     * @inheritDoc froq\encryption\twoway\Twoway
      */
     public function encode(string $data): ?string
     {
@@ -53,7 +53,7 @@ final class Cryptee extends Twoway
     }
 
     /**
-     * @inheritDoc Froq\Encryption\Twoway\Twoway
+     * @inheritDoc froq\encryption\twoway\Twoway
      */
     public function decode(string $data): ?string
     {

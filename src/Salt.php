@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption;
+namespace froq\encryption;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Salt
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      3.0
+ * Salt.
+ * @package froq\encryption
+ * @object  froq\encryption\Salt
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   3.0
  */
 final /* static */ class Salt
 {

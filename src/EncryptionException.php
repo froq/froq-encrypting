@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption;
+namespace froq\encryption;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\EncryptionException
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Encryption Exception.
+ * @package froq\encryption
+ * @object  froq\encryption\EncryptionException
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 final class EncryptionException extends \Exception
 {}

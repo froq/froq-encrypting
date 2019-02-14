@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption\Oneway;
+namespace froq\encryption\oneway;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Oneway\Password
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Password.
+ * @package froq\encryption\oneway
+ * @object  froq\encryption\oneway\Password
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 final class Password extends Oneway
 {
@@ -77,7 +77,7 @@ final class Password extends Oneway
     }
 
     /**
-     * @inheritDoc Froq\Encryption\Oneway\Oneway
+     * @inheritDoc froq\encryption\oneway\Oneway
      */
     public function hash(string $data): string
     {
@@ -89,7 +89,7 @@ final class Password extends Oneway
     }
 
     /**
-     * @inheritDoc Froq\Encryption\Oneway\Oneway
+     * @inheritDoc froq\encryption\oneway\Oneway
      */
     public function verify(string $data, string $hashedData): bool
     {

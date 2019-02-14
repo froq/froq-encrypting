@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption;
+namespace froq\encryption;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Encryption
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Encryption.
+ * @package froq\encryption
+ * @object  froq\encryption\Encryption
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 final class Encryption
 {
@@ -81,7 +81,7 @@ final class Encryption
      * Generate nonce.
      * @param  int $length
      * @return string
-     * @throws Froq\Encryption\EncryptionException
+     * @throws froq\encryption\EncryptionException
      * @since  3.0
      */
     public static function generateNonce(int $length = 40): string

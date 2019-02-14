@@ -24,16 +24,16 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Encryption\Twoway;
+namespace froq\encryption\twoway;
 
-use Froq\Encryption\Encryption;
+use froq\encryption\Encryption;
 
 /**
- * @package    Froq
- * @subpackage Froq\Encryption
- * @object     Froq\Encryption\Twoway\Twoway
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      3.0
+ * Twoway.
+ * @package froq\encryption\twoway
+ * @object  froq\encryption\twoway\Twoway
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   3.0
  */
 abstract class Twoway
 {
