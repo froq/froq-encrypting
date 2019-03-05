@@ -45,11 +45,10 @@ final class Sodium extends Twoway
 
     /**
      * Constructor.
-     * @param  string      $key
-     * @param  string|null $method
+     * @param  string $key
      * @throws froq\encryption\EncryptionException
      */
-    public function __construct(string $key, string $method = null)
+    public function __construct(string $key)
     {
         if (!extension_loaded('sodium')) {
             throw new EncryptionException('Sodium extension not found');
