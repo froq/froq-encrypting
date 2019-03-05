@@ -56,8 +56,8 @@ final class Sodium extends Twoway
 
         // check key length
         if (strlen($key) < 16) {
-            throw new EncryptionException("Invalid key given, minimum key length is 16 (tip: use ".
-                "Sodium::generateKey() method to get a strong key)");
+            throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
+                'Sodium::generateKey() method to get a strong key)');
         }
 
         // key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES

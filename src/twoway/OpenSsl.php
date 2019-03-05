@@ -65,9 +65,10 @@ final class OpenSsl extends Twoway
 
         // check key length
         if (strlen($key) < 16) {
-            throw new EncryptionException("Invalid key given, minimum key length is 16 (tip: use ".
-                "OpenSSL::generateKey() method to get a strong key)");
+            throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
+                'OpenSSL::generateKey() method to get a strong key)');
         }
+
         // check method validity
         if (!in_array($method, openssl_get_cipher_methods())) {
             throw new EncryptionException("Invalid method '{$method}' given");

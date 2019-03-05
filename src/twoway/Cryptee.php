@@ -41,6 +41,12 @@ final class Cryptee extends Twoway
      */
     public function __construct(string $key)
     {
+        // check key length
+        if (strlen($key) < 16) {
+            throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
+                'Cryptee::generateKey() method to get a strong key)');
+        }
+
         $this->key = $key;
     }
 
