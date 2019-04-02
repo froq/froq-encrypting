@@ -82,19 +82,21 @@ final /* static */ class Uuid
 
     /**
      * Generate short.
-     * @param  bool $time
      * @param  bool $translate
-     * @return int|string
+     * @return string
      */
-    public static function generateShort(bool $time = false, bool $translate = false)
+    public static function generateShort(bool $translate = false): string
     {
-        $numb = $time ? time() : date('Ymd');
-        $rand = random_int(0, PHP_INT_MAX);
+        $time = time();
+        $rand = random_int(100, 999);
 
         if ($translate) {
-            return substr(sprintf('%.10s%.10s', dechex($numb), dechex($rand)), 0, 16);
+            $out = dechex($time) . dechex($rand);
+            $out = str_pad($out, 11, '0'); // len=11
+        } else {
+            $out = $time . $rand; // len=13
         }
 
-        return (int) sprintf('%.10s%.6s', $numb, $rand);
+        return $out;
     }
 }

@@ -68,14 +68,13 @@ final class Encryption
 
     /**
      * Generate short uuid.
-     * @param  bool $time
      * @param  bool $translate
-     * @return int|string
+     * @return string
      * @since  3.0
      */
-    public static function generateShortUuid(bool $time = false, bool $translate = false)
+    public static function generateShortUuid(bool $translate = false): string
     {
-        return Uuid::generateShort($time, $translate);
+        return Uuid::generateShort($translate);
     }
 
     /**
