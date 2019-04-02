@@ -61,41 +61,40 @@ final /* static */ class Uuid
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
             $rand = bin2hex(random_bytes(3));
 
-            $out = sprintf('%08s-%04x-%04x-%04x-%6s%6s',
-                $uniq[0], $date['year'], $date['mon'], $date['mday'], $uniq[1], $rand);
+            $out = sprintf('%08s-%04x-%04x-%04x-%6s%6s', $uniq[0], $date['year'],
+                ($date['mon'] . $date['mday']), ($date['minutes'] . $date['seconds']), $uniq[1], $rand);
         } else if ($type == self::TYPE_4) {
             $rand = random_bytes(16);
             $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
             $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
 
             $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
+        } else {
+            throw new EncryptionException("Given '{$type}' not implemented, only '0,4' are accepted");
         }
 
-        // valid type
-        if ($out != '') {
-            if ($translate) {
-                $out = str_replace('-', '', $out);
-            }
-            return $out;
+        if ($translate) {
+            $out = str_replace('-', '', $out);
         }
 
-        throw new EncryptionException("Given '{$type}' not implemented, only '0,4' are accepted");
+        return $out;
     }
 
     /**
      * Generate short.
-     * @param  bool $hex
-     * @return string
+     * @param  bool $time
+     * @param  bool $translate
+     * @return int|string
      */
-    public static function generateShort(bool $hex = false): string
+    public static function generateShort(bool $time = false, bool $translate = false)
     {
-        $time = time();
+        $numb = $time ? time() : date('Ymd');
         $rand = random_int(0, PHP_INT_MAX);
 
-        if (!$hex) {
-            return sprintf('%.10s%.6s', $time, $rand);
+        if ($translate) {
+            return substr(sprintf('%.10s%.10s', dechex($numb), dechex($rand)), 0, 16);
         }
 
-        return substr(sprintf('%.10s%.10s', dechex($time), dechex($rand)), 0, 16);
+        return (int) sprintf('%.10s%.6s', $numb, $rand);
     }
 }
