@@ -45,10 +45,11 @@ final class Sodium extends Twoway
 
     /**
      * Constructor.
-     * @param  string $key
+     * @param  string      $key
+     * @param  string|null $nonce
      * @throws froq\encryption\EncryptionException
      */
-    public function __construct(string $key)
+    public function __construct(string $key, string $nonce = null)
     {
         if (!extension_loaded('sodium')) {
             throw new EncryptionException('Sodium extension not found');
@@ -60,9 +61,14 @@ final class Sodium extends Twoway
                 'Sodium::generateKey() method to get a strong key)');
         }
 
+        // check nonce length
+        if ($nonce != null && strlen($nonce) != 24) {
+            throw new EncryptionException('Invalid nonce given, nonce length should be 24');
+        }
+
         // key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES
         $this->key = md5($key);
-        $this->nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+        $this->nonce = $nonce ?? random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
     }
 
     /**
