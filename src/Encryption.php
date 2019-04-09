@@ -86,13 +86,12 @@ final class Encryption
      */
     public static function generateNonce(int $length = 40): string
     {
-        $nonceAlgos = self::$nonceAlgos;
-        if (isset($nonceAlgos[$length])) {
-            return hash($nonceAlgos[$length], random_bytes($length / 2));
+        if (isset(self::$nonceAlgos[$length])) {
+            return hash(self::$nonceAlgos[$length], random_bytes($length));
         }
 
         throw new EncryptionException(sprintf("Given length '{$length}' not implemented, only '%s' ".
-            "are accepted", join(',', array_keys($nonceAlgos))));
+            "are accepted", join(',', array_keys(self::$nonceAlgos))));
     }
 
     /**
