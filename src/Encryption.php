@@ -39,7 +39,7 @@ final class Encryption
      * Nonce algos.
      * @var array
      */
-    private static $nonceAlgos = [8 => 'fnv132', 16 => 'fnv164', 32 => 'md5', 40 => 'sha1',
+    private static $nonceAlgos = [8 => 'fnv1a32', 16 => 'fnv1a64', 32 => 'md5', 40 => 'sha1',
         64 => 'sha256', 128 => 'sha512'];
 
     /**
