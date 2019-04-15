@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace froq\encryption\oneway;
 
+use froq\encryption\Encryption;
+
 /**
  * Password.
  * @package froq\encryption\oneway
@@ -81,11 +83,7 @@ final class Password extends Oneway
      */
     public function hash(string $data): string
     {
-        $out = password_hash($data, $this->algo, $this->options);
-        if ($out !== false) {
-            return $out
-        }
-        return null;
+        return (string) password_hash($data, $this->algo, $this->options);
     }
 
     /**
@@ -94,5 +92,29 @@ final class Password extends Oneway
     public function verify(string $data, string $hashedData): bool
     {
         return password_verify($data, $hashedData);
+    }
+
+    /**
+     * Generate.
+     * @param  int  $length
+     * @param  bool $lettersOnly
+     * @return string
+     */
+    public static function generate(int $length = 8, bool $lettersOnly = true): string
+    {
+        static $anChars = Encryption::CHARS_62;
+        static $grChars = '!^+%&/(){}[]<>=*?-_|$#.,:;';
+
+        if ($lettersOnly) {
+            return substr(str_shuffle($anChars), 0, $length);
+        }
+
+        // 1 graph char for each 3 alphanumeric chars (approximately..)
+        $lengthSub = (int) floor($length / 3);
+
+        return str_shuffle(
+              substr(str_shuffle($anChars), 0, $length - $lengthSub)
+            . substr(str_shuffle($grChars), 0, $lengthSub)
+        );
     }
 }

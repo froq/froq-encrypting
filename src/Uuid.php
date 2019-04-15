@@ -70,7 +70,7 @@ final /* static */ class Uuid
 
             $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
         } else {
-            throw new EncryptionException("Given '{$type}' not implemented, only '0,4' are accepted");
+            throw new EncryptionException("Given type '{$type}' not implemented, only '0,4' are accepted");
         }
 
         if ($translate) {
@@ -82,19 +82,30 @@ final /* static */ class Uuid
 
     /**
      * Generate short.
-     * @param  bool $translate
+     * @param  int|null $base
      * @return string
      */
-    public static function generateShort(bool $translate = false): string
+    public static function generateShort(int $base = null): string
     {
-        $time = time();
-        $rand = random_int(100, 999);
+        static $randInt, $randHex, $randChar;
+        if ($randInt == null) {
+            $randInt = function () { return random_int(100, 999); };
+            $randHex = function () { return str_shuffle(Encryption::CHARS_16)[0]; };
+            $randChar = function () { return str_shuffle(encryption::CHARS_36)[0]; };
+        }
 
-        if ($translate) {
-            $out = dechex($time) . dechex($rand);
-            $out = str_pad($out, 11, '0'); // len=11
+        $time = time();
+
+        if ($base == null) { // type=int length=13
+            $out = ''. $time . $randInt();
+        } elseif ($base == 16) { // type=string length=12
+            $out = dechex($time) . dechex($randInt());
+            $out = str_pad($out, 12, $randHex());
+        } else if ($base == 36) { // type=string length=11
+            $out = base_convert($time, 10, 36) . base_convert($randInt(), 10, 36) . base_convert($randInt(), 10, 36);
+            $out = str_pad($out, 11, $randChar());
         } else {
-            $out = $time . $rand; // len=13
+            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' are accepted");
         }
 
         return $out;

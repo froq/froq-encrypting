@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace froq\encryption;
 
+use froq\encryption\oneway\Password;
+
 /**
  * Encryption.
  * @package froq\encryption
@@ -35,6 +37,14 @@ namespace froq\encryption;
  */
 final class Encryption
 {
+    /**
+     * Chars.
+     * @const string
+     */
+    public const CHARS_16 = '0123456789abcdef',
+                 CHARS_36 = '0123456789abcdefghijklmnopqrstuvwxyz',
+                 CHARS_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
     /**
      * Nonce algos.
      * @var array
@@ -68,13 +78,25 @@ final class Encryption
 
     /**
      * Generate short uuid.
-     * @param  bool $translate
+     * @param  int|null $base
      * @return string
      * @since  3.0
      */
-    public static function generateShortUuid(bool $translate = false): string
+    public static function generateShortUuid(int $base = null): string
     {
-        return Uuid::generateShort($translate);
+        return Uuid::generateShort($base);
+    }
+
+    /**
+     * Generate.
+     * @param  int  $length
+     * @param  bool $lettersOnly
+     * @return string
+     * @since  3.4
+     */
+    public static function generatePassword(int $length = 8, bool $lettersOnly = true): string
+    {
+        return Password::generate($length, $lettersOnly);
     }
 
     /**
@@ -92,13 +114,5 @@ final class Encryption
 
         throw new EncryptionException(sprintf("Given length '{$length}' not implemented, only '%s' ".
             "are accepted", join(',', array_keys(self::$nonceAlgos))));
-    }
-
-    /**
-     * Alias of self::generateNonce()
-     */
-    public static function generateKey(int $length = 40): string
-    {
-        return self::generateNonce($length);
     }
 }

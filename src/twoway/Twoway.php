@@ -59,7 +59,7 @@ abstract class Twoway
      */
     public static final function generateKey(int $length = 64): string
     {
-        return Encryption::generateKey($length);
+        return Encryption::generateNonce($length);
     }
 
     /**
