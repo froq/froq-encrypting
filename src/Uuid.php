@@ -36,26 +36,17 @@ namespace froq\encryption;
 final /* static */ class Uuid
 {
     /**
-     * Types.
-     * @const int
-     */
-    public const TYPE_0       = 0, // simple serial
-                 TYPE_4       = 4, // random (UUID/v4)
-                 TYPE_DEFAULT = self::TYPE_0;
-
-    /**
      * Generate.
-     * @param  int  $type
+     * @param  bool $simple
      * @param  bool $translate
      * @return string
      * @throws froq\encryption\EncryptionException
      */
-    public static function generate(int $type = null, bool $translate = false): string
+    public static function generate(bool $simple = true, bool $translate = false): string
     {
         $out = '';
-        $type = $type ?? self::TYPE_DEFAULT;
 
-        if ($type == self::TYPE_0) {
+        if ($simple) { // simple serial
             $date = getdate();
             $uniq = preg_split('~([a-f0-9]{8})([a-f0-9]{6})~', uniqid('', true), -1,
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -63,16 +54,15 @@ final /* static */ class Uuid
 
             $out = sprintf('%08s-%04x-%04x-%04x-%6s%6s', $uniq[0], $date['year'],
                 ($date['mon'] . $date['mday']), ($date['minutes'] . $date['seconds']), $uniq[1], $rand);
-        } else if ($type == self::TYPE_4) {
+        } else { // random (UUID/v4)
             $rand = random_bytes(16);
             $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
             $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
 
             $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
-        } else {
-            throw new EncryptionException("Given type '{$type}' not implemented, only '0,4' are accepted");
         }
 
+        // remove dashes
         if ($translate) {
             $out = str_replace('-', '', $out);
         }

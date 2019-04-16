@@ -66,14 +66,14 @@ final class Encryption
 
     /**
      * Generate uuid.
-     * @param  int|null $type
-     * @param  bool     $translate
+     * @param  bool $simple
+     * @param  bool $translate
      * @return string
      * @since  3.0
      */
-    public static function generateUuid(int $type = null, bool $translate = false): string
+    public static function generateUuid(bool $simple = true, bool $translate = false): string
     {
-        return Uuid::generate($type, $translate);
+        return Uuid::generate($simple, $translate);
     }
 
     /**
@@ -92,7 +92,7 @@ final class Encryption
      * @param  int  $length
      * @param  bool $lettersOnly
      * @return string
-     * @since  3.4
+     * @since  3.0
      */
     public static function generatePassword(int $length = 8, bool $lettersOnly = true): string
     {
