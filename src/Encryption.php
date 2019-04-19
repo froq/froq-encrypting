@@ -88,6 +88,17 @@ final class Encryption
     }
 
     /**
+     * Generate long uuid.
+     * @param  int|null $base
+     * @return string
+     * @since  3.6
+     */
+    public static function generateLongUuid(int $base = null): string
+    {
+        return Uuid::generateLong($base);
+    }
+
+    /**
      * Generate.
      * @param  int  $length
      * @param  bool $lettersOnly
