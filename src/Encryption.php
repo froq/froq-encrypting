@@ -46,10 +46,10 @@ final class Encryption
                  CHARS_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
-     * Nonce algos.
+     * Hash algos.
      * @var array
      */
-    private static $nonceAlgos = [8 => 'fnv1a32', 16 => 'fnv1a64', 32 => 'md5', 40 => 'sha1',
+    private static $hashAlgos = [8 => 'fnv1a32', 16 => 'fnv1a64', 32 => 'md5', 40 => 'sha1',
         64 => 'sha256', 128 => 'sha512'];
 
     /**
@@ -118,16 +118,9 @@ final class Encryption
      * @throws froq\encryption\EncryptionException
      * @since  3.0
      */
-    public static function generateNonce(int $length = 40, bool $randomBytes = true): string
+    public static function generateNonce(int $length = 32, bool $randomBytes = true): string
     {
-        if (isset(self::$nonceAlgos[$length])) {
-            $nonce = $randomBytes ? random_bytes(128) : self::generateSerial(); // use big number
-
-            return hash(self::$nonceAlgos[$length], $nonce);
-        }
-
-        throw new EncryptionException(sprintf("Given length '{$length}' not implemented, only '%s' ".
-            "are accepted", join(',', array_keys(self::$nonceAlgos))));
+        return self::hash($length, $randomBytes ? random_bytes(128) : uniqid('', true));
     }
 
     /**
@@ -143,5 +136,33 @@ final class Encryption
         })();
 
         return ''. $time . $microtime . random_int(1000, 9999);
+    }
+
+    /**
+     * Generate serial hash.
+     * @param  int $length
+     * @return string
+     * @since  3.7
+     */
+    public static function generateSerialHash(int $length = 32): string
+    {
+        return self::hash($length, self::generateSerial());
+    }
+
+    /**
+     * Hash.
+     * @param  int    $length
+     * @param  string $input
+     * @return string
+     * @since  3.7
+     */
+    public static function hash(int $length, string $input): string
+    {
+        if (isset(self::$hashAlgos[$length])) {
+            return hash(self::$hashAlgos[$length], $input);
+        }
+
+        throw new EncryptionException(sprintf("Given hash length '{$length}' not implemented, only '%s' ".
+            "are accepted", join(',', array_keys(self::$hashAlgos))));
     }
 }
