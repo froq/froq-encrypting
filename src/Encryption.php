@@ -112,18 +112,36 @@ final class Encryption
 
     /**
      * Generate nonce.
-     * @param  int $length
+     * @param  int  $length
+     * @param  bool $randomBytes
      * @return string
      * @throws froq\encryption\EncryptionException
      * @since  3.0
      */
-    public static function generateNonce(int $length = 40): string
+    public static function generateNonce(int $length = 40, bool $randomBytes = true): string
     {
         if (isset(self::$nonceAlgos[$length])) {
-            return hash(self::$nonceAlgos[$length], random_bytes($length));
+            $nonce = $randomBytes ? random_bytes(128) : self::generateSerial(); // use big number
+
+            return hash(self::$nonceAlgos[$length], $nonce);
         }
 
         throw new EncryptionException(sprintf("Given length '{$length}' not implemented, only '%s' ".
             "are accepted", join(',', array_keys(self::$nonceAlgos))));
+    }
+
+    /**
+     * Generate serial.
+     * @return string A big number with 20-digit length long.
+     * @since  3.7
+     */
+    public static function generateSerial(): string
+    {
+        [$time, $microtime] = (function () {
+            $tmp = explode(' ', microtime());
+            return [$tmp[1], substr($tmp[0], 2, 6)];
+        })();
+
+        return ''. $time . $microtime . random_int(1000, 9999);
     }
 }
