@@ -84,7 +84,7 @@ final /* static */ class Uuid
         } elseif ($base == 16) { // string, length=12
             $out = dechex($time) . dechex(random_int(100, 999));
             $out = str_pad($out, 12, self::rand('hex'));
-        } else if ($base == 36) { // string, length=11
+        } elseif ($base == 36) { // string, length=11
             $out = base_convert($time, 10, 36) . base_convert(random_int(100, 999), 10, 36)
                  . base_convert(random_int(100, 999), 10, 36);
             $out = str_pad($out, 11, self::rand('char'));
