@@ -77,17 +77,17 @@ final /* static */ class Uuid
      */
     public static function generateShort(int $base = null): string
     {
-        $time = time();
+        [$time, $mtime] = self::time();
 
-        if ($base == null) { // number, length=13
-            $out = ''. $time . random_int(100, 999);
-        } elseif ($base == 16) { // string, length=12
-            $out = dechex($time) . dechex(random_int(100, 999));
-            $out = str_pad($out, 12, self::rand('hex'));
-        } elseif ($base == 36) { // string, length=11
-            $out = base_convert($time, 10, 36) . base_convert(random_int(100, 999), 10, 36)
-                 . base_convert(random_int(100, 999), 10, 36);
-            $out = str_pad($out, 11, self::rand('char'));
+        if ($base == null) {
+            $out = ''. $time . $mtime;
+            $out = self::pad(1, 12, $out);
+        } elseif ($base == 16) {
+            $out = dechex($time) . dechex($mtime);
+            $out = self::pad(2, 12, $out);
+        } elseif ($base == 36) {
+            $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
+            $out = self::pad(3, 12, $out);
         } else {
             throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' are accepted");
         }
@@ -103,33 +103,56 @@ final /* static */ class Uuid
      */
     public static function generateLong(int $base = null): string
     {
-        [$time, $microtime] = (function () {
-            $tmp = explode(' ', microtime());
-            return [(int) $tmp[1], (int) substr($tmp[0], 2, 6)];
-        })();
+        [$time, $mtime] = self::time();
 
-        if ($base == null) { // (big)number, length=20
-            $out = ''. $time . $microtime . random_int(1000, 9999);
-        } elseif ($base == 16) { // string, length=18
-            $out = dechex($time) . dechex($microtime) . dechex(random_int(10000, 99999));
-            $out = str_pad($out, 18, self::rand('hex'));
-        } elseif ($base == 36) { // string, length=16
-            $out = base_convert($time, 10, 36) . base_convert($microtime, 10, 36)
-                 . base_convert(random_int(1000, 9999), 10, 36) . base_convert(random_int(1000, 9999), 10, 36);
-            $out = str_pad($out, 16, self::rand('char'));
+        if ($base == null) {
+            $out = ''. $time . $mtime;
+            $out = self::pad(1, 22, $out);
+        } elseif ($base == 16) {
+            $out = dechex($time) . dechex($mtime);
+            $out = self::pad(2, 22, $out);
+        } elseif ($base == 36) {
+            $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
+            $out = self::pad(3, 22, $out);
+        } else {
+            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' are accepted");
         }
 
         return $out;
     }
 
     /**
-     * Rand.
-     * @param  string $what
+     * Time.
+     * @return array
+     */
+    private static function time(): array
+    {
+        $tmp = explode(' ', microtime());
+
+        return [(int) $tmp[1], (int) substr($tmp[0], 2, 6)];
+    }
+
+    /**
+     * Pad.
+     * @param  int    $type
+     * @param  int    $length
+     * @param  string $input
      * @return string
      */
-    private static function rand(string $what): string
+    private static function pad(int $type, int $length, string $input): string
     {
-        if ($what == 'hex') return str_shuffle(Encryption::CHARS_16)[0];
-        if ($what == 'char') return str_shuffle(encryption::CHARS_36)[0];
+        $chars = '';
+
+        if (strlen($input) < $length) {
+            if ($type == 1) { // numeric
+                $chars = str_shuffle('0123456789');
+            } elseif ($type == 2) { // base 16
+                $chars = str_shuffle('0123456789abcdef');
+            } elseif ($type == 3) { // base 36
+                $chars = str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz');
+            }
+        }
+
+        return substr($input . $chars, 0, $length);
     }
 }

@@ -49,26 +49,27 @@ final /* static */ class Salt
 
     /**
      * Generate.
-     * @param  int  $length
-     * @param  bool $translate
+     * @param  int|null $length
+     * @param  int|null $bitsPerChar
+     * @param  bool     $translate
      * @return string
      */
-    public static function generate(int $length = null, bool $translate = false): string
+    public static function generate(int $length = null, int $bitsPerChar = null, bool $translate = false): string
     {
         $len = $length ?? self::LENGTH; // output length
-        $bpc = 6; // bits per character
+        $bpc = $bitsPerChar ?? 6; // 4=hex chars, 5=base36 chars, 6=base64 chars
 
-        $rand = random_bytes((int) ceil($len * $bpc / 8));
+        $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
         // @see https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
-        $p = 0; $q = strlen($rand);
+        $p = 0; $q = strlen($bytes);
         $w = 0; $have = 0; $mask = (1 << $bpc) - 1;
         $out = '';
 
         while ($len--) {
             if ($have < $bpc) {
                 if ($p < $q) {
-                    $byte = ord($rand[$p++]);
+                    $byte = ord($bytes[$p++]);
                     $w |= ($byte << $have);
                     $have += 8;
                 } else {

@@ -37,16 +37,16 @@ abstract class Oneway
 {
     /**
      * Hash.
-     * @param  string $data
+     * @param  string $input
      * @return string
      */
-    public abstract function hash(string $data): string;
+    public abstract function hash(string $input): string;
 
     /**
      * Verify.
-     * @param  string $data
-     * @param  string $hashedData
+     * @param  string $input
+     * @param  string $inputHash
      * @return bool
      */
-    public abstract function verify(string $data, string $hashedData): bool;
+    public abstract function verify(string $input, string $inputHash): bool;
 }

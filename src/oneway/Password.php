@@ -81,17 +81,17 @@ final class Password extends Oneway
     /**
      * @inheritDoc froq\encryption\oneway\Oneway
      */
-    public function hash(string $data): string
+    public function hash(string $input): string
     {
-        return (string) password_hash($data, $this->algo, $this->options);
+        return (string) password_hash($input, $this->algo, $this->options);
     }
 
     /**
      * @inheritDoc froq\encryption\oneway\Oneway
      */
-    public function verify(string $data, string $hashedData): bool
+    public function verify(string $input, string $inputHash): bool
     {
-        return password_verify($data, $hashedData);
+        return password_verify($input, $inputHash);
     }
 
     /**
@@ -102,7 +102,7 @@ final class Password extends Oneway
      */
     public static function generate(int $length = 8, bool $lettersOnly = true): string
     {
-        static $anChars = Encryption::CHARS_62;
+        static $anChars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         static $grChars = '!^+%&/(){}[]<>=*?-_|$#.,:;';
 
         if ($lettersOnly) {

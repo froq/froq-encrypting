@@ -38,14 +38,6 @@ use froq\encryption\oneway\Password;
 final class Encryption
 {
     /**
-     * Chars.
-     * @const string
-     */
-    public const CHARS_16 = '0123456789abcdef',
-                 CHARS_36 = '0123456789abcdefghijklmnopqrstuvwxyz',
-                 CHARS_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    /**
      * Hash algos.
      * @var array
      */
@@ -55,13 +47,14 @@ final class Encryption
     /**
      * Generate salt.
      * @param  int|null $length
+     * @param  int|null $bitsPerChar
      * @param  bool     $translate
      * @return string
      * @since  3.0
      */
-    public static function generateSalt(int $length = null, bool $translate = false): string
+    public static function generateSalt(int $length = null, int $bitsPerChar = null, bool $translate = false): string
     {
-        return Salt::generate($length, $translate);
+        return Salt::generate($length, $bitsPerChar, $translate);
     }
 
     /**
