@@ -113,7 +113,7 @@ final class Encryption
      */
     public static function generateNonce(int $length = 32, bool $randomBytes = true): string
     {
-        return self::hash($length, $randomBytes ? random_bytes(128) : uniqid('', true));
+        return self::hash($length, $randomBytes ? random_bytes($length / 2) : uniqid('', true));
     }
 
     /**
