@@ -32,21 +32,33 @@ namespace froq\encryption;
  * @object  froq\encryption\Uuid
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
+ * @static
  */
-final /* static */ class Uuid
+final class Uuid
 {
     /**
      * Generate.
      * @param  bool $simple
-     * @param  bool $translate
+     * @param  bool $guid
      * @return string
-     * @throws froq\encryption\EncryptionException
      */
-    public static function generate(bool $simple = true, bool $translate = false): string
+    public static function generate(bool $simple = false, bool $guid = false): string
     {
         $out = '';
 
-        if ($simple) { // simple serial
+        // Random (UUID/v4 or GUID).
+        if (!$simple) {
+            $rand = random_bytes(16);
+            if (!$guid) {
+                // Guid doesn't use 4 (version) or 8, 9, A, or B.
+                $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
+                $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
+            }
+
+            $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
+        }
+        // Simple serial.
+        else {
             $date = getdate();
             $uniq = preg_split('~([a-f0-9]{8})([a-f0-9]{6})~', uniqid('', true), -1,
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -54,26 +66,26 @@ final /* static */ class Uuid
 
             $out = sprintf('%08s-%04x-%04x-%04x-%6s%6s', $uniq[0], $date['year'],
                 ($date['mon'] . $date['mday']), ($date['minutes'] . $date['seconds']), $uniq[1], $rand);
-        } else { // random (UUID/v4)
-            $rand = random_bytes(16);
-            $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
-            $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
-
-            $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
-        }
-
-        // remove dashes
-        if ($translate) {
-            $out = str_replace('-', '', $out);
         }
 
         return $out;
     }
 
     /**
+     * Generate simple.
+     * @return string
+     * @since  4.0
+     */
+    public static final function generateSimple(): string
+    {
+        return self::generate(true);
+    }
+
+    /**
      * Generate short.
      * @param  int|null $base
      * @return string
+     * @throws froq\encryption\EncryptionException If invalid base given.
      */
     public static function generateShort(int $base = null): string
     {
@@ -100,6 +112,7 @@ final /* static */ class Uuid
      * @param  int|null $base
      * @return string
      * @since  3.6
+     * @throws froq\encryption\EncryptionException If invalid base given.
      */
     public static function generateLong(int $base = null): string
     {
@@ -144,11 +157,11 @@ final /* static */ class Uuid
         $chars = '';
 
         if (strlen($input) < $length) {
-            if ($type == 1) { // numeric
+            if ($type == 1) { // Numeric.
                 $chars = str_shuffle('0123456789');
-            } elseif ($type == 2) { // base 16
+            } elseif ($type == 2) { // Base 16.
                 $chars = str_shuffle('0123456789abcdef');
-            } elseif ($type == 3) { // base 36
+            } elseif ($type == 3) { // Base 36.
                 $chars = str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz');
             }
         }
