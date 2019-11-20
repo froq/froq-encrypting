@@ -32,8 +32,9 @@ namespace froq\encryption;
  * @object  froq\encryption\Salt
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
+ * @static
  */
-final /* static */ class Salt
+final class Salt
 {
     /**
      * Length.
@@ -54,14 +55,15 @@ final /* static */ class Salt
      * @param  bool     $translate
      * @return string
      */
-    public static function generate(int $length = null, int $bitsPerChar = null, bool $translate = false): string
+    public static function generate(int $length = null, int $bitsPerChar = null,
+        bool $translate = false): string
     {
-        $len = $length ?? self::LENGTH; // output length
-        $bpc = $bitsPerChar ?? 6; // 4=hex chars, 5=base36 chars, 6=base64 chars
+        $len = $length ?? self::LENGTH; // Output length.
+        $bpc = $bitsPerChar ?? 6;       // 4=hex chars, 5=base36 chars, 6=base64 chars.
 
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
-        // @see https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326
+        // Original source https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326.
         $p = 0; $q = strlen($bytes);
         $w = 0; $have = 0; $mask = (1 << $bpc) - 1;
         $out = '';
