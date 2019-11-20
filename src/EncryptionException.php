@@ -26,12 +26,14 @@ declare(strict_types=1);
 
 namespace froq\encryption;
 
+use froq\Exception;
+
 /**
- * Encryption exception.
+ * Encryption Exception.
  * @package froq\encryption
  * @object  froq\encryption\EncryptionException
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  */
-final class EncryptionException extends \Exception
+final class EncryptionException extends Exception
 {}
