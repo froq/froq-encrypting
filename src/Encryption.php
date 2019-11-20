@@ -52,7 +52,8 @@ final class Encryption
      * @return string
      * @since  3.0
      */
-    public static function generateSalt(int $length = null, int $bitsPerChar = null, bool $translate = false): string
+    public static function generateSalt(int $length = null, int $bitsPerChar = null,
+        bool $translate = false): string
     {
         return Salt::generate($length, $bitsPerChar, $translate);
     }
@@ -60,13 +61,23 @@ final class Encryption
     /**
      * Generate uuid.
      * @param  bool $simple
-     * @param  bool $translate
+     * @param  bool $guid
      * @return string
      * @since  3.0
      */
-    public static function generateUuid(bool $simple = true, bool $translate = false): string
+    public static function generateUuid(bool $simple = false, bool $guid = false): string
     {
-        return Uuid::generate($simple, $translate);
+        return Uuid::generate($simple, $guid);
+    }
+
+    /**
+     * Generate simple uuid.
+     * @return string
+     * @since  4.0
+     */
+    public static function generateSimpleUuid(): string
+    {
+        return Uuid::generateSimple();
     }
 
     /**
@@ -108,27 +119,23 @@ final class Encryption
      * @param  int  $length
      * @param  bool $randomBytes
      * @return string
-     * @throws froq\encryption\EncryptionException
      * @since  3.0
      */
     public static function generateNonce(int $length = 32, bool $randomBytes = true): string
     {
-        return self::hash($length, $randomBytes ? random_bytes($length / 2) : uniqid('', true));
+        return self::hash($length, ($randomBytes ? random_bytes($length / 2) : uniqid('', true)));
     }
 
     /**
      * Generate serial.
-     * @return string A big number with 20-digit length long.
+     * @return string A 20-length big number.
      * @since  3.7
      */
     public static function generateSerial(): string
     {
-        [$time, $microtime] = (function () {
-            $tmp = explode(' ', microtime());
-            return [$tmp[1], substr($tmp[0], 2, 6)];
-        })();
+        $tmp = explode(' ', microtime());
 
-        return ''. $time . $microtime . random_int(1000, 9999);
+        return $tmp[1] . substr($tmp[0], 2, 6) . random_int(1000, 9999);
     }
 
     /**
@@ -143,11 +150,62 @@ final class Encryption
     }
 
     /**
+     * Generate otp.
+     * @param  string $key
+     * @param  int    $length
+     * @return string A time based One-Time-Password.
+     * @since  4.0
+     */
+    static function generateOtp(string $key, int $length = 8): string
+    {
+        $time = time();
+        $data = pack('NNC*', $time >> 32, $time & 0xffffffff);
+        if (strlen($data) < 8) {
+            $data = str_pad($data, 8, chr(0), STR_PAD_LEFT);
+        }
+
+        $hash = hash_hmac('sha256', $data, $key);
+
+        $offset = hexdec(substr($hash, -1)) * 2;
+        $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
+
+        $ret = (string) ($binary % pow(10, $length));
+        if (strlen($ret) < $length) {
+            $ret = str_pad($ret, $length, '0', STR_PAD_LEFT);
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Generate object id.
+     * @param  bool   $count
+     * @return string A 24-length hex like Mongo.ObjectId.
+     * @since  4.0
+     */
+    public static function generateObjectId(bool $count = true): string
+    {
+        static $counter = 0;
+
+        $binary = pack('N', time()) . substr(md5(gethostname()), 0, 3)
+                . pack('n', getmypid()) . substr(pack('N', $count ? $counter++ : mt_rand()), 1, 3);
+
+        // Convert to hex.
+        $ret = '';
+        for ($i = 0; $i < 12; $i++) {
+            $ret .= sprintf('%02x', ord($binary[$i]));
+        }
+
+        return $ret;
+    }
+
+    /**
      * Hash.
      * @param  int    $length
      * @param  string $input
      * @return string
      * @since  3.7
+     * @throws froq\encryption\EncryptionException If invalid length given.
      */
     public static function hash(int $length, string $input): string
     {
@@ -155,7 +213,7 @@ final class Encryption
             return hash(self::$hashAlgos[$length], $input);
         }
 
-        throw new EncryptionException(sprintf("Given hash length '{$length}' not implemented, only '%s' ".
-            "are accepted", join(',', array_keys(self::$hashAlgos))));
+        throw new EncryptionException(sprintf("Given hash length '%s' not implemented, only '%s' ".
+            "are accepted", $length, join(',', array_keys(self::$hashAlgos))));
     }
 }
