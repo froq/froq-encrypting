@@ -41,13 +41,13 @@ final class Password extends Oneway
      * Algo.
      * @var int
      */
-    private $algo = PASSWORD_DEFAULT;
+    private int $algo = PASSWORD_DEFAULT;
 
     /**
      * Options.
      * @var array
      */
-    private $options = ['cost' => 10];
+    private array $options = ['cost' => 10];
 
     /**
      * Constructor.
@@ -91,7 +91,7 @@ final class Password extends Oneway
      */
     public function verify(string $input, string $inputHash): bool
     {
-        return password_verify($input, $inputHash);
+        return (bool) password_verify($input, $inputHash);
     }
 
     /**
@@ -109,7 +109,7 @@ final class Password extends Oneway
             return substr(str_shuffle($anChars), 0, $length);
         }
 
-        // 1 graph char for each 3 alphanumeric chars (approximately..)
+        // 1 graph char for each 3 alphanumeric chars (approximately..).
         $lengthSub = (int) floor($length / 3);
 
         return str_shuffle(
