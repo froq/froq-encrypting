@@ -41,7 +41,7 @@ abstract class Twoway
      * Key.
      * @var string
      */
-    protected $key;
+    protected string $key;
 
     /**
      * Get key.
@@ -57,7 +57,7 @@ abstract class Twoway
      * @param  int $length
      * @return string
      */
-    public static final function generateKey(int $length = 64): string
+    public static final function generateKey(int $length = 40): string
     {
         return Encryption::generateNonce($length);
     }

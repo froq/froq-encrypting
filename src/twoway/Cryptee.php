@@ -26,8 +26,13 @@ declare(strict_types=1);
 
 namespace froq\encryption\twoway;
 
+use froq\encryption\EncryptionException;
+
 /**
  * Cryptee.
+ *
+ * Original source https://github.com/k-gun/cryptee.
+ *
  * @package froq\encryption\twoway
  * @object  froq\encryption\twoway\Cryptee
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -37,11 +42,12 @@ final class Cryptee extends Twoway
 {
     /**
      * Constructor.
-     * @param string $key
+     * @param  string $key
+     * @throws froq\encryption\EncryptionException
      */
     public function __construct(string $key)
     {
-        // check key length
+        // Check key length.
         if (strlen($key) < 16) {
             throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
                 'Cryptee::generateKey() method to get a strong key)');

@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace froq\encryption\twoway;
 
 use froq\encryption\EncryptionException;
+use SodiumException;
 
 /**
  * Sodium.
@@ -41,7 +42,7 @@ final class Sodium extends Twoway
      * Nonce.
      * @var string
      */
-    private $nonce;
+    private string $nonce;
 
     /**
      * Constructor.
@@ -55,18 +56,18 @@ final class Sodium extends Twoway
             throw new EncryptionException('Sodium extension not found');
         }
 
-        // check key length
+        // Check key length.
         if (strlen($key) < 16) {
             throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
                 'Sodium::generateKey() method to get a strong key)');
         }
 
-        // check nonce length
+        // Check nonce length.
         if ($nonce != null && strlen($nonce) != 24) {
             throw new EncryptionException('Invalid nonce given, nonce length should be 24');
         }
 
-        // key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES
+        // Key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES.
         $this->key = md5($key);
         $this->nonce = $nonce ?? random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
     }
@@ -88,7 +89,7 @@ final class Sodium extends Twoway
         try {
             $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
             return ($out !== false) ? base64_encode($out) : null;
-        } catch (\SodiumException $e) {
+        } catch (SodiumException $e) {
             return null;
         }
     }
@@ -101,7 +102,7 @@ final class Sodium extends Twoway
         try {
             $out = sodium_crypto_secretbox_open(base64_decode($data), $this->nonce, $this->key);
             return ($out !== false) ? $out : null;
-        } catch (\SodiumException $e) {
+        } catch (SodiumException $e) {
             return null;
         }
     }

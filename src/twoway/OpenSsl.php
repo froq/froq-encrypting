@@ -30,6 +30,9 @@ use froq\encryption\EncryptionException;
 
 /**
  * Open Ssl.
+ *
+ * Original source https://stackoverflow.com/a/30189841/362780.
+ *
  * @package froq\encryption\twoway
  * @object  froq\encryption\twoway\OpenSsl
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -37,8 +40,6 @@ use froq\encryption\EncryptionException;
  */
 final class OpenSsl extends Twoway
 {
-    /*** Original source: https://stackoverflow.com/a/30189841/362780 ***/
-
     /**
      * Method.
      * @const string
@@ -49,33 +50,33 @@ final class OpenSsl extends Twoway
      * Method.
      * @var string
      */
-    private $method;
+    private string $method;
 
     /**
      * Constructor.
-     * @param  string $key
-     * @param  string $method
+     * @param  string      $key
+     * @param  string|null $method
      * @throws froq\encryption\EncryptionException
      */
-    public function __construct(string $key, string $method = self::METHOD)
+    public function __construct(string $key, string $method = null)
     {
         if (!extension_loaded('openssl')) {
             throw new EncryptionException('OpenSSL extension not found');
         }
 
-        // check key length
+        // Check key length.
         if (strlen($key) < 16) {
             throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
                 'OpenSSL::generateKey() method to get a strong key)');
         }
 
-        // check method validity
+        // Check method validity.
         if (!in_array($method, openssl_get_cipher_methods())) {
             throw new EncryptionException("Invalid method '{$method}' given");
         }
 
         $this->key = $key;
-        $this->method = $method;
+        $this->method = $method ?? self::METHOD;
     }
 
     /**
@@ -117,7 +118,7 @@ final class OpenSsl extends Twoway
         $mac = mb_substr($data, 0, $macLen, '8bit');
         $data = mb_substr($data, $macLen, null, '8bit');
 
-        // validate hashes
+        // Validate hashes.
         if (!hash_equals($mac, hash_hmac('sha256', $data, $aKey, true))) {
             return null;
         }
