@@ -46,11 +46,12 @@ final class Uuid
     {
         $out = '';
 
-        // Random (Uuid/v4 or Guid).
+        // Random (UUID/v4 or GUID).
         if (!$simple) {
             $rand = random_bytes(16);
+
             if (!$guid) {
-                // Guid doesn't use 4 (version) or 8, 9, A, or B.
+                // GUID doesn't use 4 (version) or 8, 9, A, or B.
                 $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
                 $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
             }
@@ -84,7 +85,7 @@ final class Uuid
     /**
      * Generate short.
      * @param  int|null $base
-     * @return string
+     * @return string   A 12-length id.
      * @throws froq\encryption\EncryptionException If invalid base given.
      */
     public static function generateShort(int $base = null): string
@@ -101,7 +102,8 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 12, $out);
         } else {
-            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' are accepted");
+            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' ".
+                "are accepted");
         }
 
         return $out;
@@ -110,7 +112,7 @@ final class Uuid
     /**
      * Generate long.
      * @param  int|null $base
-     * @return string
+     * @return string   A 22-length id.
      * @since  3.6
      * @throws froq\encryption\EncryptionException If invalid base given.
      */
@@ -128,7 +130,8 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 22, $out);
         } else {
-            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' are accepted");
+            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' ".
+                "are accepted");
         }
 
         return $out;
@@ -136,7 +139,8 @@ final class Uuid
 
     /**
      * Time.
-     * @return array
+     * @return array<int,int>
+     * @internal
      */
     private static function time(): array
     {
@@ -151,6 +155,7 @@ final class Uuid
      * @param  int    $length
      * @param  string $input
      * @return string
+     * @internal
      */
     private static function pad(int $type, int $length, string $input): string
     {
