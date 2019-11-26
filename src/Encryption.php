@@ -150,13 +150,13 @@ final class Encryption
     }
 
     /**
-     * Generate otp.
+     * Generate one time password.
      * @param  string $key
      * @param  int    $length
-     * @return string A time based One-Time-Password.
+     * @return string A time based OTP (One-Time-Password).
      * @since  4.0
      */
-    static function generateOtp(string $key, int $length = 8): string
+    public static function generateOneTimePassword(string $key, int $length = 8): string
     {
         $time = time();
         $data = pack('NNC*', $time >> 32, $time & 0xffffffff);

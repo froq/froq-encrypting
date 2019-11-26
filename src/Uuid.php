@@ -46,7 +46,7 @@ final class Uuid
     {
         $out = '';
 
-        // Random (UUID/v4 or GUID).
+        // Random (Uuid/v4 or Guid).
         if (!$simple) {
             $rand = random_bytes(16);
             if (!$guid) {
