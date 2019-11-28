@@ -139,7 +139,7 @@ final class Uuid
 
     /**
      * Time.
-     * @return array<int,int>
+     * @return array<int, int>
      * @internal
      */
     private static function time(): array
