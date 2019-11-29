@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace froq\encryption\twoway;
 
 use froq\encryption\EncryptionException;
+use froq\encryption\twoway\Twoway;
 
 /**
  * Cryptee.
@@ -53,7 +54,7 @@ final class Cryptee extends Twoway
                 'Cryptee::generateKey() method to get a strong key)');
         }
 
-        $this->key = $key;
+        parent::__construct($key);
     }
 
     /**
