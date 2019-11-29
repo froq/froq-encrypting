@@ -44,6 +44,15 @@ abstract class Twoway
     protected string $key;
 
     /**
+     * Constructor.
+     * @param string $key
+     */
+    public function __construct(string $key)
+    {
+        $this->key = $key;
+    }
+
+    /**
      * Get key.
      * @return string
      */
