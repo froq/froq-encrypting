@@ -38,44 +38,15 @@ use froq\encryption\oneway\Oneway;
 final class Password extends Oneway
 {
     /**
-     * Algo.
-     * @var string
-     */
-    private string $algo = PASSWORD_BCRYPT;
-
-    /**
-     * Options.
-     * @var array
-     */
-    private array $options = ['cost' => 10];
-
-    /**
      * Constructor.
-     * @param string|null $algo
-     * @param array|null  $options
+     * @param array<string, int>|null $options
      */
-    public function __construct(string $algo = null, array $options = null)
+    public function __construct(array $options = null)
     {
-        $this->algo = $algo ?? $this->algo;
-        $this->options = array_merge($this->options, $options ?? []);
-    }
+        $options['algo'] ??= PASSWORD_DEFAULT;
+        $options['cost'] ??= 10;
 
-    /**
-     * Get algo.
-     * @return string
-     */
-    public function getAlgo(): string
-    {
-        return $this->algo;
-    }
-
-    /**
-     * Get option.
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        return $this->options;
+        parent::__construct($options);
     }
 
     /**
@@ -83,7 +54,13 @@ final class Password extends Oneway
      */
     public function hash(string $input): string
     {
-        return (string) password_hash($input, $this->algo, $this->options);
+        $algo    = $this->options['algo'];
+        $options = $this->options;
+
+        // Not used in function options.
+        unset($options['algo']);
+
+        return (string) password_hash($input, $algo, $options);
     }
 
     /**

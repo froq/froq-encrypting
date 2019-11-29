@@ -36,6 +36,30 @@ namespace froq\encryption\oneway;
 abstract class Oneway
 {
     /**
+     * Options.
+     * @var array<string, any|null>
+     */
+    protected array $options = [];
+
+    /**
+     * Constructor.
+     * @param array<string, any|null>|null $options
+     */
+    public function __construct(array $options = null)
+    {
+        $this->options = array_merge($this->options, $options ?? []);
+    }
+
+    /**
+     * Get option.
+     * @return array<string, any|null>
+     */
+    public final function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
      * Hash.
      * @param  string $input
      * @return string
