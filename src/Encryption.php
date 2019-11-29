@@ -116,14 +116,13 @@ final class Encryption
 
     /**
      * Generate nonce.
-     * @param  int  $length
-     * @param  bool $randomBytes
+     * @param  int $length
      * @return string
      * @since  3.0
      */
-    public static function generateNonce(int $length = 40, bool $randomBytes = true): string
+    public static function generateNonce(int $length = 40): string
     {
-        return self::hash($length, ($randomBytes ? random_bytes($length / 2) : uniqid('', true)));
+        return self::hash($length, random_bytes($length));
     }
 
     /**
