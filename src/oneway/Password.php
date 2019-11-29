@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encryption\oneway;
 
-use froq\encryption\Encryption;
+use froq\encryption\oneway\Oneway;
 
 /**
  * Password.
@@ -39,9 +39,9 @@ final class Password extends Oneway
 {
     /**
      * Algo.
-     * @var int
+     * @var string
      */
-    private int $algo = PASSWORD_DEFAULT;
+    private string $algo = PASSWORD_BCRYPT;
 
     /**
      * Options.
@@ -51,10 +51,10 @@ final class Password extends Oneway
 
     /**
      * Constructor.
-     * @param int|null   $algo
-     * @param array|null $options
+     * @param string|null $algo
+     * @param array|null  $options
      */
-    public function __construct(int $algo = null, array $options = null)
+    public function __construct(string $algo = null, array $options = null)
     {
         $this->algo = $algo ?? $this->algo;
         $this->options = array_merge($this->options, $options ?? []);
@@ -62,9 +62,9 @@ final class Password extends Oneway
 
     /**
      * Get algo.
-     * @return int
+     * @return string
      */
-    public function getAlgo(): int
+    public function getAlgo(): string
     {
         return $this->algo;
     }
@@ -102,14 +102,14 @@ final class Password extends Oneway
      */
     public static function generate(int $length = 8, bool $lettersOnly = true): string
     {
-        static $anChars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        static $grChars = '!^+%&/(){}[]<>=*?-_|$#.,:;';
+        static $anChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        static $grChars = '!^+%&/\(){}[]<>=*?-_|$#.:,;';
 
         if ($lettersOnly) {
             return substr(str_shuffle($anChars), 0, $length);
         }
 
-        // 1 graph char for each 3 alphanumeric chars (approximately..).
+        // 1 graph char for each 3 alpha numeric chars (approximately..).
         $lengthSub = (int) floor($length / 3);
 
         return str_shuffle(
