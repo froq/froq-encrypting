@@ -62,9 +62,9 @@ abstract class Oneway
     /**
      * Hash.
      * @param  string $input
-     * @return string
+     * @return ?string
      */
-    public abstract function hash(string $input): string;
+    public abstract function hash(string $input): ?string;
 
     /**
      * Verify.
