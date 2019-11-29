@@ -46,26 +46,25 @@ final class Salt
      * Characters.
      * @const string
      */
-    public const CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/';
+    public const CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
      * Generate.
      * @param  int|null $length
      * @param  int|null $bitsPerChar
-     * @param  bool     $translate
      * @return string
      */
-    public static function generate(int $length = null, int $bitsPerChar = null,
-        bool $translate = false): string
+    public static function generate(int $length = null, int $bitsPerChar = null): string
     {
         $len = $length ?? self::LENGTH; // Output length.
-        $bpc = $bitsPerChar ?? 6;       // 4=hex chars, 5=base36 chars, 6=base64 chars.
+        $bpc = $bitsPerChar ?? 6;       // 4=base16 (hex), 5=base36, 6=base62.
 
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
         // Original source https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326.
         $p = 0; $q = strlen($bytes);
         $w = 0; $have = 0; $mask = (1 << $bpc) - 1;
+
         $out = '';
 
         while ($len--) {
@@ -78,13 +77,17 @@ final class Salt
                     break;
                 }
             }
-            $out .= self::CHARACTERS[$w & $mask];
+
+            $i = $w & $mask;
+            // Fix up index picking a random index.
+            if ($i > 61) {
+                $i = rand(0, 61);
+            }
+
+            $out .= self::CHARACTERS[$i];
+
             $w >>= $bpc;
             $have -= $bpc;
-        }
-
-        if ($translate) {
-            $out = strtr($out, '+/', '-_');
         }
 
         return $out;
