@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace froq\encryption\twoway;
 
 use froq\encryption\EncryptionException;
+use froq\encryption\twoway\Twoway;
 
 /**
  * Open Ssl.
@@ -75,7 +76,8 @@ final class OpenSsl extends Twoway
             throw new EncryptionException("Invalid method '{$method}' given");
         }
 
-        $this->key = $key;
+        parent::__construct($key);
+
         $this->method = $method ?? self::METHOD;
     }
 
@@ -132,7 +134,8 @@ final class OpenSsl extends Twoway
 
     /**
      * Keys.
-     * @return array
+     * @return array<binary>
+     * @internal
      */
     private function keys(): array
     {

@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace froq\encryption\twoway;
 
 use froq\encryption\EncryptionException;
+use froq\encryption\twoway\Twoway;
 use SodiumException;
 
 /**
@@ -67,8 +68,9 @@ final class Sodium extends Twoway
             throw new EncryptionException('Invalid nonce given, nonce length should be 24');
         }
 
-        // Key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES.
-        $this->key = md5($key);
+        // Key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES (32-length).
+        parent::__construct(md5($key));
+
         $this->nonce = $nonce ?? random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
     }
 
