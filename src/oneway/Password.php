@@ -39,7 +39,7 @@ final class Password extends Oneway
 {
     /**
      * Constructor.
-     * @param array<string, int>|null $options
+     * @param array<string, any|null>|null $options
      */
     public function __construct(array $options = null)
     {
