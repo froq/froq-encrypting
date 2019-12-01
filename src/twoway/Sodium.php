@@ -89,11 +89,13 @@ final class Sodium extends Twoway
     public function encode(string $data): ?string
     {
         try {
-            $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
-            return ($out !== false) ? base64_encode($out) : null;
-        } catch (SodiumException $e) {
-            return null;
-        }
+            $out =@ sodium_crypto_secretbox($data, $this->nonce, $this->key);
+            if ($out !== false) {
+                return base64_encode($out);
+            }
+        } catch (SodiumException $e) {}
+
+        return null;
     }
 
     /**
@@ -101,11 +103,15 @@ final class Sodium extends Twoway
      */
     public function decode(string $data): ?string
     {
+        $data = base64_decode($data);
+
         try {
-            $out = sodium_crypto_secretbox_open(base64_decode($data), $this->nonce, $this->key);
-            return ($out !== false) ? $out : null;
-        } catch (SodiumException $e) {
-            return null;
-        }
+            $out =@ sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
+            if ($out !== false) {
+                return $out;
+            }
+        } catch (SodiumException $e) {}
+
+        return null;
     }
 }
