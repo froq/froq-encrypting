@@ -74,11 +74,11 @@ final class Cryptee extends Twoway
     }
 
     /**
-     * Ccrypt.
+     * Crypt.
      * @param  string $data
      * @return string
      */
-    public function crypt(string $data): string
+    private function crypt(string $data): string
     {
         $key = [];
         $cnt = [];
