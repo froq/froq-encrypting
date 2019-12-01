@@ -72,7 +72,7 @@ final class OpenSsl extends Twoway
         }
 
         // Check method validity.
-        if (!in_array($method, openssl_get_cipher_methods())) {
+        if ($method != null && !in_array($method, openssl_get_cipher_methods())) {
             throw new EncryptionException("Invalid method '{$method}' given");
         }
 
@@ -95,16 +95,20 @@ final class OpenSsl extends Twoway
      */
     public function encode(string $data): ?string
     {
-        [$eKey, $aKey] = $this->keys();
+        [$encKey, $authKey] = $this->keys();
 
-        $out = openssl_encrypt($data, $this->method, $eKey, OPENSSL_RAW_DATA,
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method)));
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
+
+        $out =@ openssl_encrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        if ($out === false) {
+            return null;
+        }
+
         $out = $iv . $out;
-
-        $mac = hash_hmac('sha256', $out, $aKey, true);
+        $mac = hash_hmac('sha256', $out, $authKey, true);
         $out = $mac . $out;
 
-        return (string) base64_encode($out);
+        return base64_encode($out);
     }
 
     /**
@@ -112,7 +116,7 @@ final class OpenSsl extends Twoway
      */
     public function decode(string $data): ?string
     {
-        [$eKey, $aKey] = $this->keys();
+        [$encKey, $authKey] = $this->keys();
 
         $data = base64_decode($data, true);
 
@@ -121,7 +125,7 @@ final class OpenSsl extends Twoway
         $data = mb_substr($data, $macLen, null, '8bit');
 
         // Validate hashes.
-        if (!hash_equals($mac, hash_hmac('sha256', $data, $aKey, true))) {
+        if (!hash_equals($mac, hash_hmac('sha256', $data, $authKey, true))) {
             return null;
         }
 
@@ -129,7 +133,12 @@ final class OpenSsl extends Twoway
         $iv = mb_substr($data, 0, $ivLen, '8bit');
         $data = mb_substr($data, $ivLen, null, '8bit');
 
-        return (string) openssl_decrypt($data, $this->method, $eKey, OPENSSL_RAW_DATA, $iv);
+        $out =@ openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        if ($out === false) {
+            return null;
+        }
+
+        return $out;
     }
 
     /**
