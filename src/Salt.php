@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace froq\encryption;
 
+use froq\encryption\Base;
+
 /**
  * Salt.
  * @package froq\encryption
@@ -46,18 +48,18 @@ final class Salt
      * Characters.
      * @const string
      */
-    public const CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    public const CHARACTERS = Base::C62;
 
     /**
      * Generate.
-     * @param  int|null $length
-     * @param  int|null $bitsPerChar
+     * @param  int|null $length      Output length.
+     * @param  int|null $bitsPerChar 4=base16 (hex), 5=base36, 6=base62.
      * @return string
      */
     public static function generate(int $length = null, int $bitsPerChar = null): string
     {
-        $len = $length ?? self::LENGTH; // Output length.
-        $bpc = $bitsPerChar ?? 6;       // 4=base16 (hex), 5=base36, 6=base62.
+        $len = $length ?? self::LENGTH;
+        $bpc = $bitsPerChar ?? 6;
 
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
