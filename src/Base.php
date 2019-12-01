@@ -58,6 +58,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
+     * @throws froq\encryption\EncryptionException
      */
     public static function encode(string $input, string $characters = null): string
     {
@@ -85,6 +86,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
+     * @throws froq\encryption\EncryptionException
      */
     public static function decode(string $input, string $characters = null): string
     {
