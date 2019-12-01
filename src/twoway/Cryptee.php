@@ -80,7 +80,6 @@ final class Cryptee extends Twoway
      */
     public function crypt(string $data): string
     {
-        $out = b'';
         $key = [];
         $cnt = [];
 
@@ -89,21 +88,25 @@ final class Cryptee extends Twoway
             $cnt[$i] = $i;
         }
 
-        for ($i = 0, $x = 0; $i < 255; $i++) {
-            $x = ($x + $cnt[$i] + $key[$i]) % 256;
-            $s = $cnt[$i];
-            $cnt[$i] = $cnt[$x] ?? 0;
-            $cnt[$x] = $s;
+        for ($i = 0, $a = 0; $i < 255; $i++) {
+            $a = ($a + $cnt[$i] + $key[$i]) % 256;
+            $t = $cnt[$i];
+
+            $cnt[$i] = $cnt[$a] ?? 0;
+            $cnt[$a] = $t;
         }
 
-        for ($i = 0, $x = -1, $y = -1, $dlen = strlen($data); $i < $dlen; $i++) {
-            $x = ($x + 1) % 256;
-            $y = ($y + $cnt[$x]) % 256;
-            $z = $cnt[$x];
-            $cnt[$x] = $cnt[$y] ?? 0;
-            $cnt[$y] = $z;
-            $ord  = ord(substr($data, $i, 1)) ^ $cnt[($cnt[$x] + $cnt[$y]) % 256];
-            $out .= chr($ord);
+        $out = b'';
+
+        for ($i = 0, $a = -1, $b = -1, $dlen = strlen($data); $i < $dlen; $i++) {
+            $a = ($a + 1) % 256;
+            $b = ($b + $cnt[$a]) % 256;
+            $t = $cnt[$a];
+
+            $cnt[$a] = $cnt[$b] ?? 0;
+            $cnt[$b] = $t;
+
+            $out .= chr(ord(substr($data, $i, 1)) ^ $cnt[($cnt[$a] + $cnt[$b]) % 256]);
         }
 
         return $out;
