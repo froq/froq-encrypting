@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace froq\encryption;
 
+use froq\encryption\{EncryptionException, Base};
+
 /**
  * Uuid.
  * @package froq\encryption
@@ -92,7 +94,8 @@ final class Uuid
     {
         [$time, $mtime] = self::time();
 
-        if ($base == null) {
+        $base = $base ?? 10;
+        if ($base == 10) {
             $out = ''. $time . $mtime;
             $out = self::pad(1, 12, $out);
         } elseif ($base == 16) {
@@ -102,7 +105,7 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 12, $out);
         } else {
-            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' ".
+            throw new EncryptionException("Given base '{$base}' not implemented, only '10,16,36' ".
                 "are accepted");
         }
 
@@ -120,7 +123,8 @@ final class Uuid
     {
         [$time, $mtime] = self::time();
 
-        if ($base == null) {
+        $base = $base ?? 10;
+        if ($base == 10) {
             $out = ''. $time . $mtime;
             $out = self::pad(1, 22, $out);
         } elseif ($base == 16) {
@@ -130,7 +134,7 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 22, $out);
         } else {
-            throw new EncryptionException("Given base '{$base}' not implemented, only '16,36' ".
+            throw new EncryptionException("Given base '{$base}' not implemented, only '10,16,36' ".
                 "are accepted");
         }
 
@@ -162,12 +166,12 @@ final class Uuid
         $chars = '';
 
         if (strlen($input) < $length) {
-            if ($type == 1) { // Numeric.
-                $chars = str_shuffle('0123456789');
-            } elseif ($type == 2) { // Base 16.
-                $chars = str_shuffle('0123456789abcdef');
-            } elseif ($type == 3) { // Base 36.
-                $chars = str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz');
+            if ($type == 1) {
+                $chars = str_shuffle(Base::C10); // Numeric.
+            } elseif ($type == 2) {
+                $chars = str_shuffle(Base::C16); // Base 16.
+            } elseif ($type == 3) {
+                $chars = str_shuffle(Base::C36); // Base 36.
             }
         }
 
