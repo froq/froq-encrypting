@@ -117,7 +117,18 @@ final class Encryption
      */
     public static function generateNonce(int $length = 40): string
     {
-        return Hash::make(random_bytes($length), $length);
+        return bin2hex(random_bytes($length / 2));
+    }
+
+    /**
+     * Generate nonce hash.
+     * @param  int $length
+     * @return string
+     * @since  4.0
+     */
+    public static function generateNonceHash(int $length = 40): string
+    {
+        return Hash::make(random_bytes($length / 2), $length);
     }
 
     /**
