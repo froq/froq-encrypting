@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encryption;
 
+use froq\encryption\{EncryptionException, Hash};
 use froq\encryption\oneway\Password;
 
 /**
@@ -34,16 +35,10 @@ use froq\encryption\oneway\Password;
  * @object  froq\encryption\Encryption
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
+ * @static
  */
 final class Encryption
 {
-    /**
-     * Hash algos.
-     * @var array
-     */
-    private static $hashAlgos = [8 => 'fnv1a32', 16 => 'fnv1a64', 32 => 'md5', 40 => 'sha1',
-        64 => 'sha256', 128 => 'sha512'];
-
     /**
      * Generate salt.
      * @param  int|null $length
@@ -122,7 +117,7 @@ final class Encryption
      */
     public static function generateNonce(int $length = 40): string
     {
-        return self::hash($length, random_bytes($length));
+        return Hash::make(random_bytes($length), $length);
     }
 
     /**
@@ -145,7 +140,7 @@ final class Encryption
      */
     public static function generateSerialHash(int $length = 32): string
     {
-        return self::hash($length, self::generateSerial());
+        return Hash::make(self::generateSerial(), $length);
     }
 
     /**
@@ -196,23 +191,5 @@ final class Encryption
         }
 
         return $ret;
-    }
-
-    /**
-     * Hash.
-     * @param  int    $length
-     * @param  string $input
-     * @return string
-     * @since  3.7
-     * @throws froq\encryption\EncryptionException If invalid length given.
-     */
-    public static function hash(int $length, string $input): string
-    {
-        if (isset(self::$hashAlgos[$length])) {
-            return hash(self::$hashAlgos[$length], $input);
-        }
-
-        throw new EncryptionException(sprintf("Given hash length '%s' not implemented, only '%s' ".
-            "are accepted", $length, join(',', array_keys(self::$hashAlgos))));
     }
 }
