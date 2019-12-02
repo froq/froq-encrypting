@@ -62,7 +62,7 @@ final class Cryptee extends Twoway
      */
     public function encode(string $data): ?string
     {
-        return (string) base64_encode($this->crypt($data));
+        return base64_encode($this->crypt($data));
     }
 
     /**
@@ -70,7 +70,7 @@ final class Cryptee extends Twoway
      */
     public function decode(string $data): ?string
     {
-        return $this->crypt((string) base64_decode($data));
+        return $this->crypt(base64_decode($data));
     }
 
     /**
@@ -80,16 +80,16 @@ final class Cryptee extends Twoway
      */
     private function crypt(string $data): string
     {
-        $key = [];
-        $cnt = [];
+        $top = 256;
+        $key = $cnt = [];
 
-        for ($i = 0, $klen = strlen($this->key); $i < 255; $i++) {
-            $key[$i] = ord(substr($this->key, ($i % $klen) + 1, 1));
+        for ($i = 0, $len = strlen($this->key); $i < $top; $i++) {
+            $key[$i] = ord(substr($this->key, ($i % $len) + 1, 1));
             $cnt[$i] = $i;
         }
 
-        for ($i = 0, $a = 0; $i < 255; $i++) {
-            $a = ($a + $cnt[$i] + $key[$i]) % 256;
+        for ($i = 0, $a = 0; $i < $top; $i++) {
+            $a = ($a + $cnt[$i] + $key[$i]) % $top;
             $t = $cnt[$i];
 
             $cnt[$i] = $cnt[$a] ?? 0;
@@ -98,15 +98,15 @@ final class Cryptee extends Twoway
 
         $out = b'';
 
-        for ($i = 0, $a = -1, $b = -1, $dlen = strlen($data); $i < $dlen; $i++) {
-            $a = ($a + 1) % 256;
-            $b = ($b + $cnt[$a]) % 256;
+        for ($i = 0, $a = -1, $b = -1, $len = strlen($data); $i < $len; $i++) {
+            $a = ($a + 1) % $top;
+            $b = ($b + $cnt[$a]) % $top;
             $t = $cnt[$a];
 
             $cnt[$a] = $cnt[$b] ?? 0;
             $cnt[$b] = $t;
 
-            $out .= chr(ord(substr($data, $i, 1)) ^ $cnt[($cnt[$a] + $cnt[$b]) % 256]);
+            $out .= chr(ord(substr($data, $i, 1)) ^ $cnt[($cnt[$a] + $cnt[$b]) % $top]);
         }
 
         return $out;
