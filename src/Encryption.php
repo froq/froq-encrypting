@@ -24,15 +24,15 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption;
+namespace froq\encrypting;
 
-use froq\encryption\{EncryptionException, Hash};
-use froq\encryption\oneway\Password;
+use froq\encrypting\{Hash, Salt, Uuid};
+use froq\encrypting\oneway\Password;
 
 /**
  * Encryption.
- * @package froq\encryption
- * @object  froq\encryption\Encryption
+ * @package froq\encrypting
+ * @object  froq\encrypting\Encryption
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  * @static
@@ -169,8 +169,7 @@ final class Encryption
             $data = str_pad($data, 8, chr(0), STR_PAD_LEFT);
         }
 
-        $hash = hash_hmac('sha256', $data, $key);
-
+        $hash   = hash_hmac('sha256', $data, $key);
         $offset = hexdec(substr($hash, -1)) * 2;
         $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
 

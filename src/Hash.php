@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption;
+namespace froq\encrypting;
 
-use froq\encryption\EncryptionException;
+use froq\common\exceptions\InvalidArgumentException;
 
 /**
  * Hash.
- * @package froq\encryption
- * @object  froq\encryption\Hash
+ * @package froq\encrypting
+ * @object  froq\encrypting\Hash
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  * @static
@@ -50,7 +50,7 @@ final class Hash
      * @param  string $input
      * @param  int    $length
      * @return string
-     * @throws froq\encryption\EncryptionException If invalid length given.
+     * @throws froq\common\exceptions\InvalidArgumentException If invalid length given.
      */
     public static function make(string $input, int $length): string
     {
@@ -58,7 +58,7 @@ final class Hash
             return hash(self::$algos[$length], $input);
         }
 
-        throw new EncryptionException(sprintf("Given hash length '%s' not implemented, only '%s' ".
-            "are accepted", $length, join(',', array_keys(self::$algos))));
+        throw new InvalidArgumentException('Given hash length "%s" not implemented, only "%s" '.
+            'are accepted', [$length, join(',', array_keys(self::$algos)))]);
     }
 }

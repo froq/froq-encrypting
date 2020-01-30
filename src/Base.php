@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption;
+namespace froq\encrypting;
 
-use froq\encryption\EncryptionException;
+use froq\common\exceptions\InvalidArgumentException;
 
 /**
  * Base.
- * @package froq\encryption
- * @object  froq\encryption\Base
+ * @package froq\encrypting
+ * @object  froq\encrypting\Base
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  * @static
@@ -58,7 +58,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
-     * @throws froq\encryption\EncryptionException
+     * @throws froq\common\exceptions\InvalidArgumentException
      */
     public static function encode(string $input, string $characters = null): string
     {
@@ -66,12 +66,12 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncryptionException('Characters can not be empty');
+            throw new InvalidArgumentException('Characters can not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncryptionException('Characters base (length) can be min 2 and max 255');
+            throw new InvalidArgumentException('Characters base (length) can be min 2 and max 255');
         }
 
         // Original source https://github.com/tuupola/base62.
@@ -86,7 +86,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
-     * @throws froq\encryption\EncryptionException
+     * @throws froq\encrypting\InvalidArgumentException
      */
     public static function decode(string $input, string $characters = null): string
     {
@@ -94,18 +94,18 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncryptionException('Characters can not be empty');
+            throw new InvalidArgumentException('Characters can not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncryptionException('Characters base (length) can be min 2 and max 255');
+            throw new InvalidArgumentException('Characters base (length) can be min 2 and max 255');
         }
 
         if (strlen($input) != strspn($input, $characters)) {
             preg_match('~[^'. preg_quote($characters) .']+~', $input, $match);
-            throw new EncryptionException(sprintf('Invalid characters (%s) found in given input',
-                $match[0]));
+            throw new InvalidArgumentException('Invalid characters (%s) found in given input',
+                [$match[0]]);
         }
 
         // Original source https://github.com/tuupola/base62.

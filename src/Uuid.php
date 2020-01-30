@@ -24,14 +24,15 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption;
+namespace froq\encrypting;
 
-use froq\encryption\{EncryptionException, Base};
+use froq\common\exceptions\InvalidArgumentException;
+use froq\encrypting\Base;
 
 /**
  * Uuid.
- * @package froq\encryption
- * @object  froq\encryption\Uuid
+ * @package froq\encrypting
+ * @object  froq\encrypting\Uuid
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  * @static
@@ -88,11 +89,11 @@ final class Uuid
      * Generate short.
      * @param  int|null $base
      * @return string   A 12-length id.
-     * @throws froq\encryption\EncryptionException If invalid base given.
+     * @throws froq\common\exceptions\InvalidArgumentException If invalid base given.
      */
     public static function generateShort(int $base = null): string
     {
-        [$time, $mtime] = self::time();
+        [$time, $mtime] = self::times();
 
         $base = $base ?? 10;
         if ($base == 10) {
@@ -105,7 +106,7 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 12, $out);
         } else {
-            throw new EncryptionException("Given base '{$base}' not implemented, only '10,16,36' ".
+            throw new InvalidArgumentException("Given base '{$base}' not implemented, only '10,16,36' ".
                 "are accepted");
         }
 
@@ -117,11 +118,11 @@ final class Uuid
      * @param  int|null $base
      * @return string   A 22-length id.
      * @since  3.6
-     * @throws froq\encryption\EncryptionException If invalid base given.
+     * @throws froq\common\exceptions\InvalidArgumentException If invalid base given.
      */
     public static function generateLong(int $base = null): string
     {
-        [$time, $mtime] = self::time();
+        [$time, $mtime] = self::times();
 
         $base = $base ?? 10;
         if ($base == 10) {
@@ -134,19 +135,18 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 22, $out);
         } else {
-            throw new EncryptionException("Given base '{$base}' not implemented, only '10,16,36' ".
-                "are accepted");
+            throw new InvalidArgumentException('Given base "%s" not implemented, only "10,16,36" '.
+                'are accepted', [$base]);
         }
 
         return $out;
     }
 
     /**
-     * Time.
+     * Times.
      * @return array<int, int>
-     * @internal
      */
-    private static function time(): array
+    private static function times(): array
     {
         $tmp = explode(' ', microtime());
 
@@ -159,7 +159,6 @@ final class Uuid
      * @param  int    $length
      * @param  string $input
      * @return string
-     * @internal
      */
     private static function pad(int $type, int $length, string $input): string
     {

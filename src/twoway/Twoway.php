@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption\twoway;
+namespace froq\encrypting\twoway;
 
-use froq\encryption\Encryption;
+use froq\encrypting\Encryption;
 
 /**
  * Twoway.
- * @package froq\encryption\twoway
- * @object  froq\encryption\twoway\Twoway
+ * @package froq\encrypting\twoway
+ * @object  froq\encrypting\twoway\Twoway
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  */

@@ -24,18 +24,17 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption\twoway;
+namespace froq\encrypting\twoway;
 
-use froq\encryption\EncryptionException;
-use froq\encryption\twoway\Twoway;
+use froq\encrypting\twoway\{Twoway, TwowayException};
 
 /**
  * Open Ssl.
  *
  * Original source https://stackoverflow.com/a/30189841/362780.
  *
- * @package froq\encryption\twoway
- * @object  froq\encryption\twoway\OpenSsl
+ * @package froq\encrypting\twoway
+ * @object  froq\encrypting\twoway\OpenSsl
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  */
@@ -57,23 +56,23 @@ final class OpenSsl extends Twoway
      * Constructor.
      * @param  string      $key
      * @param  string|null $method
-     * @throws froq\encryption\EncryptionException
+     * @throws froq\encrypting\twoway\TwowayException
      */
     public function __construct(string $key, string $method = null)
     {
         if (!extension_loaded('openssl')) {
-            throw new EncryptionException('OpenSSL extension not found');
+            throw new TwowayException('openssl extension not found');
         }
 
         // Check key length.
         if (strlen($key) < 16) {
-            throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
+            throw new TwowayException('Invalid key given, minimum key length is 16 (tip: use '.
                 'OpenSSL::generateKey() method to get a strong key)');
         }
 
         // Check method validity.
-        if ($method != null && !in_array($method, openssl_get_cipher_methods())) {
-            throw new EncryptionException("Invalid method '{$method}' given");
+        if ($method && !in_array($method, openssl_get_cipher_methods())) {
+            throw new TwowayException("Invalid method '{$method}' given");
         }
 
         parent::__construct($key);
@@ -91,11 +90,11 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encryption\twoway\Twoway
+     * @inheritDoc froq\encrypting\twoway\Twoway
      */
     public function encode(string $data): ?string
     {
-        [$encKey, $authKey] = $this->keys();
+        [$encKey, $autKey] = $this->keys();
 
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
 
@@ -105,33 +104,32 @@ final class OpenSsl extends Twoway
         }
 
         $out = $iv . $out;
-        $mac = hash_hmac('sha256', $out, $authKey, true);
+        $mac = hash_hmac('sha256', $out, $autKey, true);
         $out = $mac . $out;
 
         return base64_encode($out);
     }
 
     /**
-     * @inheritDoc froq\encryption\twoway\Twoway
+     * @inheritDoc froq\encrypting\twoway\Twoway
      */
     public function decode(string $data): ?string
     {
-        [$encKey, $authKey] = $this->keys();
+        [$encKey, $autKey] = $this->keys();
 
-        $data = base64_decode($data, true);
-
+        $data   = base64_decode($data, true);
         $macLen = mb_strlen(hash('sha256', '', true), '8bit');
-        $mac = mb_substr($data, 0, $macLen, '8bit');
-        $data = mb_substr($data, $macLen, null, '8bit');
+        $mac    = mb_substr($data, 0, $macLen, '8bit');
+        $data   = mb_substr($data, $macLen, null, '8bit');
 
         // Validate hashes.
-        if (!hash_equals($mac, hash_hmac('sha256', $data, $authKey, true))) {
+        if (!hash_equals($mac, hash_hmac('sha256', $data, $autKey, true))) {
             return null;
         }
 
         $ivLen = openssl_cipher_iv_length($this->method);
-        $iv = mb_substr($data, 0, $ivLen, '8bit');
-        $data = mb_substr($data, $ivLen, null, '8bit');
+        $iv    = mb_substr($data, 0, $ivLen, '8bit');
+        $data  = mb_substr($data, $ivLen, null, '8bit');
 
         $out =@ openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
         if ($out === false) {
@@ -149,8 +147,8 @@ final class OpenSsl extends Twoway
     private function keys(): array
     {
         return [
-            hash_hmac('sha256', 'ENCRYPTION', $this->key, true),
-            hash_hmac('sha256', 'AUTHENTICATION', $this->key, true)
+            hash_hmac('sha256', '_ENC_', $this->key, true),
+            hash_hmac('sha256', '_AUT_', $this->key, true)
         ];
     }
 }

@@ -24,16 +24,16 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting;
+namespace froq\encrypting\oneway;
 
-use froq\common\Exception;
+use froq\encrypting\EncryptionException;
 
 /**
- * Encryption Exception.
- * @package froq\encrypting
- * @object  froq\encrypting\EncryptionException
+ * Oneway Exception.
+ * @package froq\encrypting\oneway
+ * @object  froq\encrypting\oneway\OnewayException
  * @author  Kerem Güneş <k-gun@mail.com>
- * @since   1.0
+ * @since   4.0
  */
-final class EncryptionException extends Exception
+final class OnewayException extends EncryptionException
 {}

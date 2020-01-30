@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption\oneway;
+namespace froq\encrypting\oneway;
 
-use froq\encryption\oneway\Oneway;
+use froq\encrypting\oneway\Oneway;
 
 /**
  * Password.
- * @package froq\encryption\oneway
- * @object  froq\encryption\oneway\Password
+ * @package froq\encrypting\oneway
+ * @object  froq\encrypting\oneway\Password
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  */
@@ -62,7 +62,7 @@ final class Password extends Oneway
     }
 
     /**
-     * @inheritDoc froq\encryption\oneway\Oneway
+     * @inheritDoc froq\encrypting\oneway\Oneway
      */
     public function hash(string $input): ?string
     {
@@ -73,10 +73,8 @@ final class Password extends Oneway
         unset($options['algo']);
 
         $inputHash =@ password_hash($input, $algo, $options);
-        if ($inputHash !== false) {
-            return $inputHash;
-        }
-        return null; // Error.
+
+        return ($inputHash !== false) ? $inputHash : null; // Null=Error.
     }
 
     /**
@@ -106,8 +104,8 @@ final class Password extends Oneway
         $lengthSub = (int) floor($length / 3);
 
         return str_shuffle(
-              substr(str_shuffle($anChars), 0, $length - $lengthSub)
-            . substr(str_shuffle($grChars), 0, $lengthSub)
+            substr(str_shuffle($anChars), 0, $length - $lengthSub) .
+            substr(str_shuffle($grChars), 0, $lengthSub)
         );
     }
 }

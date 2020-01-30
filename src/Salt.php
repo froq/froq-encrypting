@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption;
+namespace froq\encrypting;
 
-use froq\encryption\Base;
+use froq\encrypting\Base;
 
 /**
  * Salt.
- * @package froq\encryption
- * @object  froq\encryption\Salt
+ * @package froq\encrypting
+ * @object  froq\encrypting\Salt
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  * @static
@@ -58,9 +58,8 @@ final class Salt
      */
     public static function generate(int $length = null, int $bitsPerChar = null): string
     {
-        $len = $length ?? self::LENGTH;
-        $bpc = $bitsPerChar ?? 6;
-
+        $len   = $length ?? self::LENGTH;
+        $bpc   = $bitsPerChar ?? 6;
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
         // Original source https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326.

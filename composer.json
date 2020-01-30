@@ -1,15 +1,15 @@
 {
-    "name": "froq/froq-encryption",
-    "homepage": "https://github.com/froq/froq-encryption",
-    "description": "Froq! Encryption.",
-    "keywords": ["froq", "encryption"],
+    "name": "froq/froq-encrypting",
+    "homepage": "https://github.com/froq/froq-encrypting",
+    "description": "Froq! Encrypting.",
+    "keywords": ["froq", "encrypting"],
     "license": "MIT",
     "authors": [
         {"name": "Kerem Güneş", "email": "k-gun@mail.com"}
     ],
     "require": {
         "php": "^7.4",
-        "froq/froq": "^4.0"
+        "froq/froq-common": "^4.0"
     },
     "autoload": {
         "classmap": ["src/"]

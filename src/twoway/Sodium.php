@@ -24,16 +24,15 @@
  */
 declare(strict_types=1);
 
-namespace froq\encryption\twoway;
+namespace froq\encrypting\twoway;
 
-use froq\encryption\EncryptionException;
-use froq\encryption\twoway\Twoway;
+use froq\encrypting\twoway\{Twoway, TwowayException};
 use SodiumException;
 
 /**
  * Sodium.
- * @package froq\encryption\twoway
- * @object  froq\encryption\twoway\Sodium
+ * @package froq\encrypting\twoway
+ * @object  froq\encrypting\twoway\Sodium
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  */
@@ -49,23 +48,23 @@ final class Sodium extends Twoway
      * Constructor.
      * @param  string      $key
      * @param  string|null $nonce
-     * @throws froq\encryption\EncryptionException
+     * @throws froq\encrypting\twoway\TwowayException
      */
     public function __construct(string $key, string $nonce = null)
     {
         if (!extension_loaded('sodium')) {
-            throw new EncryptionException('Sodium extension not found');
+            throw new TwowayException('sodium extension not loaded');
         }
 
         // Check key length.
         if (strlen($key) < 16) {
-            throw new EncryptionException('Invalid key given, minimum key length is 16 (tip: use '.
+            throw new TwowayException('Invalid key given, minimum key length is 16 (tip: use '.
                 'Sodium::generateKey() method to get a strong key)');
         }
 
         // Check nonce length.
-        if ($nonce != null && strlen($nonce) != 24) {
-            throw new EncryptionException('Invalid nonce given, nonce length should be 24');
+        if ($nonce && strlen($nonce) != 24) {
+            throw new TwowayException('Invalid nonce given, nonce length should be 24');
         }
 
         // Key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES (32-length).
@@ -84,7 +83,7 @@ final class Sodium extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encryption\twoway\Twoway
+     * @inheritDoc froq\encrypting\twoway\Twoway
      */
     public function encode(string $data): ?string
     {
@@ -99,7 +98,7 @@ final class Sodium extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encryption\twoway\Twoway
+     * @inheritDoc froq\encrypting\twoway\Twoway
      */
     public function decode(string $data): ?string
     {
