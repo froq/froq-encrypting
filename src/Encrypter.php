@@ -113,7 +113,7 @@ final class Encrypter
      * @return string
      * @since  3.0
      */
-    public static function generateNonce(int $length = 40): string
+    public static function generateNonce(int $length = 20): string
     {
         return bin2hex(random_bytes($length / 2));
     }
