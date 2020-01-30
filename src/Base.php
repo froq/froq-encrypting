@@ -128,14 +128,14 @@ final class Base
         $result = [];
 
         while ($count = count($input)) {
-            $quotient = [];
+            $quotient  = [];
             $remainder = 0;
 
             $i = 0;
             while ($i < $count) {
                 $accumulator = $input[$i++] + ($remainder * $fromBase);
-                $digit = ($accumulator / $toBase) | 0;
-                $remainder = $accumulator % $toBase;
+                $digit       = ($accumulator / $toBase) | 0;
+                $remainder   = $accumulator % $toBase;
 
                 if (count($quotient) || $digit) {
                     $quotient[] = $digit;
