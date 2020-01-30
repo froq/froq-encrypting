@@ -33,7 +33,7 @@ use froq\encrypting\EncryptionException;
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\TwowayException
  * @author  Kerem Güneş <k-gun@mail.com>
- * @since   1.0
+ * @since   4.0
  */
 final class TwowayException extends EncryptionException
 {}
