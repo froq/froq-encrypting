@@ -30,14 +30,14 @@ use froq\encrypting\{Hash, Salt, Uuid};
 use froq\encrypting\oneway\Password;
 
 /**
- * Encrypter.
+ * Generator.
  * @package froq\encrypting
- * @object  froq\encrypting\Encrypter
+ * @object  froq\encrypting\Generator
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  * @static
  */
-final class Encrypter
+final class Generator
 {
     /**
      * Generate salt.
