@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\Base;
+use froq\encrypting\{Base, EncrypterException};
 
 /**
  * Salt.
@@ -45,6 +45,12 @@ final class Salt
     public const LENGTH = 128;
 
     /**
+     * Bits-per-char.
+     * @const int
+     */
+    public const BITS_PER_CHAR = 6;
+
+    /**
      * Characters.
      * @const string
      */
@@ -55,11 +61,24 @@ final class Salt
      * @param  int|null $length      Output length.
      * @param  int|null $bitsPerChar 4=base16 (hex), 5=base36, 6=base62.
      * @return string
+     * @throws froq\encrypting\EncrypterException.
      */
     public static function generate(int $length = null, int $bitsPerChar = null): string
     {
-        $len   = $length ?? self::LENGTH;
-        $bpc   = $bitsPerChar ?? 6;
+        $len = $length ?? self::LENGTH;
+        $bpc = $bitsPerChar ?? self::BITS_PER_CHAR;
+
+        if ($len < 2) {
+            throw new EncrypterException(
+                'Invalid length value "%s" given, length must be greater than "1"', [$len]
+            );
+        }
+        if ($bpc < 4 || $bpc > 6) {
+            throw new EncrypterException(
+                'Invalid bits-per-char value "%s" given, valids are "4, 5, 6"', [$bpc]
+            );
+        }
+
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
         // Original source https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326.

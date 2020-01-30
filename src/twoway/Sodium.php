@@ -70,7 +70,7 @@ final class Sodium extends Twoway
         // Key size should be SODIUM_CRYPTO_SECRETBOX_KEYBYTES (32-length).
         parent::__construct(md5($key));
 
-        $this->nonce = $nonce ?? random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+        $this->nonce = $nonce ?: random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
     }
 
     /**

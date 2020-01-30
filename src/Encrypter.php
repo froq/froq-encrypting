@@ -30,27 +30,25 @@ use froq\encrypting\{Hash, Salt, Uuid};
 use froq\encrypting\oneway\Password;
 
 /**
- * Encryption.
+ * Encrypter.
  * @package froq\encrypting
- * @object  froq\encrypting\Encryption
+ * @object  froq\encrypting\Encrypter
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  * @static
  */
-final class Encryption
+final class Encrypter
 {
     /**
      * Generate salt.
      * @param  int|null $length
      * @param  int|null $bitsPerChar
-     * @param  bool     $translate
      * @return string
      * @since  3.0
      */
-    public static function generateSalt(int $length = null, int $bitsPerChar = null,
-        bool $translate = false): string
+    public static function generateSalt(int $length = null, int $bitsPerChar = null): string
     {
-        return Salt::generate($length, $bitsPerChar, $translate);
+        return Salt::generate($length, $bitsPerChar);
     }
 
     /**

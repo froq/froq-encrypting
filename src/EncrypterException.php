@@ -29,11 +29,11 @@ namespace froq\encrypting;
 use froq\common\Exception;
 
 /**
- * Encryption Exception.
+ * Encrypter Exception.
  * @package froq\encrypting
- * @object  froq\encrypting\EncryptionException
+ * @object  froq\encrypting\EncrypterException
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  */
-final class EncryptionException extends Exception
+class EncrypterException extends Exception
 {}

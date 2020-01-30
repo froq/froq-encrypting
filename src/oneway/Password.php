@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting\oneway;
 
-use froq\encrypting\oneway\Oneway;
+use froq\encrypting\oneway\{Oneway, OnewayException};
 
 /**
  * Password.
@@ -78,7 +78,7 @@ final class Password extends Oneway
     }
 
     /**
-     * @inheritDoc froq\encryption\oneway\Oneway
+     * @inheritDoc froq\encrypting\oneway\Oneway
      */
     public function verify(string $input, string $inputHash): bool
     {
@@ -93,19 +93,30 @@ final class Password extends Oneway
      */
     public static function generate(int $length = 8, bool $lettersOnly = true): string
     {
+        // Alpha-numeric & graph characters.
         static $anChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         static $grChars = '!^+%&/\(){}[]<>=*?-_|$#.:,;';
 
-        if ($lettersOnly) {
-            return substr(str_shuffle($anChars), 0, $length);
+        if ($length < 2) {
+            throw new OnewayException(
+                'Invalid length value "%s" given, length must be greater than "1"', [$length]
+            );
         }
 
-        // 1 graph char for each 3 alpha numeric chars (approximately..).
-        $lengthSub = (int) floor($length / 3);
+        $out    = '';
+        $outLen = 0;
 
-        return str_shuffle(
-            substr(str_shuffle($anChars), 0, $length - $lengthSub) .
-            substr(str_shuffle($grChars), 0, $lengthSub)
-        );
+        while ($outLen < $length) {
+            $out .= $lettersOnly
+                ? str_shuffle($anChars)
+                : str_shuffle($anChars . $grChars);
+            $outLen = strlen($out);
+        }
+
+        if ($outLen > $length) {
+            $out = substr($out, 0, $length);
+        }
+
+        return $out;
     }
 }

@@ -50,7 +50,7 @@ final class Sodium extends Oneway
     public const OPERATION_LIMIT = 1;
 
     /**
-     * Operation limit.
+     * Memory limit.
      *
      * Minimum value of the existing constants (SODIUM_CRYPTO_PWHASH_MEMLIMIT_*) is 67108864
      * bytes (64MB) that I find it too excessive. So 1MB seems enough to create a good password.

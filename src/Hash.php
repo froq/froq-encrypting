@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\common\exceptions\InvalidArgumentException;
+use froq\encrypting\EncrypterException;
 
 /**
  * Hash.
@@ -40,9 +40,9 @@ final class Hash
 {
     /**
      * Algos.
-     * @var array<int, string>
+     * @const array<int, string>
      */
-    private static $algos = [8 => 'fnv1a32', 16 => 'fnv1a64', 32 => 'md5', 40 => 'sha1',
+    public const ALGOS = [8 => 'fnv1a32', 16 => 'fnv1a64', 32 => 'md5', 40 => 'sha1',
         64 => 'sha256', 128 => 'sha512'];
 
     /**
@@ -50,15 +50,18 @@ final class Hash
      * @param  string $input
      * @param  int    $length
      * @return string
-     * @throws froq\common\exceptions\InvalidArgumentException If invalid length given.
+     * @throws froq\encrypting\EncrypterException.
      */
     public static function make(string $input, int $length): string
     {
-        if (isset(self::$algos[$length])) {
-            return hash(self::$algos[$length], $input);
+        if (isset(self::ALGOS[$length])) {
+            return hash(self::ALGOS[$length], $input);
         }
 
-        throw new InvalidArgumentException('Given hash length "%s" not implemented, only "%s" '.
-            'are accepted', [$length, join(',', array_keys(self::$algos)))]);
+        throw new EncrypterException(
+            'Invalid length value "%s" given, valids are "%s"', [
+                $length, join(', ', array_keys(self::ALGOS))
+            ]
+        );
     }
 }

@@ -26,8 +26,6 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\Encryption;
-
 /**
  * Twoway.
  * @package froq\encrypting\twoway
@@ -68,7 +66,7 @@ abstract class Twoway
      */
     public static final function generateKey(int $length = 40): string
     {
-        return Encryption::generateNonce($length);
+        return bin2hex(random_bytes($length / 2));
     }
 
     /**

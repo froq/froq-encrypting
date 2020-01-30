@@ -26,8 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\common\exceptions\InvalidArgumentException;
-use froq\encrypting\Base;
+use froq\encrypting\{Base, EncrypterException};
 
 /**
  * Uuid.
@@ -80,7 +79,7 @@ final class Uuid
      * @return string
      * @since  4.0
      */
-    public static final function generateSimple(): string
+    public static function generateSimple(): string
     {
         return self::generate(true);
     }
@@ -89,7 +88,7 @@ final class Uuid
      * Generate short.
      * @param  int|null $base
      * @return string   A 12-length id.
-     * @throws froq\common\exceptions\InvalidArgumentException If invalid base given.
+     * @throws froq\encrypting\EncrypterException
      */
     public static function generateShort(int $base = null): string
     {
@@ -106,8 +105,9 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 12, $out);
         } else {
-            throw new InvalidArgumentException("Given base '{$base}' not implemented, only '10,16,36' ".
-                "are accepted");
+            throw new EncrypterException(
+                'Invalid base value "%s" given, valids are "10, 16, 36"', [$base]
+            );
         }
 
         return $out;
@@ -118,7 +118,7 @@ final class Uuid
      * @param  int|null $base
      * @return string   A 22-length id.
      * @since  3.6
-     * @throws froq\common\exceptions\InvalidArgumentException If invalid base given.
+     * @throws froq\encrypting\EncrypterException
      */
     public static function generateLong(int $base = null): string
     {
@@ -135,8 +135,9 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 22, $out);
         } else {
-            throw new InvalidArgumentException('Given base "%s" not implemented, only "10,16,36" '.
-                'are accepted', [$base]);
+            throw new EncrypterException(
+                'Invalid base value "%s" given, valids are "10, 16, 36"', [$base]
+            );
         }
 
         return $out;

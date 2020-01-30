@@ -72,12 +72,12 @@ final class OpenSsl extends Twoway
 
         // Check method validity.
         if ($method && !in_array($method, openssl_get_cipher_methods())) {
-            throw new TwowayException("Invalid method '{$method}' given");
+            throw new TwowayException('Invalid method "%s" given', [$method]);
         }
 
         parent::__construct($key);
 
-        $this->method = $method ?? self::METHOD;
+        $this->method = $method ?: self::METHOD;
     }
 
     /**
