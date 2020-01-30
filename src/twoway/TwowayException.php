@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\EncrypterException;
+use froq\encrypting\EncryptingException;
 
 /**
  * Twoway Exception.
@@ -35,5 +35,5 @@ use froq\encrypting\EncrypterException;
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  */
-final class TwowayException extends EncrypterException
+final class TwowayException extends EncryptingException
 {}

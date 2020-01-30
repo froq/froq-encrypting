@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{Base, EncrypterException};
+use froq\encrypting\{Base, EncryptingException};
 
 /**
  * Salt.
@@ -61,7 +61,7 @@ final class Salt
      * @param  int|null $length      Output length.
      * @param  int|null $bitsPerChar 4=base16 (hex), 5=base36, 6=base62.
      * @return string
-     * @throws froq\encrypting\EncrypterException.
+     * @throws froq\encrypting\EncryptingException.
      */
     public static function generate(int $length = null, int $bitsPerChar = null): string
     {
@@ -69,12 +69,12 @@ final class Salt
         $bpc = $bitsPerChar ?? self::BITS_PER_CHAR;
 
         if ($len < 2) {
-            throw new EncrypterException(
+            throw new EncryptingException(
                 'Invalid length value "%s" given, length must be greater than "1"', [$len]
             );
         }
         if ($bpc < 4 || $bpc > 6) {
-            throw new EncrypterException(
+            throw new EncryptingException(
                 'Invalid bits-per-char value "%s" given, valids are "4, 5, 6"', [$bpc]
             );
         }

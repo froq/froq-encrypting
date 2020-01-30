@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{Base, EncrypterException};
+use froq\encrypting\{Base, EncryptingException};
 
 /**
  * Uuid.
@@ -88,7 +88,7 @@ final class Uuid
      * Generate short.
      * @param  int|null $base
      * @return string   A 12-length id.
-     * @throws froq\encrypting\EncrypterException
+     * @throws froq\encrypting\EncryptingException
      */
     public static function generateShort(int $base = null): string
     {
@@ -105,7 +105,7 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 12, $out);
         } else {
-            throw new EncrypterException(
+            throw new EncryptingException(
                 'Invalid base value "%s" given, valids are "10, 16, 36"', [$base]
             );
         }
@@ -118,7 +118,7 @@ final class Uuid
      * @param  int|null $base
      * @return string   A 22-length id.
      * @since  3.6
-     * @throws froq\encrypting\EncrypterException
+     * @throws froq\encrypting\EncryptingException
      */
     public static function generateLong(int $base = null): string
     {
@@ -135,7 +135,7 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 22, $out);
         } else {
-            throw new EncrypterException(
+            throw new EncryptingException(
                 'Invalid base value "%s" given, valids are "10, 16, 36"', [$base]
             );
         }

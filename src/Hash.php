@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\EncrypterException;
+use froq\encrypting\EncryptingException;
 
 /**
  * Hash.
@@ -50,7 +50,7 @@ final class Hash
      * @param  string $input
      * @param  int    $length
      * @return string
-     * @throws froq\encrypting\EncrypterException.
+     * @throws froq\encrypting\EncryptingException.
      */
     public static function make(string $input, int $length): string
     {
@@ -58,7 +58,7 @@ final class Hash
             return hash(self::ALGOS[$length], $input);
         }
 
-        throw new EncrypterException(
+        throw new EncryptingException(
             'Invalid length value "%s" given, valids are "%s"', [
                 $length, join(', ', array_keys(self::ALGOS))
             ]

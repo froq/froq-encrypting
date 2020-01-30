@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\EncrypterException;
+use froq\encrypting\EncryptingException;
 
 /**
  * Base.
@@ -58,7 +58,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
-     * @throws froq\encrypting\EncrypterException
+     * @throws froq\encrypting\EncryptingException
      */
     public static function encode(string $input, string $characters = null): string
     {
@@ -66,12 +66,12 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncrypterException('Characters can not be empty');
+            throw new EncryptingException('Characters can not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncrypterException('Characters base (length) can be min 2 and max 255');
+            throw new EncryptingException('Characters base (length) can be min 2 and max 255');
         }
 
         // Original source https://github.com/tuupola/base62.
@@ -86,7 +86,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
-     * @throws froq\encrypting\EncrypterException
+     * @throws froq\encrypting\EncryptingException
      */
     public static function decode(string $input, string $characters = null): string
     {
@@ -94,17 +94,17 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncrypterException('Characters can not be empty');
+            throw new EncryptingException('Characters can not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncrypterException('Characters base (length) can be min 2 and max 255');
+            throw new EncryptingException('Characters base (length) can be min 2 and max 255');
         }
 
         if (strlen($input) !== strspn($input, $characters)) {
             preg_match('~[^'. preg_quote($characters) .']+~', $input, $match);
-            throw new EncrypterException(
+            throw new EncryptingException(
                 'Invalid characters "%s" found in given input', [$match[0]]
             );
         }
