@@ -98,7 +98,7 @@ final class OpenSsl extends Twoway
 
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
 
-        $out =@ openssl_encrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        @ $out = openssl_encrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
         if ($out === false) {
             return null;
         }
@@ -131,7 +131,7 @@ final class OpenSsl extends Twoway
         $iv    = mb_substr($data, 0, $ivLen, '8bit');
         $data  = mb_substr($data, $ivLen, null, '8bit');
 
-        $out =@ openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        @ $out = openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
         if ($out === false) {
             return null;
         }

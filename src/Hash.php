@@ -58,10 +58,7 @@ final class Hash
             return hash(self::ALGOS[$length], $input);
         }
 
-        throw new EncryptingException(
-            'Invalid length value "%s" given, valids are "%s"', [
-                $length, join(', ', array_keys(self::ALGOS))
-            ]
-        );
+        throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
+            [$length, join(', ', array_keys(self::ALGOS))]);
     }
 }

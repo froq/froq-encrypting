@@ -71,7 +71,8 @@ final class Base
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncryptingException('Characters base (length) can be min 2 and max 255');
+            throw new EncryptingException('Characters base (length) can be min 2 and max 255, '.
+                '%s given', [$base]);
         }
 
         // Original source https://github.com/tuupola/base62.
@@ -99,14 +100,14 @@ final class Base
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncryptingException('Characters base (length) can be min 2 and max 255');
+            throw new EncryptingException('Characters base (length) can be min 2 and max 255, '.
+                '%s given', [$base]);
         }
 
         if (strlen($input) !== strspn($input, $characters)) {
             preg_match('~[^'. preg_quote($characters) .']+~', $input, $match);
-            throw new EncryptingException(
-                'Invalid characters "%s" found in given input', [$match[0]]
-            );
+            throw new EncryptingException('Invalid characters "%s" found in given input',
+                [$match[0]]);
         }
 
         // Original source https://github.com/tuupola/base62.
@@ -138,7 +139,7 @@ final class Base
                 $digit       = ($accumulator / $toBase) | 0;
                 $remainder   = $accumulator % $toBase;
 
-                if (count($quotient) || $digit) {
+                if ($quotient || $digit) {
                     $quotient[] = $digit;
                 }
             }

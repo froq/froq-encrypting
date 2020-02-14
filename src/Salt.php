@@ -69,14 +69,12 @@ final class Salt
         $bpc = $bitsPerChar ?? self::BITS_PER_CHAR;
 
         if ($len < 2) {
-            throw new EncryptingException(
-                'Invalid length value "%s" given, length must be greater than "1"', [$len]
-            );
+            throw new EncryptingException('Invalid length value "%s" given, length must be '.
+                'greater than 1', [$len]);
         }
         if ($bpc < 4 || $bpc > 6) {
-            throw new EncryptingException(
-                'Invalid bits-per-char value "%s" given, valids are "4, 5, 6"', [$bpc]
-            );
+            throw new EncryptingException('Invalid bits-per-char value "%s" given, valids are: '.
+                '4, 5, 6', [$bpc]);
         }
 
         $bytes = random_bytes((int) ceil($len * $bpc / 8));

@@ -52,8 +52,8 @@ final class Uuid
         if (!$simple) {
             $rand = random_bytes(16);
 
+            // GUID doesn't use 4 (version) or 8, 9, A, or B.
             if (!$guid) {
-                // GUID doesn't use 4 (version) or 8, 9, A, or B.
                 $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
                 $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
             }
@@ -105,9 +105,8 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 12, $out);
         } else {
-            throw new EncryptingException(
-                'Invalid base value "%s" given, valids are "10, 16, 36"', [$base]
-            );
+            throw new EncryptingException('Invalid base value "%s" given, valids are: 10, 16, 36',
+                [$base]);
         }
 
         return $out;
@@ -135,9 +134,8 @@ final class Uuid
             $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
             $out = self::pad(3, 22, $out);
         } else {
-            throw new EncryptingException(
-                'Invalid base value "%s" given, valids are "10, 16, 36"', [$base]
-            );
+            throw new EncryptingException('Invalid base value "%s" given, valids are: 10, 16, 36',
+                [$base]);
         }
 
         return $out;

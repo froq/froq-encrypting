@@ -98,9 +98,8 @@ final class Password extends Oneway
         static $grChars = '!^+%&/\(){}[]<>=*?-_|$#.:,;';
 
         if ($length < 2) {
-            throw new OnewayException(
-                'Invalid length value "%s" given, length must be greater than "1"', [$length]
-            );
+            throw new OnewayException('Invalid length value "%s" given, length must be greater '.
+                'than 1', [$length]);
         }
 
         $out    = '';
