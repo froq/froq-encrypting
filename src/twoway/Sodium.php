@@ -64,15 +64,15 @@ final class Sodium extends Twoway
                 'Sodium::generateKey() method to get a strong key)');
         }
 
+        // Key size must be 32-length.
+        if ($keyLength != SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
+            $key = md5($key);
+        }
+
         // Check nonce length.
         if ($nonce && strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
             throw new TwowayException('Invalid nonce given, nonce length must be '.
                 SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-        }
-
-        // Key size must be 32-length.
-        if ($keyLength != SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
-            $key = md5($key);
         }
 
         parent::__construct($key);
