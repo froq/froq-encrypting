@@ -95,7 +95,7 @@ final class Sodium extends Twoway
     public function encode(string $data): ?string
     {
         try {
-            @ $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
+            $out =@ sodium_crypto_secretbox($data, $this->nonce, $this->key);
             if ($out !== false) {
                 return base64_encode($out);
             }
@@ -112,7 +112,7 @@ final class Sodium extends Twoway
         $data = base64_decode($data);
 
         try {
-            @ $out = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
+            $out =@ sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
             if ($out !== false) {
                 return $out;
             }
