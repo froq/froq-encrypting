@@ -113,7 +113,7 @@ final class Generator
      * @return string
      * @since  3.0
      */
-    public static function generateNonce(int $length = 20): string
+    public static function generateNonce(int $length = 32): string
     {
         return bin2hex(random_bytes($length / 2));
     }
@@ -124,7 +124,7 @@ final class Generator
      * @return string
      * @since  4.0
      */
-    public static function generateNonceHash(int $length = 40): string
+    public static function generateNonceHash(int $length = 32): string
     {
         return Hash::make(random_bytes($length / 2), $length);
     }
