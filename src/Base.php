@@ -105,7 +105,7 @@ final class Base
         }
 
         if (strlen($input) !== strspn($input, $characters)) {
-            preg_match('~[^'. preg_quote($characters) .']+~', $input, $match);
+            preg_match('~[^'. preg_quote($characters, '~') .']+~', $input, $match);
             throw new EncryptingException('Invalid characters "%s" found in given input',
                 [$match[0]]);
         }
