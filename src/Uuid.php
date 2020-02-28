@@ -66,12 +66,15 @@ final class Uuid
     {
         // Simple serial.
         $date = getdate();
-        $uniq = preg_split('~([a-f0-9]{8})([a-f0-9]{6})~', uniqid('', true), -1,
-            PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $rand = bin2hex(random_bytes(3));
+        $uniq = sscanf(uniqid('', true), '%8s%6s.%s');
 
-        return sprintf('%08s-%04x-%04x-%04x-%6s%6s', $uniq[0], $date['year'],
-            ($date['mon'] . $date['mday']), ($date['minutes'] . $date['seconds']), $uniq[1], $rand);
+        return sprintf(
+            '%.08s-%04x-%04x-%04x-%.6s%.6s',
+            $uniq[0], $date['year'],
+            ($date['mon'] . $date['mday']),
+            ($date['minutes'] . $date['seconds']),
+            $uniq[1], $uniq[2]
+        );
     }
 
     /**
