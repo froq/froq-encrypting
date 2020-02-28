@@ -63,6 +63,16 @@ final class Generator
     }
 
     /**
+     * Generate guid.
+     * @return string
+     * @since  4.0
+     */
+    public static function generateGuid(): string
+    {
+        return Uuid::generate(true);
+    }
+
+    /**
      * Generate simple uuid.
      * @return string
      * @since  4.0
