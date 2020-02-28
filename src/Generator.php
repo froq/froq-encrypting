@@ -53,14 +53,13 @@ final class Generator
 
     /**
      * Generate uuid.
-     * @param  bool $simple
      * @param  bool $guid
      * @return string
      * @since  3.0
      */
-    public static function generateUuid(bool $simple = false, bool $guid = false): string
+    public static function generateUuid(bool $guid = false): string
     {
-        return Uuid::generate($simple, $guid);
+        return Uuid::generate($guid);
     }
 
     /**

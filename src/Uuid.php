@@ -40,38 +40,21 @@ final class Uuid
 {
     /**
      * Generate.
-     * @param  bool $simple
      * @param  bool $guid
      * @return string
      */
-    public static function generate(bool $simple = false, bool $guid = false): string
+    public static function generate(bool $guid = false): string
     {
-        $out = '';
-
         // Random (UUID/v4 or GUID).
-        if (!$simple) {
-            $rand = random_bytes(16);
+        $rand = random_bytes(16);
 
-            // GUID doesn't use 4 (version) or 8, 9, A, or B.
-            if (!$guid) {
-                $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
-                $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
-            }
-
-            $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
-        }
-        // Simple serial.
-        else {
-            $date = getdate();
-            $uniq = preg_split('~([a-f0-9]{8})([a-f0-9]{6})~', uniqid('', true), -1,
-                PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-            $rand = bin2hex(random_bytes(3));
-
-            $out = sprintf('%08s-%04x-%04x-%04x-%6s%6s', $uniq[0], $date['year'],
-                ($date['mon'] . $date['mday']), ($date['minutes'] . $date['seconds']), $uniq[1], $rand);
+        // GUID doesn't use 4 (version) or 8, 9, A, or B.
+        if (!$guid) {
+            $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
+            $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
         }
 
-        return $out;
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
     }
 
     /**
@@ -81,7 +64,14 @@ final class Uuid
      */
     public static function generateSimple(): string
     {
-        return self::generate(true);
+        // Simple serial.
+        $date = getdate();
+        $uniq = preg_split('~([a-f0-9]{8})([a-f0-9]{6})~', uniqid('', true), -1,
+            PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $rand = bin2hex(random_bytes(3));
+
+        return sprintf('%08s-%04x-%04x-%04x-%6s%6s', $uniq[0], $date['year'],
+            ($date['mon'] . $date['mday']), ($date['minutes'] . $date['seconds']), $uniq[1], $rand);
     }
 
     /**
