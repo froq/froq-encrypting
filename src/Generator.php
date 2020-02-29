@@ -162,7 +162,7 @@ final class Generator
      */
     public static function generateNonceHash(int $length = 32): string
     {
-        return Hash::make(random_bytes($length / 2), $length);
+        return Hash::make(self::generateNonce($length), $length);
     }
 
     /**
