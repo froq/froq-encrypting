@@ -145,9 +145,7 @@ final class Generator
      */
     public static function generateSerial(): string
     {
-        $tmp = explode(' ', microtime());
-
-        return $tmp[1] . substr($tmp[0], 2, 6) . random_int(1000, 9999);
+        return self::generateId();
     }
 
     /**
@@ -158,7 +156,7 @@ final class Generator
      */
     public static function generateSerialHash(int $length = 32): string
     {
-        return Hash::make(self::generateSerial(), $length);
+        return Hash::make(self::generateId(), $length);
     }
 
     /**
@@ -186,6 +184,18 @@ final class Generator
         }
 
         return $ret;
+    }
+
+    /**
+     * Generate id.
+     * @since  4.0
+     * @return string
+     */
+    public static function generateId(): string
+    {
+        $tmp = explode(' ', microtime());
+
+        return $tmp[1] . substr($tmp[0], 2, 6) . random_int(1000, 9999);
     }
 
     /**
