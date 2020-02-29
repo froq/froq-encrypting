@@ -63,16 +63,6 @@ final class Generator
     }
 
     /**
-     * Generate guid.
-     * @return string
-     * @since  4.0
-     */
-    public static function generateGuid(): string
-    {
-        return Uuid::generate(true);
-    }
-
-    /**
      * Generate simple uuid.
      * @return string
      * @since  4.0
@@ -102,6 +92,16 @@ final class Generator
     public static function generateLongUuid(int $base = null): string
     {
         return Uuid::generateLong($base);
+    }
+
+    /**
+     * Generate guid.
+     * @return string
+     * @since  4.0
+     */
+    public static function generateGuid(): string
+    {
+        return Uuid::generate(true);
     }
 
     /**
