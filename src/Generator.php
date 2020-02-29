@@ -174,7 +174,7 @@ final class Generator
      * Generate uniq id.
      * @param  bool $simple
      * @since  4.0
-     * @return string
+     * @return string A 14|20-length hex.
      */
     public static function generateUniqId(bool $simple = true): string
     {
