@@ -189,6 +189,23 @@ final class Generator
     }
 
     /**
+     * Generate uniq id.
+     * @param  bool $simple
+     * @since  4.0
+     * @return string
+     */
+    public static function generateUniqId(bool $simple = true): string
+    {
+        $ret = uniqid('', true);
+
+        if ($simple) {
+            return strstr($ret, '.', true);
+        }
+
+        return substr(vsprintf('%14s%\'06x', explode('.', $ret)), 0, 20);
+    }
+
+    /**
      * Generate object id.
      * @param  bool   $count
      * @return string A 24-length hex like Mongo.ObjectId.
@@ -201,8 +218,9 @@ final class Generator
         $binary = pack('N', time()) . substr(md5(gethostname()), 0, 3)
                 . pack('n', getmypid()) . substr(pack('N', $count ? $counter++ : mt_rand()), 1, 3);
 
-        // Convert to hex.
         $ret = '';
+
+        // Convert to hex.
         for ($i = 0; $i < 12; $i++) {
             $ret .= sprintf('%02x', ord($binary[$i]));
         }
