@@ -85,6 +85,7 @@ final class Uuid
      */
     public static function generateDigit(bool $rand = false): string
     {
+        // All digit.
         if (!$rand) {
             $digits = self::generateLong();
         } else {

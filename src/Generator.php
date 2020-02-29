@@ -73,6 +73,17 @@ final class Generator
     }
 
     /**
+     * Generate digit uuid.
+     * @param  bool $rand
+     * @return string
+     * @since  4.0
+     */
+    public static function generateDigitUuid(bool $rand = false): string
+    {
+        return Uuid::generateDigit($rand);
+    }
+
+    /**
      * Generate short uuid.
      * @param  int $base
      * @return string
