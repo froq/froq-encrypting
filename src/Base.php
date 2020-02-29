@@ -51,7 +51,8 @@ final class Base
                  C58 = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
                  FUN = 'fFuUnN',
                  // Alias.
-                 HEX = self::C16;
+                 HEX = self::C16,
+                 ALL = self::C62;
 
     /**
      * Encode.
@@ -66,12 +67,12 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncryptingException('Characters can not be empty');
+            throw new EncryptingException('Characters must not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncryptingException('Characters base (length) can be min 2 and max 255, '.
+            throw new EncryptingException('Characters base (length) must be min 2 and max 255, '.
                 '%s given', [$base]);
         }
 
@@ -95,12 +96,12 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncryptingException('Characters can not be empty');
+            throw new EncryptingException('Characters must not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 255) {
-            throw new EncryptingException('Characters base (length) can be min 2 and max 255, '.
+            throw new EncryptingException('Characters base (length) must be min 2 and max 255, '.
                 '%s given', [$base]);
         }
 
@@ -127,7 +128,7 @@ final class Base
     public static function convert(array $input, int $fromBase, int $toBase): array
     {
         // Original source http://codegolf.stackexchange.com/a/21672.
-        $result = [];
+        $ret = [];
 
         while ($count = count($input)) {
             $quotient  = [];
@@ -136,7 +137,7 @@ final class Base
             $i = 0;
             while ($i < $count) {
                 $accumulator = $input[$i++] + ($remainder * $fromBase);
-                $digit       = ($accumulator / $toBase) | 0;
+                $digit       = ($accumulator / $toBase) | 0; // Int-div.
                 $remainder   = $accumulator % $toBase;
 
                 if ($quotient || $digit) {
@@ -144,11 +145,54 @@ final class Base
                 }
             }
 
-            array_unshift($result, $remainder);
+            array_unshift($ret, $remainder);
 
             $input = $quotient;
         }
 
-        return $result;
+        return $ret;
+    }
+
+    /**
+     * From base.
+     * @param  string $digits
+     * @param  int    $base
+     * @return int
+     */
+    public static function fromBase(string $digits, int $base = 62): int
+    {
+        if ($base < 2 || $base > 62) {
+            throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
+        }
+
+        $ret = strpos(self::ALL, $digits[0]) | 0;
+
+        for ($i = 1, $il = strlen($digits); $i < $il; $i++) {
+            $ret = ($base * $ret) + strpos(self::ALL, $digits[$i]);
+        }
+
+        return $ret;
+    }
+
+    /**
+     * To base.
+     * @param  int $digits
+     * @param  int $base
+     * @return string
+     */
+    public static function toBase(int $digits, int $base = 62): string
+    {
+        if ($base < 2 || $base > 62) {
+            throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
+        }
+
+        $ret = '';
+
+        do {
+            $ret = self::ALL[$digits % $base] . $ret;
+            $digits = ($digits / $base) | 0;
+        } while ($digits);
+
+        return $ret;
     }
 }
