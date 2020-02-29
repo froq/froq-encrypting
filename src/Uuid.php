@@ -78,94 +78,115 @@ final class Uuid
     }
 
     /**
+     * Generate digit.
+     * @param  bool $rand
+     * @return string
+     * @since  4.0
+     */
+    public static function generateDigit(bool $rand = false): string
+    {
+        if (!$rand) {
+            $digits = self::generateLong();
+        } else {
+            $digits = '';
+            do {
+                $digits .= mt_rand();
+            } while (strlen($digits) < 32);
+        }
+
+        return vsprintf('%s-%s-%s-%s-%s', preg_split(
+            '~(\d{8})(\d{4})(\d{4})(\d{4})(\d{12})~',
+            $digits, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
+        ));
+    }
+
+    /**
      * Generate short.
-     * @param  int|null $base
-     * @return string   A 12-length id.
+     * @param  int $base
+     * @return string A 16-length id.
      * @throws froq\encrypting\EncryptingException
      */
-    public static function generateShort(int $base = null): string
+    public static function generateShort(int $base = 1): string
     {
-        [$time, $mtime] = self::times();
+        [$sec, $msec] = self::secs();
 
-        $base = $base ?? 10;
-        if ($base == 10) {
-            $out = ''. $time . $mtime;
-            $out = self::pad(1, 12, $out);
-        } elseif ($base == 16) {
-            $out = dechex($time) . dechex($mtime);
-            $out = self::pad(2, 12, $out);
-        } elseif ($base == 36) {
-            $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
-            $out = self::pad(3, 12, $out);
+        if ($base == 1) { // Digits (0-9) @default.
+            $out = $sec . $msec;
+        } elseif ($base == 2) {  // Hexes (0-9, a-f).
+            $out = Base::toBase($sec, 16) . Base::toBase($msec, 16);
+        } elseif ($base == 3) {  // Chars (0-9, a-z).
+            $out = Base::toBase($sec, 36) . Base::toBase($msec, 36);
+        } elseif ($base == 4) {  // Chars (0-9, a-z, A-Z).
+            $out = Base::toBase($sec, 62) . Base::toBase($msec, 62);
         } else {
-            throw new EncryptingException('Invalid base value "%s" given, valids are: 10, 16, 36',
+            throw new EncryptingException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
                 [$base]);
         }
 
-        return $out;
+        return self::pads($base, 16, $out);
     }
 
     /**
      * Generate long.
-     * @param  int|null $base
-     * @return string   A 22-length id.
+     * @param  int $base
+     * @return string A 32-length id.
      * @since  3.6
      * @throws froq\encrypting\EncryptingException
      */
-    public static function generateLong(int $base = null): string
+    public static function generateLong(int $base = 1): string
     {
-        [$time, $mtime] = self::times();
+        [$sec, $msec, $hsec] = self::secs();
 
-        $base = $base ?? 10;
-        if ($base == 10) {
-            $out = ''. $time . $mtime;
-            $out = self::pad(1, 22, $out);
-        } elseif ($base == 16) {
-            $out = dechex($time) . dechex($mtime);
-            $out = self::pad(2, 22, $out);
-        } elseif ($base == 36) {
-            $out = base_convert($time, 10, 36) . base_convert($mtime, 10, 36);
-            $out = self::pad(3, 22, $out);
+        if ($base == 1) {        // Digits (0-9) @default.
+            $out = $sec . $hsec . $msec;
+        } elseif ($base == 2) {  // Hexes (0-9, a-f).
+            $out = Base::toBase($sec, 16) . Base::toBase($hsec, 16) . Base::toBase($msec, 16);
+        } elseif ($base == 3) {  // Chars (0-9, a-z).
+            $out = Base::toBase($sec, 36) . Base::toBase($hsec, 36) . Base::toBase($msec, 36);
+        } elseif ($base == 4) {  // Chars (0-9, a-z, A-Z).
+            $out = Base::toBase($sec, 62) . Base::toBase($hsec, 62) . Base::toBase($msec, 62);
         } else {
-            throw new EncryptingException('Invalid base value "%s" given, valids are: 10, 16, 36',
+            throw new EncryptingException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
                 [$base]);
         }
 
-        return $out;
+        return self::pads($base, 32, $out);
     }
 
     /**
-     * Times.
+     * Secs.
      * @return array<int, int>
      */
-    private static function times(): array
+    private static function secs(): array
     {
-        $tmp = explode(' ', microtime());
+        $secs = sscanf(microtime(), '%d.%d %d');
 
-        return [(int) $tmp[1], (int) substr($tmp[0], 2, 6)];
+        return [$secs[2], $secs[1], hrtime(true)];
     }
 
     /**
-     * Pad.
+     * Pads.
      * @param  int    $type
      * @param  int    $length
      * @param  string $input
      * @return string
      */
-    private static function pad(int $type, int $length, string $input): string
+    private static function pads(int $type, int $length, string $input): string
     {
-        $chars = '';
+        $pads = '';
 
         if (strlen($input) < $length) {
             if ($type == 1) {
-                $chars = str_shuffle(Base::C10); // Numeric.
+                $pads = str_shuffle(Base::C10); // Numeric.
             } elseif ($type == 2) {
-                $chars = str_shuffle(Base::C16); // Base 16.
+                $pads = str_shuffle(Base::C16); // Base 16.
             } elseif ($type == 3) {
-                $chars = str_shuffle(Base::C36); // Base 36.
+                $pads = str_shuffle(Base::C36); // Base 36.
+            } elseif ($type == 4) {
+                $pads = str_shuffle(Base::C62); // Base 36.
             }
         }
 
-        return substr($input . $chars, 0, $length);
+        return substr($input . $pads, 0, $length);
     }
 }
