@@ -117,6 +117,33 @@ final class Generator
     }
 
     /**
+     * Generate one time password.
+     * @param  string $key
+     * @param  int    $length
+     * @return string A time based OTP (One-Time-Password).
+     * @since  4.0
+     */
+    public static function generateOneTimePassword(string $key, int $length = 8): string
+    {
+        $time = time();
+        $data = pack('NNC*', $time >> 32, $time & 0xffffffff);
+        if (strlen($data) < 8) {
+            $data = str_pad($data, 8, chr(0), STR_PAD_LEFT);
+        }
+
+        $hash   = hash_hmac('sha256', $data, $key);
+        $offset = hexdec(substr($hash, -1)) * 2;
+        $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
+
+        $ret = (string) ($binary % pow(10, $length));
+        if (strlen($ret) < $length) {
+            $ret = str_pad($ret, $length, '0', STR_PAD_LEFT);
+        }
+
+        return $ret;
+    }
+
+    /**
      * Generate nonce.
      * @param  int $length
      * @return string
@@ -151,39 +178,12 @@ final class Generator
     /**
      * Generate serial hash.
      * @param  int $length
-     * @return string
+     * @return string A given-length hex string.
      * @since  3.7
      */
     public static function generateSerialHash(int $length = 32): string
     {
         return Hash::make(self::generateId(), $length);
-    }
-
-    /**
-     * Generate one time password.
-     * @param  string $key
-     * @param  int    $length
-     * @return string A time based OTP (One-Time-Password).
-     * @since  4.0
-     */
-    public static function generateOneTimePassword(string $key, int $length = 8): string
-    {
-        $time = time();
-        $data = pack('NNC*', $time >> 32, $time & 0xffffffff);
-        if (strlen($data) < 8) {
-            $data = str_pad($data, 8, chr(0), STR_PAD_LEFT);
-        }
-
-        $hash   = hash_hmac('sha256', $data, $key);
-        $offset = hexdec(substr($hash, -1)) * 2;
-        $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
-
-        $ret = (string) ($binary % pow(10, $length));
-        if (strlen($ret) < $length) {
-            $ret = str_pad($ret, $length, '0', STR_PAD_LEFT);
-        }
-
-        return $ret;
     }
 
     /**
