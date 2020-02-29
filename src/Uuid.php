@@ -83,16 +83,16 @@ final class Uuid
      * @return string
      * @since  4.0
      */
-    public static function generateDigit(bool $rand = false): string
+    public static function generateDigit(bool $rand = true): string
     {
         // All digit.
-        if (!$rand) {
-            $digits = self::generateLong();
-        } else {
+        if ($rand) {
             $digits = '';
             do {
                 $digits .= mt_rand();
             } while (strlen($digits) < 32);
+        } else {
+            $digits = self::generateLong();
         }
 
         return vsprintf('%s-%s-%s-%s-%s', preg_split(

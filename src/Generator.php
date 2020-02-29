@@ -78,7 +78,7 @@ final class Generator
      * @return string
      * @since  4.0
      */
-    public static function generateDigitUuid(bool $rand = false): string
+    public static function generateDigitUuid(bool $rand = true): string
     {
         return Uuid::generateDigit($rand);
     }
