@@ -74,22 +74,22 @@ final class Generator
 
     /**
      * Generate short uuid.
-     * @param  int|null $base
+     * @param  int $base
      * @return string
      * @since  3.0
      */
-    public static function generateShortUuid(int $base = null): string
+    public static function generateShortUuid(int $base = 1): string
     {
         return Uuid::generateShort($base);
     }
 
     /**
      * Generate long uuid.
-     * @param  int|null $base
+     * @param  int $base
      * @return string
      * @since  3.6
      */
-    public static function generateLongUuid(int $base = null): string
+    public static function generateLongUuid(int $base = 1): string
     {
         return Uuid::generateLong($base);
     }
