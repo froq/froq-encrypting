@@ -68,8 +68,7 @@ final class Uuid
         $date = getdate();
         $uniq = sscanf(uniqid('', true), '%8s%6s.%s');
 
-        return sprintf(
-            '%.08s-%04x-%04x-%04x-%.6s%.6s',
+        return sprintf('%.08s-%04x-%04x-%04x-%.6s%.6s',
             $uniq[0], $date['year'],
             ($date['mon'] . $date['mday']),
             ($date['minutes'] . $date['seconds']),
