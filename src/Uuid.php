@@ -91,13 +91,11 @@ final class Uuid
                 $digits .= mt_rand();
             } while (strlen($digits) < 32);
         } else {
-            $digits = self::generateLong();
+            [$msec, $sec] = explode(' ', microtime());
+            $digits = $sec . hrtime(true) . substr($msec, 2);
         }
 
-        return vsprintf('%s-%s-%s-%s-%s', preg_split(
-            '~(\d{8})(\d{4})(\d{4})(\d{4})(\d{12})~',
-            $digits, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
-        ));
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($digits, 4));
     }
 
     /**
