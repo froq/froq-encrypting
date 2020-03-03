@@ -168,7 +168,7 @@ final class Base
         $ret = strpos(self::ALL, $digits[0]) | 0;
 
         for ($i = 1, $il = strlen($digits); $i < $il; $i++) {
-            $ret = ($base * $ret) + strpos(self::ALL, $digits[$i]);
+            $ret = (($base * $ret) + strpos(self::ALL, $digits[$i])) | 0;
         }
 
         return $ret;
