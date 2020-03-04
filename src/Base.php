@@ -71,8 +71,8 @@ final class Base
         }
 
         $base = strlen($characters);
-        if ($base < 2 || $base > 255) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 255, '.
+        if ($base < 2 || $base > 256) {
+            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
                 '%s given', [$base]);
         }
 
@@ -100,8 +100,8 @@ final class Base
         }
 
         $base = strlen($characters);
-        if ($base < 2 || $base > 255) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 255, '.
+        if ($base < 2 || $base > 256) {
+            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
                 '%s given', [$base]);
         }
 
