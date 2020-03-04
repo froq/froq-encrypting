@@ -78,7 +78,15 @@ final class Base
 
         // Original source https://github.com/tuupola/base62.
         $tmp = array_map('ord', str_split($input));
+        $zrs = 0;
+        while ($tmp && $tmp[0] === 0) {
+            $zrs++; array_shift($tmp);
+        }
+
         $tmp = self::convert($tmp, 256, $base);
+        if ($zrs) {
+            $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
+        }
 
         return join('', array_map(fn($i) => $characters[$i], $tmp));
     }
@@ -113,7 +121,15 @@ final class Base
 
         // Original source https://github.com/tuupola/base62.
         $tmp = array_map(fn($c) => strpos($characters, $c), str_split($input));
+        $zrs = 0;
+        while ($tmp && $tmp[0] === 0) {
+            $zrs++; array_shift($tmp);
+        }
+
         $tmp = self::convert($tmp, $base, 256);
+        if ($zrs) {
+            $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
+        }
 
         return join('', array_map('chr', $tmp));
     }
