@@ -45,10 +45,10 @@ final class Base
     public const C10 = '0123456789',
                  C16 = '0123456789abcdef',
                  C36 = '0123456789abcdefghijklmnopqrstuvwxyz',
-                 C62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                 C62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                  // Misc.
                  C32 = '0123456789abcdefghjkmnpqrstvwxyz',
-                 C58 = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
+                 C58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
                  FUN = 'fFuUnN',
                  // Alias.
                  HEX = self::C16,
