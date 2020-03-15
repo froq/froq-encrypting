@@ -123,7 +123,7 @@ final class Generator
      */
     public static function generateNonce(int $length = 32): string
     {
-        return bin2hex(random_bytes($length / 2));
+        return Salt::generate($length, 5);
     }
 
     /**
@@ -134,7 +134,7 @@ final class Generator
      */
     public static function generateNonceHash(int $length = 32): string
     {
-        return Hash::make(self::generateNonce($length), $length);
+        return Hash::make(Salt::generate($length, 4), $length);
     }
 
     /**
