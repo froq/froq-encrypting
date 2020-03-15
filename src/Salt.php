@@ -51,12 +51,6 @@ final class Salt
     public const BITS_PER_CHAR = 6;
 
     /**
-     * Characters.
-     * @const string
-     */
-    public const CHARACTERS = Base::C62;
-
-    /**
      * Generate.
      * @param  int|null $length      Output length.
      * @param  int|null $bitsPerChar 4=base16 (hex), 5=base36, 6=base62.
@@ -71,10 +65,17 @@ final class Salt
         if ($len < 2) {
             throw new EncryptingException('Invalid length value "%s" given, length must be '.
                 'greater than 1', [$len]);
-        }
-        if ($bpc < 4 || $bpc > 6) {
+        } elseif ($bpc < 4 || $bpc > 6) {
             throw new EncryptingException('Invalid bits-per-char value "%s" given, valids are: '.
                 '4, 5, 6', [$bpc]);
+        }
+
+        $chars    = Base::C62;
+        $charsLen = strlen($chars);
+        if ($bpc < 6) {
+            $chars    = ($bpc == 5) ? substr($chars, 0, 36) : substr($chars, 0, 16);
+            $chars    = strtolower($chars);
+            $charsLen = strlen($chars);
         }
 
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
@@ -98,11 +99,11 @@ final class Salt
 
             $i = $w & $mask;
             // Fix up index picking a random index.
-            if ($i > 61) {
-                $i = rand(0, 61);
+            if ($i > $charsLen - 1) {
+                $i = rand(0, $charsLen - 1);
             }
 
-            $out .= self::CHARACTERS[$i];
+            $out .= $chars[$i];
 
             $w >>= $bpc;
             $have -= $bpc;
