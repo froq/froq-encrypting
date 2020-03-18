@@ -134,7 +134,7 @@ final class Generator
      */
     public static function generateNonceHash(int $length = 32): string
     {
-        return Hash::make(Salt::generate($length, 4), $length);
+        return Hash::make(Salt::generate($length, 5), $length);
     }
 
     /**
