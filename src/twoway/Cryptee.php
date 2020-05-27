@@ -24,17 +24,17 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting\twoway;
+namespace froq\crypto\twoway;
 
-use froq\encrypting\twoway\{Twoway, TwowayException};
+use froq\crypto\twoway\{Twoway, TwowayException};
 
 /**
  * Cryptee.
  *
  * Original source https://github.com/k-gun/cryptee.
  *
- * @package froq\encrypting\twoway
- * @object  froq\encrypting\twoway\Cryptee
+ * @package froq\crypto\twoway
+ * @object  froq\crypto\twoway\Cryptee
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  */
@@ -43,7 +43,7 @@ final class Cryptee extends Twoway
     /**
      * Constructor.
      * @param  string $key
-     * @throws froq\encrypting\twoway\TwowayException
+     * @throws froq\crypto\twoway\TwowayException
      */
     public function __construct(string $key)
     {
@@ -57,7 +57,7 @@ final class Cryptee extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encrypting\twoway\Twoway
+     * @inheritDoc froq\crypto\twoway\Twoway
      */
     public function encode(string $data): ?string
     {
@@ -65,7 +65,7 @@ final class Cryptee extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encrypting\twoway\Twoway
+     * @inheritDoc froq\crypto\twoway\Twoway
      */
     public function decode(string $data): ?string
     {

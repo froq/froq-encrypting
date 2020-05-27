@@ -24,15 +24,15 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting\oneway;
+namespace froq\crypto\oneway;
 
-use froq\encrypting\oneway\{Oneway, OnewayException};
+use froq\crypto\oneway\{Oneway, OnewayException};
 use SodiumException;
 
 /**
  * Sodium.
- * @package froq\encrypting\oneway
- * @object  froq\encrypting\oneway\Sodium
+ * @package froq\crypto\oneway
+ * @object  froq\crypto\oneway\Sodium
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  */
@@ -63,7 +63,7 @@ final class Sodium extends Oneway
     /**
      * Constructor.
      * @param  array<string, any|null>|null $options
-     * @throws froq\encrypting\oneway\OnewayException
+     * @throws froq\crypto\oneway\OnewayException
      */
     public function __construct(array $options = null)
     {
@@ -84,7 +84,7 @@ final class Sodium extends Oneway
     }
 
     /**
-     * @inheritDoc froq\encrypting\oneway\Oneway
+     * @inheritDoc froq\crypto\oneway\Oneway
      */
     public function hash(string $input): ?string
     {
@@ -101,7 +101,7 @@ final class Sodium extends Oneway
     }
 
     /**
-     * @inheritDoc froq\encrypting\oneway\Oneway
+     * @inheritDoc froq\crypto\oneway\Oneway
      */
     public function verify(string $input, string $inputHash): bool
     {

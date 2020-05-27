@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting;
+namespace froq\crypto;
 
-use froq\encrypting\{Base, EncryptingException};
+use froq\crypto\{Base, CryptoException};
 
 /**
  * Uuid.
- * @package froq\encrypting
- * @object  froq\encrypting\Uuid
+ * @package froq\crypto
+ * @object  froq\crypto\Uuid
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  * @static
@@ -102,7 +102,7 @@ final class Uuid
      * Generate short.
      * @param  int $base
      * @return string A 16-length id.
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\crypto\CryptoException
      */
     public static function generateShort(int $base = 1): string
     {
@@ -117,7 +117,7 @@ final class Uuid
         } elseif ($base == 4) {  // Chars (0-9, a-z, A-Z).
             $out = Base::toBase($sec, 62) . Base::toBase($msec, 62);
         } else {
-            throw new EncryptingException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
+            throw new CryptoException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
                 [$base]);
         }
 
@@ -129,7 +129,7 @@ final class Uuid
      * @param  int $base
      * @return string A 32-length id.
      * @since  3.6
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\crypto\CryptoException
      */
     public static function generateLong(int $base = 1): string
     {
@@ -144,7 +144,7 @@ final class Uuid
         } elseif ($base == 4) {  // Chars (0-9, a-z, A-Z).
             $out = Base::toBase($sec, 62) . Base::toBase($hsec, 62) . Base::toBase($msec, 62);
         } else {
-            throw new EncryptingException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
+            throw new CryptoException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
                 [$base]);
         }
 

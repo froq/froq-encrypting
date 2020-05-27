@@ -24,15 +24,15 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting;
+namespace froq\crypto;
 
-use froq\encrypting\{Hash, Salt, Uuid};
-use froq\encrypting\oneway\Password;
+use froq\crypto\{Hash, Salt, Uuid};
+use froq\crypto\oneway\Password;
 
 /**
  * Generator.
- * @package froq\encrypting
- * @object  froq\encrypting\Generator
+ * @package froq\crypto
+ * @object  froq\crypto\Generator
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  * @static

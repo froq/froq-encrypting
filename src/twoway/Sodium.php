@@ -24,15 +24,15 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting\twoway;
+namespace froq\crypto\twoway;
 
-use froq\encrypting\twoway\{Twoway, TwowayException};
+use froq\crypto\twoway\{Twoway, TwowayException};
 use SodiumException;
 
 /**
  * Sodium.
- * @package froq\encrypting\twoway
- * @object  froq\encrypting\twoway\Sodium
+ * @package froq\crypto\twoway
+ * @object  froq\crypto\twoway\Sodium
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  */
@@ -48,7 +48,7 @@ final class Sodium extends Twoway
      * Constructor.
      * @param  string      $key
      * @param  string|null $nonce
-     * @throws froq\encrypting\twoway\TwowayException
+     * @throws froq\crypto\twoway\TwowayException
      */
     public function __construct(string $key, string $nonce = null)
     {
@@ -90,7 +90,7 @@ final class Sodium extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encrypting\twoway\Twoway
+     * @inheritDoc froq\crypto\twoway\Twoway
      */
     public function encode(string $data): ?string
     {
@@ -105,7 +105,7 @@ final class Sodium extends Twoway
     }
 
     /**
-     * @inheritDoc froq\encrypting\twoway\Twoway
+     * @inheritDoc froq\crypto\twoway\Twoway
      */
     public function decode(string $data): ?string
     {

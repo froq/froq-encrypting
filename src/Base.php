@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting;
+namespace froq\crypto;
 
-use froq\encrypting\EncryptingException;
+use froq\crypto\CryptoException;
 
 /**
  * Base.
- * @package froq\encrypting
- * @object  froq\encrypting\Base
+ * @package froq\crypto
+ * @object  froq\crypto\Base
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  * @static
@@ -59,7 +59,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\crypto\CryptoException
      */
     public static function encode(string $input, string $characters = null): string
     {
@@ -67,12 +67,12 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncryptingException('Characters must not be empty');
+            throw new CryptoException('Characters must not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
+            throw new CryptoException('Characters base (length) must be min 2 and max 256, '.
                 '%s given', [$base]);
         }
 
@@ -96,7 +96,7 @@ final class Base
      * @param  string      $input
      * @param  string|null $characters Default is Base62.
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\crypto\CryptoException
      */
     public static function decode(string $input, string $characters = null): string
     {
@@ -104,18 +104,18 @@ final class Base
 
         $characters = $characters ?? self::C62;
         if ($characters == '') {
-            throw new EncryptingException('Characters must not be empty');
+            throw new CryptoException('Characters must not be empty');
         }
 
         $base = strlen($characters);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
+            throw new CryptoException('Characters base (length) must be min 2 and max 256, '.
                 '%s given', [$base]);
         }
 
         if (strlen($input) !== strspn($input, $characters)) {
             preg_match('~[^'. preg_quote($characters, '~') .']+~', $input, $match);
-            throw new EncryptingException('Invalid characters "%s" found in given input',
+            throw new CryptoException('Invalid characters "%s" found in given input',
                 [$match[0]]);
         }
 
@@ -178,7 +178,7 @@ final class Base
     public static function fromBase(string $digits, int $base = 62): int
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
+            throw new CryptoException('Base must be between 2 and 62, %s given', [$base]);
         }
 
         $ret = strpos(self::ALL, $digits[0]) | 0;
@@ -199,7 +199,7 @@ final class Base
     public static function toBase(int $digits, int $base = 62): string
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
+            throw new CryptoException('Base must be between 2 and 62, %s given', [$base]);
         }
 
         $ret = '';

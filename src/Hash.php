@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\encrypting;
+namespace froq\crypto;
 
-use froq\encrypting\EncryptingException;
+use froq\crypto\CryptoException;
 
 /**
  * Hash.
- * @package froq\encrypting
- * @object  froq\encrypting\Hash
+ * @package froq\crypto
+ * @object  froq\crypto\Hash
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  * @static
@@ -50,7 +50,7 @@ final class Hash
      * @param  string $input
      * @param  int    $length
      * @return string
-     * @throws froq\encrypting\EncryptingException.
+     * @throws froq\crypto\CryptoException.
      */
     public static function make(string $input, int $length): string
     {
@@ -58,7 +58,7 @@ final class Hash
             return hash(self::ALGOS[$length], $input);
         }
 
-        throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
+        throw new CryptoException('Invalid length value "%s" given, valids are: %s',
             [$length, join(', ', array_keys(self::ALGOS))]);
     }
 }
