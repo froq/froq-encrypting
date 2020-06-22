@@ -118,29 +118,31 @@ final class Generator
     /**
      * Generate nonce.
      * @param  int $length
+     * @param  int $bitsPerChar
      * @return string
      * @since  3.0
      */
-    public static function generateNonce(int $length = 32): string
+    public static function generateNonce(int $length = 32, int $bitsPerChar = 5): string
     {
-        return Salt::generate($length, 5);
+        return Salt::generate($length, $bitsPerChar);
     }
 
     /**
      * Generate nonce hash.
      * @param  int $length
+     * @param  int $bitsPerChar
      * @return string
      * @since  4.0
      */
-    public static function generateNonceHash(int $length = 32): string
+    public static function generateNonceHash(int $length = 32, int $bitsPerChar = 5): string
     {
-        return Hash::make(Salt::generate($length, 5), $length);
+        return Hash::make(Salt::generate($length, $bitsPerChar), $length);
     }
 
     /**
      * Generate serial.
-     * @return string A 20-length big number.
-     * @since  3.7
+     * @aliasOf generateId().
+     * @since   3.7
      */
     public static function generateSerial(): string
     {
@@ -160,8 +162,8 @@ final class Generator
 
     /**
      * Generate id.
+     * @return string A 20-length digits.
      * @since  4.0
-     * @return string
      */
     public static function generateId(): string
     {
@@ -173,8 +175,8 @@ final class Generator
     /**
      * Generate uniq id.
      * @param  bool $simple
-     * @since  4.0
      * @return string A 14|20-length hex.
+     * @since  4.0
      */
     public static function generateUniqId(bool $simple = true): string
     {
