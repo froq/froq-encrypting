@@ -100,55 +100,55 @@ final class Uuid
 
     /**
      * Generate short.
-     * @param  int $base
+     * @param  int $type
      * @return string A 16-length id.
      * @throws froq\crypto\CryptoException
      */
-    public static function generateShort(int $base = 1): string
+    public static function generateShort(int $type = 1): string
     {
         [$sec, $msec] = self::secs();
 
-        if ($base == 1) { // Digits (0-9) @default.
+        if ($type == 1) { // Digits (0-9) @default.
             $out = $sec . $msec;
-        } elseif ($base == 2) {  // Hexes (0-9, a-f).
+        } elseif ($type == 2) {  // Hexes (0-9, a-f).
             $out = Base::toBase($sec, 16) . Base::toBase($msec, 16);
-        } elseif ($base == 3) {  // Chars (0-9, a-z).
+        } elseif ($type == 3) {  // Chars (0-9, a-z).
             $out = Base::toBase($sec, 36) . Base::toBase($msec, 36);
-        } elseif ($base == 4) {  // Chars (0-9, a-z, A-Z).
+        } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
             $out = Base::toBase($sec, 62) . Base::toBase($msec, 62);
         } else {
             throw new CryptoException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
-                [$base]);
+                [$type]);
         }
 
-        return self::pads($base, 16, $out);
+        return self::pads($type, 16, $out);
     }
 
     /**
      * Generate long.
-     * @param  int $base
+     * @param  int $type
      * @return string A 32-length id.
      * @since  3.6
      * @throws froq\crypto\CryptoException
      */
-    public static function generateLong(int $base = 1): string
+    public static function generateLong(int $type = 1): string
     {
         [$sec, $msec, $hsec] = self::secs();
 
-        if ($base == 1) {        // Digits (0-9) @default.
+        if ($type == 1) {        // Digits (0-9) @default.
             $out = $sec . $hsec . $msec;
-        } elseif ($base == 2) {  // Hexes (0-9, a-f).
+        } elseif ($type == 2) {  // Hexes (0-9, a-f).
             $out = Base::toBase($sec, 16) . Base::toBase($hsec, 16) . Base::toBase($msec, 16);
-        } elseif ($base == 3) {  // Chars (0-9, a-z).
+        } elseif ($type == 3) {  // Chars (0-9, a-z).
             $out = Base::toBase($sec, 36) . Base::toBase($hsec, 36) . Base::toBase($msec, 36);
-        } elseif ($base == 4) {  // Chars (0-9, a-z, A-Z).
+        } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
             $out = Base::toBase($sec, 62) . Base::toBase($hsec, 62) . Base::toBase($msec, 62);
         } else {
             throw new CryptoException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
-                [$base]);
+                [$type]);
         }
 
-        return self::pads($base, 32, $out);
+        return self::pads($type, 32, $out);
     }
 
     /**
