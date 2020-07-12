@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace froq\crypto;
+namespace froq\encrypting;
 
-use froq\crypto\{Base, CryptoException};
+use froq\encrypting\{Base, EncryptingException};
 
 /**
  * Salt.
- * @package froq\crypto
- * @object  froq\crypto\Salt
+ * @package froq\encrypting
+ * @object  froq\encrypting\Salt
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  * @static
@@ -55,7 +55,7 @@ final class Salt
      * @param  int|null $length      Output length.
      * @param  int|null $bitsPerChar 4=base16 (hex), 5=base36, 6=base62.
      * @return string
-     * @throws froq\crypto\CryptoException.
+     * @throws froq\encrypting\EncryptingException.
      */
     public static function generate(int $length = null, int $bitsPerChar = null): string
     {
@@ -63,18 +63,17 @@ final class Salt
         $bpc = $bitsPerChar ?? self::BITS_PER_CHAR;
 
         if ($len < 2) {
-            throw new CryptoException('Invalid length value "%s" given, length must be '.
+            throw new EncryptingException('Invalid length value "%s" given, length must be '.
                 'greater than 1', [$len]);
         } elseif ($bpc < 4 || $bpc > 6) {
-            throw new CryptoException('Invalid bits-per-char value "%s" given, valids are: '.
+            throw new EncryptingException('Invalid bits-per-char value "%s" given, valids are: '.
                 '4, 5, 6', [$bpc]);
         }
 
         $chars    = Base::C62;
         $charsLen = strlen($chars);
         if ($bpc < 6) {
-            $chars    = ($bpc == 5) ? substr($chars, 0, 36) : substr($chars, 0, 16);
-            $chars    = strtolower($chars);
+            $chars    = strtolower(($bpc == 5) ? substr($chars, 0, 36) : substr($chars, 0, 16));
             $charsLen = strlen($chars);
         }
 

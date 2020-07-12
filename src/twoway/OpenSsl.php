@@ -24,17 +24,17 @@
  */
 declare(strict_types=1);
 
-namespace froq\crypto\twoway;
+namespace froq\encrypting\twoway;
 
-use froq\crypto\twoway\{Twoway, TwowayException};
+use froq\encrypting\twoway\{Twoway, TwowayException};
 
 /**
  * Open Ssl.
  *
  * Original source https://stackoverflow.com/a/30189841/362780.
  *
- * @package froq\crypto\twoway
- * @object  froq\crypto\twoway\OpenSsl
+ * @package froq\encrypting\twoway
+ * @object  froq\encrypting\twoway\OpenSsl
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   3.0
  */
@@ -56,7 +56,7 @@ final class OpenSsl extends Twoway
      * Constructor.
      * @param  string      $key
      * @param  string|null $method
-     * @throws froq\crypto\twoway\TwowayException
+     * @throws froq\encrypting\twoway\TwowayException
      */
     public function __construct(string $key, string $method = null)
     {
@@ -90,7 +90,7 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * @inheritDoc froq\crypto\twoway\Twoway
+     * @inheritDoc froq\encrypting\twoway\Twoway
      */
     public function encode(string $data): ?string
     {
@@ -111,7 +111,7 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * @inheritDoc froq\crypto\twoway\Twoway
+     * @inheritDoc froq\encrypting\twoway\Twoway
      */
     public function decode(string $data): ?string
     {

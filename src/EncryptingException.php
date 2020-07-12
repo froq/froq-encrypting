@@ -24,16 +24,16 @@
  */
 declare(strict_types=1);
 
-namespace froq\crypto;
+namespace froq\encrypting;
 
 use froq\common\Exception;
 
 /**
- * Crypto Exception.
- * @package froq\crypto
- * @object  froq\crypto\CryptoException
+ * Encrypting Exception.
+ * @package froq\encrypting
+ * @object  froq\encrypting\EncryptingException
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  */
-class CryptoException extends Exception
+class EncryptingException extends Exception
 {}

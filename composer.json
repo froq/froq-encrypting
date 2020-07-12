@@ -1,8 +1,8 @@
 {
-    "name": "froq/froq-crypto",
-    "homepage": "https://github.com/froq/froq-crypto",
-    "description": "Froq! Crypto.",
-    "keywords": ["froq", "crypto"],
+    "name": "froq/froq-encrypting",
+    "homepage": "https://github.com/froq/froq-encrypting",
+    "description": "Froq! Encrypting.",
+    "keywords": ["froq", "encrypting"],
     "license": "MIT",
     "authors": [
         {"name": "Kerem Güneş", "email": "k-gun@mail.com"}

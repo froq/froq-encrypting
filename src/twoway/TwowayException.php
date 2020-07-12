@@ -24,16 +24,16 @@
  */
 declare(strict_types=1);
 
-namespace froq\crypto\twoway;
+namespace froq\encrypting\twoway;
 
-use froq\crypto\CryptoException;
+use froq\encrypting\EncryptingException;
 
 /**
  * Twoway Exception.
- * @package froq\crypto\twoway
- * @object  froq\crypto\twoway\TwowayException
+ * @package froq\encrypting\twoway
+ * @object  froq\encrypting\twoway\TwowayException
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  */
-final class TwowayException extends CryptoException
+final class TwowayException extends EncryptingException
 {}

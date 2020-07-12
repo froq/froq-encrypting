@@ -24,12 +24,12 @@
  */
 declare(strict_types=1);
 
-namespace froq\crypto\oneway;
+namespace froq\encrypting\oneway;
 
 /**
  * Oneway.
- * @package froq\crypto\oneway
- * @object  froq\crypto\oneway\Oneway
+ * @package froq\encrypting\oneway
+ * @object  froq\encrypting\oneway\Oneway
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  */
