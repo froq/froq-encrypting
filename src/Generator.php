@@ -243,7 +243,7 @@ final class Generator
         $offset = hexdec(substr($hash, -1)) * 2;
         $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
 
-        $ret = (string) ($binary % pow(10, $length));
+        $ret = strval($binary % pow(10, $length));
         if (strlen($ret) < $length) {
             $ret = str_pad($ret, $length, '0', STR_PAD_LEFT);
         }
