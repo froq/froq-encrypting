@@ -152,7 +152,7 @@ final class Generator
     /**
      * Generate serial hash.
      * @param  int $length
-     * @return string A given-length hex string.
+     * @return string N-length hex.
      * @since  3.7
      */
     public static function generateSerialHash(int $length = 32): string
@@ -169,24 +169,36 @@ final class Generator
     {
         $tmp = explode(' ', microtime());
 
-        return $tmp[1] . substr($tmp[0], 2, 6) . random_int(1000, 9999);
+        return $tmp[1] . substr($tmp[0], 2, 6) . mt_rand(1000, 9999);
     }
 
     /**
      * Generate uniq id.
      * @param  bool $simple
-     * @return string A 14|20-length hex.
+     * @return string A 20|14-length hex.
      * @since  4.0
      */
-    public static function generateUniqId(bool $simple = true): string
+    public static function generateUniqId(bool $simple = false): string
     {
         $ret = uniqid('', true);
 
-        if ($simple) {
-            return strstr($ret, '.', true);
+        if (!$simple) {
+            $ret = vsprintf('%14s%\'06x', explode('.', $ret));
+            return substr($ret, 0, 20);
         }
 
-        return substr(vsprintf('%14s%\'06x', explode('.', $ret)), 0, 20);
+        return strstr($ret, '.', true);
+    }
+
+    /**
+     * Generate random id.
+     * @param  int $length
+     * @return string N-length hex.
+     * @since  4.3
+     */
+    public static function generateRandomId(int $length = 32): string
+    {
+        return Hash::make(random_bytes($length), $length);
     }
 
     /**
