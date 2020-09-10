@@ -63,6 +63,17 @@ final class Generator
     }
 
     /**
+     * Generate uuid hash.
+     * @param  int $length
+     * @return string
+     * @since  4.3
+     */
+    public static function generateUuidHash(int $length = 32): string
+    {
+        return Uuid::generateHash($length);
+    }
+
+    /**
      * Generate simple uuid.
      * @return string
      * @since  4.0

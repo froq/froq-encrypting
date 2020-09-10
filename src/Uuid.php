@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{Base, EncryptingException};
+use froq\encrypting\{Base, Hash, EncryptingException};
 
 /**
  * Uuid.
@@ -55,6 +55,24 @@ final class Uuid
         }
 
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
+    }
+    /**
+     * Generate hash.
+     * @param  bool $length
+     * @return string
+     * @throws froq\encrypting\EncryptingException
+     * @since  4.3
+     */
+    public static function generateHash(int $length = 32): string
+    {
+        static $lengths = [16, 32, 40, 64];
+
+        if (!in_array($length, $lengths)) {
+            throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
+                [$length, join(', ', $lengths)]);
+        }
+
+        return Hash::make(self::generate(), $length);
     }
 
     /**
@@ -128,8 +146,8 @@ final class Uuid
      * Generate long.
      * @param  int $type
      * @return string A 32-length id.
-     * @since  3.6
      * @throws froq\encrypting\EncryptingException
+     * @since  3.6
      */
     public static function generateLong(int $type = 1): string
     {
