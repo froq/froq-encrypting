@@ -94,7 +94,7 @@ final class Password extends Oneway
     public static function generate(int $length = 8, bool $lettersOnly = true): string
     {
         // Alpha-numeric & graph characters.
-        static $anChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        static $alChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         static $grChars = '!^+%&/\(){}[]<>=*?-_|$#.:,;';
 
         if ($length < 2) {
@@ -107,8 +107,8 @@ final class Password extends Oneway
 
         while ($outLen < $length) {
             $out .= $lettersOnly
-                ? str_shuffle($anChars)
-                : str_shuffle($anChars . $grChars);
+                ? str_shuffle($alChars)
+                : str_shuffle($alChars . $grChars);
             $outLen = strlen($out);
         }
 
