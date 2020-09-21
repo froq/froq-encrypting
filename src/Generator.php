@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{Hash, Salt, Uuid};
+use froq\encrypting\{EncryptingException, Hash, Salt, Uuid};
 use froq\encrypting\oneway\Password;
 
 /**
@@ -68,7 +68,7 @@ final class Generator
      * @return string
      * @since  4.3
      */
-    public static function generateUuidHash(int $length = 32): string
+    public static function generateUuidHash(int $length = 40): string
     {
         return Uuid::generateHash($length);
     }
@@ -133,7 +133,7 @@ final class Generator
      * @return string
      * @since  3.0
      */
-    public static function generateNonce(int $length = 32, int $bitsPerChar = 5): string
+    public static function generateNonce(int $length = 40, int $bitsPerChar = 6): string
     {
         return Salt::generate($length, $bitsPerChar);
     }
@@ -145,9 +145,26 @@ final class Generator
      * @return string
      * @since  4.0
      */
-    public static function generateNonceHash(int $length = 32, int $bitsPerChar = 5): string
+    public static function generateNonceHash(int $length = 40, int $bitsPerChar = 6): string
     {
         return Hash::make(Salt::generate($length, $bitsPerChar), $length);
+    }
+
+    /**
+     * Generate token.
+     * @param  int $length
+     * @return string
+     * @throws froq\encrypting\EncryptingException
+     * @since  4.4
+     */
+    public static function generateToken(int $length = 40): string
+    {
+        if ($length >= 32) { // For a safe token hash.
+            return Hash::make(uniqid(random_bytes(20), true), $length);
+        }
+
+        throw new EncryptingException('Given length value "%s" is not safe, '.
+            'use 40, 32, 64 or 128', [$length]);
     }
 
     /**
@@ -166,7 +183,7 @@ final class Generator
      * @return string N-length hex.
      * @since  3.7
      */
-    public static function generateSerialHash(int $length = 32): string
+    public static function generateSerialHash(int $length = 40): string
     {
         return Hash::make(self::generateId(), $length);
     }
@@ -207,7 +224,7 @@ final class Generator
      * @return string N-length hex.
      * @since  4.3
      */
-    public static function generateRandomId(int $length = 32): string
+    public static function generateRandomId(int $length = 40): string
     {
         return Hash::make(random_bytes($length), $length);
     }

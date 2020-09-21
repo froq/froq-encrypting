@@ -63,9 +63,9 @@ final class Uuid
      * @throws froq\encrypting\EncryptingException
      * @since  4.3
      */
-    public static function generateHash(int $length = 32): string
+    public static function generateHash(int $length = 40): string
     {
-        static $lengths = [16, 32, 40, 64];
+        static $lengths = [40, 16, 32, 64];
 
         if (!in_array($length, $lengths)) {
             throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
@@ -199,7 +199,7 @@ final class Uuid
             } elseif ($type == 3) {
                 $pads = str_shuffle(Base::C36); // Base 36.
             } elseif ($type == 4) {
-                $pads = str_shuffle(Base::C62); // Base 36.
+                $pads = str_shuffle(Base::C62); // Base 62.
             }
         }
 

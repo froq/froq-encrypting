@@ -42,17 +42,19 @@ final class Base
      * Characters.
      * @const string
      */
-    public const C10 = '0123456789',
-                 C16 = '0123456789abcdef',
-                 C36 = '0123456789abcdefghijklmnopqrstuvwxyz',
-                 C62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+    public const C10  = '0123456789',
+                 C16  = '0123456789abcdef',
+                 C36  = '0123456789abcdefghijklmnopqrstuvwxyz',
+                 C62  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                 // Natural. @since 4.4
+                 C62N = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                  // Misc.
-                 C32 = '0123456789abcdefghjkmnpqrstvwxyz',
-                 C58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-                 FUN = 'fFuUnN',
+                 C32  = '0123456789abcdefghjkmnpqrstvwxyz',
+                 C58  = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+                 FUN  = 'fFuUnN',
                  // Alias.
-                 HEX = self::C16,
-                 ALL = self::C62;
+                 HEX  = self::C16,
+                 ALL  = self::C62;
 
     /**
      * Encode.
