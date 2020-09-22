@@ -58,21 +58,21 @@ final class Uuid
     }
     /**
      * Generate hash.
-     * @param  bool $length
+     * @param  int $hashLength
      * @return string
      * @throws froq\encrypting\EncryptingException
      * @since  4.3
      */
-    public static function generateHash(int $length = 40): string
+    public static function generateHash(int $hashLength = 40): string
     {
-        static $lengths = [40, 16, 32, 64];
+        static $hashLengths = [40, 16, 32, 64];
 
-        if (!in_array($length, $lengths)) {
-            throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
-                [$length, join(', ', $lengths)]);
+        if (in_array($hashLength, $hashLengths, true)) {
+            return Hash::make(self::generate(), $hashLength);
         }
 
-        return Hash::make(self::generate(), $length);
+        throw new EncryptingException('Invalid hash length value "%s" given, valids are: %s',
+            [$hashLength, join(', ', $hashLengths)]);
     }
 
     /**
