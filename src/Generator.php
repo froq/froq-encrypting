@@ -53,13 +53,14 @@ final class Generator
 
     /**
      * Generate uuid.
+     * @param  bool $dash
      * @param  bool $guid
      * @return string
      * @since  3.0
      */
-    public static function generateUuid(bool $guid = false): string
+    public static function generateUuid(bool $dash = false, bool $guid = false): string
     {
-        return Uuid::generate($guid);
+        return Uuid::generate($dash, $guid);
     }
 
     /**
@@ -68,7 +69,7 @@ final class Generator
      * @return string
      * @since  4.3
      */
-    public static function generateUuidHash(int $hashLength = 40): string
+    public static function generateUuidHash(int $hashLength = 32): string
     {
         return Uuid::generateHash($hashLength);
     }
@@ -231,7 +232,7 @@ final class Generator
      * @return string N-length hex.
      * @since  4.3
      */
-    public static function generateRandomId(int $byteLength = 16, int $hashLength = 32): string
+    public static function generateRandomId(int $byteLength = 16, int $hashLength = 16): string
     {
         return Hash::make(random_bytes($byteLength), $hashLength);
     }

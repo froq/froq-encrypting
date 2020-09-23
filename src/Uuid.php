@@ -40,10 +40,11 @@ final class Uuid
 {
     /**
      * Generate.
+     * @param  bool $dash
      * @param  bool $guid
      * @return string
      */
-    public static function generate(bool $guid = false): string
+    public static function generate(bool $dash = true, bool $guid = false): string
     {
         // Random (UUID/v4 or GUID).
         $rand = random_bytes(16);
@@ -54,7 +55,12 @@ final class Uuid
             $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
         }
 
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
+        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
+        if (!$dash) {
+            $ret = str_replace('-', '', $ret);
+        }
+
+        return $ret;
     }
     /**
      * Generate hash.
@@ -63,7 +69,7 @@ final class Uuid
      * @throws froq\encrypting\EncryptingException
      * @since  4.3
      */
-    public static function generateHash(int $hashLength = 40): string
+    public static function generateHash(int $hashLength = 32): string
     {
         static $hashLengths = [40, 16, 32, 64];
 
