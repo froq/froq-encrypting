@@ -74,17 +74,16 @@ abstract class Twoway
 
     /**
      * Encrypt.
-     * @param  string     $key
-     * @param  string     $data
-     * @param  array|null $options
+     * @param  string $data
+     * @param  array  $options
      * @return ?string
      * @since  4.5
      */
-    public static final function encrypt(string $key, string $data, array $options = null): ?string
+    public static final function encrypt(string $data, array $options): ?string
     {
         $instance = new static(
-            $key, // Key is required, nonce for Sodium, method for OpenSsl.
-            $options['nonce'] ?? $options['method'] ?? null
+            // Key is required, nonce for Sodium, method for OpenSsl.
+            $options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null
         );
 
         if (isset($options['type'])) {
@@ -112,17 +111,16 @@ abstract class Twoway
 
     /**
      * Decrypt.
-     * @param  string     $key
-     * @param  string     $data
-     * @param  array|null $options
+     * @param  string $data
+     * @param  array  $options
      * @return ?string
      * @since  4.5
      */
-    public static final function decrypt(string $key, string $data, array $options = null): ?string
+    public static final function decrypt(string $data, array $options): ?string
     {
         $instance = new static(
-            $key, // Key is required, nonce for Sodium, method for OpenSsl.
-            $options['nonce'] ?? $options['method'] ?? null
+            // Key is required, nonce for Sodium, method for OpenSsl.
+            $options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null
         );
 
         if (isset($options['type'])) {
