@@ -26,7 +26,8 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\Salt;
+use froq\encrypting\{Salt, Base, Base64};
+use froq\encrypting\twoway\TwowayException;
 
 /**
  * Twoway.
@@ -72,16 +73,93 @@ abstract class Twoway
     }
 
     /**
+     * Encrypt.
+     * @param  string     $key
+     * @param  string     $data
+     * @param  array|null $options
+     * @return ?string
+     * @since  4.5
+     */
+    public static final function encrypt(string $key, string $data, array $options = null): ?string
+    {
+        $instance = new static(
+            $key, // Key is required, nonce for Sodium, method for OpenSsl.
+            $options['nonce'] ?? $options['method'] ?? null
+        );
+
+        if (isset($options['type'])) {
+            $data = $instance->encode($data, true);
+            switch ($options['type']) {
+                case 'base62':
+                    $data && $data = Base::encode($data);
+                    break;
+                case 'base64':
+                    $data && $data = Base64::encode($data);
+                    break;
+                case 'base64url':
+                    $data && $data = Base64::encodeUrlSafe($data);
+                    break;
+                default:
+                    throw new TwowayException('Invalid type "%s" given, valids are: base62, base64, base64url',
+                        [$options['type']]);
+            }
+
+            return $data;
+        }
+
+        return $instance->encode($data);
+    }
+
+    /**
+     * Decrypt.
+     * @param  string     $key
+     * @param  string     $data
+     * @param  array|null $options
+     * @return ?string
+     * @since  4.5
+     */
+    public static final function decrypt(string $key, string $data, array $options = null): ?string
+    {
+        $instance = new static(
+            $key, // Key is required, nonce for Sodium, method for OpenSsl.
+            $options['nonce'] ?? $options['method'] ?? null
+        );
+
+        if (isset($options['type'])) {
+            switch ($options['type']) {
+                case 'base62':
+                    $data = Base::decode($data);
+                    break;
+                case 'base64':
+                    $data = Base64::decode($data);
+                    break;
+                case 'base64url':
+                    $data = Base64::decodeUrlSafe($data);
+                    break;
+                default:
+                    throw new TwowayException('Invalid type "%s" given, valids are: base62, base64, base64url',
+                        [$options['type']]);
+            }
+
+            return $instance->decode($data, true);
+        }
+
+        return $instance->decode($data);
+    }
+
+    /**
      * Encode.
      * @param  string $data
+     * @param  bool   $raw
      * @return ?string
      */
-    public abstract function encode(string $data): ?string;
+    public abstract function encode(string $data, bool $raw = false): ?string;
 
     /**
      * Decode.
      * @param  string $data
+     * @param  bool   $raw
      * @return ?string
      */
-    public abstract function decode(string $data): ?string;
+    public abstract function decode(string $data, bool $raw = false): ?string;
 }

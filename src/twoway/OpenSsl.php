@@ -92,7 +92,7 @@ final class OpenSsl extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data): ?string
+    public function encode(string $data, bool $raw = false): ?string
     {
         [$encKey, $autKey] = $this->keys();
 
@@ -107,17 +107,18 @@ final class OpenSsl extends Twoway
         $mac = hash_hmac('sha256', $out, $autKey, true);
         $out = $mac . $out;
 
-        return base64_encode($out);
+        return !$raw ? base64_encode($out) : $out;
     }
 
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data): ?string
+    public function decode(string $data, bool $raw = false): ?string
     {
+        $data = !$raw ? base64_decode($data, true) : $data;
+
         [$encKey, $autKey] = $this->keys();
 
-        $data   = base64_decode($data, true);
         $macLen = mb_strlen(hash('sha256', '', true), '8bit');
         $mac    = mb_substr($data, 0, $macLen, '8bit');
         $data   = mb_substr($data, $macLen, null, '8bit');

@@ -46,11 +46,11 @@ final class Sodium extends Twoway
 
     /**
      * Constructor.
-     * @param  string      $key
-     * @param  string|null $nonce
+     * @param  string $key
+     * @param  string $nonce
      * @throws froq\encrypting\twoway\TwowayException
      */
-    public function __construct(string $key, string $nonce = null)
+    public function __construct(string $key, string $nonce)
     {
         if (!extension_loaded('sodium')) {
             throw new TwowayException('sodium extension not loaded');
@@ -70,14 +70,14 @@ final class Sodium extends Twoway
         }
 
         // Check nonce length.
-        if ($nonce && strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
+        if (strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
             throw new TwowayException('Invalid nonce given, nonce length must be '.
                 SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
         }
 
         parent::__construct($key);
 
-        $this->nonce = $nonce ?: random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+        $this->nonce = $nonce;
     }
 
     /**
@@ -92,12 +92,12 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data): ?string
+    public function encode(string $data, bool $raw = false): ?string
     {
         try {
             $out =@ sodium_crypto_secretbox($data, $this->nonce, $this->key);
             if ($out !== false) {
-                return base64_encode($out);
+                return !$raw ? base64_encode($out) : $out;
             }
         } catch (SodiumException $e) {}
 
@@ -107,9 +107,9 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data): ?string
+    public function decode(string $data, bool $raw = false): ?string
     {
-        $data = base64_decode($data);
+        $data = !$raw ? base64_decode($data, true) : $data;
 
         try {
             $out =@ sodium_crypto_secretbox_open($data, $this->nonce, $this->key);

@@ -47,7 +47,7 @@ final class Password extends Oneway
      * Cost.
      * @const int
      */
-    public const COST = 10;
+    public const COST = 9;
 
     /**
      * Constructor.
@@ -82,40 +82,6 @@ final class Password extends Oneway
      */
     public function verify(string $input, string $inputHash): bool
     {
-        return password_verify($input, $inputHash);
-    }
-
-    /**
-     * Generate.
-     * @param  int  $length
-     * @param  bool $lettersOnly
-     * @return string
-     */
-    public static function generate(int $length = 8, bool $lettersOnly = true): string
-    {
-        // Alpha-numeric & graph characters.
-        static $alChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        static $grChars = '!^+%&/\(){}[]<>=*?-_|$#.:,;';
-
-        if ($length < 2) {
-            throw new OnewayException('Invalid length value "%s" given, length must be greater '.
-                'than 1', [$length]);
-        }
-
-        $out    = '';
-        $outLen = 0;
-
-        while ($outLen < $length) {
-            $out .= $lettersOnly
-                ? str_shuffle($alChars)
-                : str_shuffle($alChars . $grChars);
-            $outLen = strlen($out);
-        }
-
-        if ($outLen > $length) {
-            $out = substr($out, 0, $length);
-        }
-
-        return $out;
+        return (bool) password_verify($input, $inputHash);
     }
 }

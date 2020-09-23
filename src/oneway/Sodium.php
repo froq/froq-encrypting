@@ -90,8 +90,7 @@ final class Sodium extends Oneway
     {
         $inputHash = false;
 
-        // In case any other Sodium errors happen.
-        try {
+        try { // In case any other Sodium errors happen.
             $inputHash =@ sodium_crypto_pwhash_str(
                 $input, $this->options['opslimit'], $this->options['memlimit']
             );
@@ -105,6 +104,6 @@ final class Sodium extends Oneway
      */
     public function verify(string $input, string $inputHash): bool
     {
-        return sodium_crypto_pwhash_str_verify($inputHash, $input);
+        return (bool) sodium_crypto_pwhash_str_verify($inputHash, $input);
     }
 }
