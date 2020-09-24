@@ -61,7 +61,7 @@ final class Uuid
      */
     public static function generateUniq(bool $dash = true, bool $guid = false): string
     {
-        // Uniqid prefix with a random int to pad.
+        // Uniqid prefix (timestamp) with a random int to pad.
         $uniq = uniqid() . mt_rand(0, 9);
 
         // Binary of uniqid with 9-random bytes.
