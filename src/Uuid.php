@@ -47,38 +47,49 @@ final class Uuid
     public static function generate(bool $dash = true, bool $guid = false): string
     {
         // Random (UUID/v4 or GUID).
-        $rand = random_bytes(16);
+        $bytes = random_bytes(16);
 
-        // GUID doesn't use 4 (version) or 8, 9, A, or B.
-        if (!$guid) {
-            $rand[6] = chr(ord($rand[6]) & 0x0f | 0x40);
-            $rand[8] = chr(ord($rand[8]) & 0x3f | 0x80);
-        }
-
-        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($rand), 4));
-        if (!$dash) {
-            $ret = str_replace('-', '', $ret);
-        }
-
-        return $ret;
+        return self::format($bytes, $dash, $guid);
     }
+
+    /**
+     * Generate uniq.
+     * @param  bool $dash
+     * @param  bool $guid
+     * @return string
+     * @since  4.6
+     */
+    public static function generateUniq(bool $dash = true, bool $guid = false): string
+    {
+        // Uniqid prefix with a random int to pad.
+        $uniq = uniqid() . mt_rand(0, 9);
+
+        // Binary of uniqid with 9-random bytes.
+        $bytes = hex2bin($uniq) . random_bytes(9);
+
+        return self::format($bytes, $dash, $guid);
+    }
+
     /**
      * Generate hash.
      * @param  int $hashLength
      * @return string
-     * @throws froq\encrypting\EncryptingException
      * @since  4.3
      */
     public static function generateHash(int $hashLength = 32): string
     {
-        static $hashLengths = [40, 16, 32, 64];
+        return self::hash(self::generate(), $hashLength);
+    }
 
-        if (in_array($hashLength, $hashLengths, true)) {
-            return Hash::make(self::generate(), $hashLength);
-        }
-
-        throw new EncryptingException('Invalid hash length value "%s" given, valids are: %s',
-            [$hashLength, join(', ', $hashLengths)]);
+    /**
+     * Generate uniq hash.
+     * @param  int $hashLength
+     * @return string
+     * @since  4.6
+     */
+    public static function generateUniqHash(int $hashLength = 32): string
+    {
+        return self::hash(self::generateUniq(), $hashLength);
     }
 
     /**
@@ -145,7 +156,7 @@ final class Uuid
                 [$type]);
         }
 
-        return self::pads($type, 16, $out);
+        return self::pads($out, $type, 16);
     }
 
     /**
@@ -172,7 +183,7 @@ final class Uuid
                 [$type]);
         }
 
-        return self::pads($type, 32, $out);
+        return self::pads($out, $type, 32);
     }
 
     /**
@@ -188,12 +199,12 @@ final class Uuid
 
     /**
      * Pads.
+     * @param  string $input
      * @param  int    $type
      * @param  int    $length
-     * @param  string $input
      * @return string
      */
-    private static function pads(int $type, int $length, string $input): string
+    private static function pads(string $input, int $type, int $length): string
     {
         $pads = '';
 
@@ -210,5 +221,50 @@ final class Uuid
         }
 
         return substr($input . $pads, 0, $length);
+    }
+
+    /**
+     * Hash.
+     * @param  string $input
+     * @param  int    $hashLength
+     * @return string
+     * @throws froq\encrypting\EncryptingException
+     * @since  4.6
+     */
+    private static function hash(string $input, int $hashLength = 32): string
+    {
+        static $hashLengths = [40, 16, 32, 64];
+
+        if (in_array($hashLength, $hashLengths, true)) {
+            return Hash::make($input, $hashLength);
+        }
+
+        throw new EncryptingException('Invalid hash length value "%s" given, valids are: %s',
+            [$hashLength, join(', ', $hashLengths)]);
+    }
+
+    /**
+     * Format.
+     * @param  string $bytes
+     * @param  bool   $dash
+     * @param  bool   $guid
+     * @return string
+     * @since  4.6
+     */
+    private static function format(string $bytes, bool $dash, bool $guid): string
+    {
+        // GUID doesn't use 4 (version) or 8, 9, A, or B.
+        if (!$guid) {
+            $bytes[6] = chr(ord($bytes[6]) & 0x0f | 0x40);
+            $bytes[8] = chr(ord($bytes[8]) & 0x3f | 0x80);
+        }
+
+        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
+
+        if (!$dash) {
+            $ret = str_replace('-', '', $ret);
+        }
+
+        return $ret;
     }
 }

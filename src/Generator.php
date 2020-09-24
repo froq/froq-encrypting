@@ -75,6 +75,29 @@ final class Generator
     }
 
     /**
+     * Generate uniq uuid.
+     * @param  bool $dash
+     * @param  bool $guid
+     * @return string
+     * @since  4.6
+     */
+    public static function generateUniqUuid(bool $dash = false, bool $guid = false): string
+    {
+        return Uuid::generateUniq($dash, $guid);
+    }
+
+    /**
+     * Generate uniq uuid hash.
+     * @param  int $hashLength
+     * @return string
+     * @since  4.6
+     */
+    public static function generateUniqUuidHash(int $hashLength = 32): string
+    {
+        return Uuid::generateUniqHash($hashLength);
+    }
+
+    /**
      * Generate simple uuid.
      * @return string
      * @since  4.0
