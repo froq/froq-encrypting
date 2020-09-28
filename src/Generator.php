@@ -58,7 +58,7 @@ final class Generator
      * @return string
      * @since  3.0
      */
-    public static function generateUuid(bool $dash = false, bool $guid = false): string
+    public static function generateUuid(bool $dash = true, bool $guid = false): string
     {
         return Uuid::generate($dash, $guid);
     }
@@ -81,7 +81,7 @@ final class Generator
      * @return string
      * @since  4.6
      */
-    public static function generateUniqUuid(bool $dash = false, bool $guid = false): string
+    public static function generateUniqUuid(bool $dash = true, bool $guid = false): string
     {
         return Uuid::generateUniq($dash, $guid);
     }
