@@ -97,7 +97,7 @@ abstract class Oneway
      * @return ?string
      * @since  4.5
      */
-    public static final function hashMake(string $input, array $options = null): ?string
+    public static final function make(string $input, array $options = null): ?string
     {
         return (new static($options))->hash($input);
     }
@@ -109,7 +109,7 @@ abstract class Oneway
      * @return bool
      * @since  4.5
      */
-    public static final function hashVerify(string $input, string $inputHash): bool
+    public static final function validate(string $input, string $inputHash): bool
     {
         return (new static())->verify($input, $inputHash);
     }
