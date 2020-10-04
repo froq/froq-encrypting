@@ -152,7 +152,7 @@ final class Uuid
         } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
             $out = Base::toBase($sec, 62) . Base::toBase($msec, 62);
         } else {
-            throw new EncryptingException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
+            throw new EncryptingException('Invalid type value "%s" given, valids are: 1, 2, 3, 4',
                 [$type]);
         }
 
@@ -179,7 +179,7 @@ final class Uuid
         } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
             $out = Base::toBase($sec, 62) . Base::toBase($hsec, 62) . Base::toBase($msec, 62);
         } else {
-            throw new EncryptingException('Invalid base value "%s" given, valids are: 1, 2, 3, 4',
+            throw new EncryptingException('Invalid type value "%s" given, valids are: 1, 2, 3, 4',
                 [$type]);
         }
 
