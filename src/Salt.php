@@ -70,10 +70,10 @@ final class Salt
                 '4, 5, 6', [$bpc]);
         }
 
-        $chars    = Base::C62;
+        $chars = Base::C62;
         $charsLen = strlen($chars);
         if ($bpc < 6) {
-            $chars    = strtolower(($bpc == 5) ? substr($chars, 0, 36) : substr($chars, 0, 16));
+            $chars = ($bpc == 5) ? Base::C36 : Base::C16;
             $charsLen = strlen($chars);
         }
 
