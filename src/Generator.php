@@ -184,14 +184,10 @@ final class Generator
      */
     public static function generateToken(int $hashLength = 40): string
     {
-        static $hashLengths = [40, 16, 32, 64, 128];
-
-        if (in_array($hashLength, $hashLengths, true)) { // For a safe token hash.
-            return Hash::make(uniqid(random_bytes(16), true), $hashLength);
-        }
-
-        throw new EncryptingException('Invalid hash length value "%s" given, valids are: %s',
-            [$hashLength, join(', ', $hashLengths)]);
+        return Hash::make(
+            uniqid(random_bytes(16), true),
+            $hashLength, $hashLengths=[40, 16, 32, 64, 128] // For a safe token hash.
+        );
     }
 
     /**
@@ -258,6 +254,34 @@ final class Generator
     public static function generateRandomId(int $byteLength = 16, int $hashLength = 16): string
     {
         return Hash::make(random_bytes($byteLength), $hashLength);
+    }
+
+    /**
+     * Generate session id.
+     * @param  array|null $options
+     * @return string
+     * @since  4.7
+     */
+    public static function generateSessionId(array $options = null): string
+    {
+        // May be not loaded, Salt mimics it (see the source).
+        $ret = function_exists('session_create_id') ? session_create_id() : Salt::generate(26, 5);
+
+        static $optionsDefault = ['hash' => false, 'hashLength' => 32, 'hashUpperCase' => false];
+
+        ['hash' => $hash, 'hashLength' => $hashLength, 'hashUpperCase' => $hashUpperCase]
+            = array_merge($optionsDefault, $options ?? []);
+
+        if ($hash) {
+            // Hash by length (default=32).
+            $ret = Hash::make($ret, $hashLength, $hashLengths=[40, 16, 32]);
+
+            if ($hashUpperCase) {
+                $ret = strtoupper($ret);
+            }
+        }
+
+        return $ret;
     }
 
     /**

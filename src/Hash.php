@@ -47,18 +47,25 @@ final class Hash
 
     /**
      * Hash.
-     * @param  string $input
-     * @param  int    $length
+     * @param  string     $input
+     * @param  int        $length
+     * @param  array|null $lengths
      * @return string
-     * @throws froq\encrypting\EncryptingException.
+     * @throws froq\encrypting\EncryptingException
      */
-    public static function make(string $input, int $length): string
+    public static function make(string $input, int $length, array $lengths = null): string
     {
-        if (isset(self::ALGOS[$length])) {
-            return hash(self::ALGOS[$length], $input);
+        if ($lengths && !in_array($length, $lengths, true)) {
+            throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
+                [$length, join(', ', $lengths)]);
         }
 
-        throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
-            [$length, join(', ', array_keys(self::ALGOS))]);
+        $algo = self::ALGOS[$length] ?? null;
+        if (!$algo) {
+            throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
+                [$length, join(', ', array_keys(self::ALGOS))]);
+        }
+
+        return hash($algo, $input);
     }
 }
