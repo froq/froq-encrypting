@@ -267,10 +267,8 @@ final class Generator
         // May be not loaded, Salt mimics it (see the source).
         $ret = function_exists('session_create_id') ? session_create_id() : Salt::generate(26, 5);
 
-        static $optionsDefault = ['hash' => false, 'hashLength' => 32, 'hashUpperCase' => false];
-
         ['hash' => $hash, 'hashLength' => $hashLength, 'hashUpperCase' => $hashUpperCase]
-            = array_merge($optionsDefault, $options ?? []);
+            = array_merge(['hash' => false, 'hashLength' => 32, 'hashUpperCase' => false], $options ?? []);
 
         if ($hash) {
             // Hash by length (default=32).
