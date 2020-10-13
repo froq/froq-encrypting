@@ -210,13 +210,13 @@ final class Uuid
 
         if (strlen($input) < $length) {
             if ($type == 1) {
-                $pads = str_shuffle(Base::C10); // Numeric.
+                $pads = str_shuffle(Base::BASE_10_CHARS); // Numeric.
             } elseif ($type == 2) {
-                $pads = str_shuffle(Base::C16); // Base 16.
+                $pads = str_shuffle(Base::BASE_16_CHARS); // Base 16.
             } elseif ($type == 3) {
-                $pads = str_shuffle(Base::C36); // Base 36.
+                $pads = str_shuffle(Base::BASE_36_CHARS); // Base 36.
             } elseif ($type == 4) {
-                $pads = str_shuffle(Base::C62); // Base 62.
+                $pads = str_shuffle(Base::BASE_62_CHARS); // Base 62.
             }
         }
 

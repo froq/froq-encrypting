@@ -42,37 +42,37 @@ final class Base
      * Characters.
      * @const string
      */
-    public const C10  = '0123456789',
-                 C16  = '0123456789abcdef',
-                 C36  = '0123456789abcdefghijklmnopqrstuvwxyz',
-                 C62  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    public const BASE_10_CHARS  = '0123456789',
+                 BASE_16_CHARS  = '0123456789abcdef',
+                 BASE_36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
+                 BASE_62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
                  // Natural. @since 4.4
-                 C62N = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+                 BASE_62N_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                  // Misc.
-                 C32  = '0123456789abcdefghjkmnpqrstvwxyz',
-                 C58  = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-                 FUN  = 'fFuUnN',
-                 // Alias.
-                 HEX  = self::C16,
-                 ALL  = self::C62;
+                 BASE_32_CHARS  = '0123456789abcdefghjkmnpqrstvwxyz',
+                 BASE_58_CHARS  = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+                 // Fun & alias.
+                 FUN_CHARS      = 'fFuUnN',
+                 HEX_CHARS      = self::BASE_16_CHARS,
+                 ALL_CHARS      = self::BASE_62_CHARS;
 
     /**
      * Encode.
      * @param  string      $input
-     * @param  string|null $characters Default is Base62.
+     * @param  string|null $chars @default=base62.
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function encode(string $input, string $characters = null): string
+    public static function encode(string $input, string $chars = null): string
     {
         if ($input == '') return '';
 
-        $characters = $characters ?? self::C62;
-        if ($characters == '') {
+        $chars = $chars ?? self::BASE_62_CHARS;
+        if ($chars == '') {
             throw new EncryptingException('Characters must not be empty');
         }
 
-        $base = strlen($characters);
+        $base = strlen($chars);
         if ($base < 2 || $base > 256) {
             throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
                 '%s given', [$base]);
@@ -90,39 +90,39 @@ final class Base
             $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
         }
 
-        return join('', array_map(fn($i) => $characters[$i], $tmp));
+        return join('', array_map(fn($i) => $chars[$i], $tmp));
     }
 
     /**
      * Decode.
      * @param  string      $input
-     * @param  string|null $characters Default is Base62.
+     * @param  string|null $chars @default=base62.
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function decode(string $input, string $characters = null): string
+    public static function decode(string $input, string $chars = null): string
     {
         if ($input == '') return '';
 
-        $characters = $characters ?? self::C62;
-        if ($characters == '') {
+        $chars = $chars ?? self::BASE_62_CHARS;
+        if ($chars == '') {
             throw new EncryptingException('Characters must not be empty');
         }
 
-        $base = strlen($characters);
+        $base = strlen($chars);
         if ($base < 2 || $base > 256) {
             throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
                 '%s given', [$base]);
         }
 
-        if (strlen($input) !== strspn($input, $characters)) {
-            preg_match('~[^'. preg_quote($characters, '~') .']+~', $input, $match);
+        if (strlen($input) !== strspn($input, $chars)) {
+            preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
             throw new EncryptingException('Invalid characters "%s" found in given input',
                 [$match[0]]);
         }
 
         // Original source https://github.com/tuupola/base62.
-        $tmp = array_map(fn($c) => strpos($characters, $c), str_split($input));
+        $tmp = array_map(fn($c) => strpos($chars, $c), str_split($input));
         $zrs = 0;
         while ($tmp && $tmp[0] === 0) {
             $zrs++; array_shift($tmp);
