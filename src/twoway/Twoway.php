@@ -88,6 +88,7 @@ abstract class Twoway
 
         if (isset($options['type'])) {
             $data = $instance->encode($data, true);
+
             switch ($options['type']) {
                 case 'base62':
                     $data && $data = Base::encode($data);
@@ -99,8 +100,8 @@ abstract class Twoway
                     $data && $data = Base64::encodeUrlSafe($data);
                     break;
                 default:
-                    throw new TwowayException('Invalid type "%s" given, valids are: base62, base64, base64url',
-                        [$options['type']]);
+                    throw new TwowayException('Invalid type "%s" given, valids are: base62, '.
+                        'base64, base64url', [$options['type']]);
             }
 
             return $data;
@@ -135,8 +136,8 @@ abstract class Twoway
                     $data = Base64::decodeUrlSafe($data);
                     break;
                 default:
-                    throw new TwowayException('Invalid type "%s" given, valids are: base62, base64, base64url',
-                        [$options['type']]);
+                    throw new TwowayException('Invalid type "%s" given, valids are: base62, '.
+                        'base64, base64url', [$options['type']]);
             }
 
             return $instance->decode($data, true);
