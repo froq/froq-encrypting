@@ -75,9 +75,9 @@ final class OpenSsl extends Twoway
             throw new TwowayException('Invalid method "%s" given', [$method]);
         }
 
-        parent::__construct($key);
+        $this->method = $method ?? self::METHOD;
 
-        $this->method = $method ?: self::METHOD;
+        parent::__construct($key);
     }
 
     /**

@@ -75,9 +75,9 @@ final class Sodium extends Twoway
                 SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
         }
 
-        parent::__construct($key);
-
         $this->nonce = $nonce;
+
+        parent::__construct($key);
     }
 
     /**
