@@ -183,10 +183,10 @@ final class Base
             throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
         }
 
-        $ret = strpos(self::ALL, $digits[0]) | 0;
+        $ret = strpos(self::ALL_CHARS, $digits[0]) | 0;
 
         for ($i = 1, $il = strlen($digits); $i < $il; $i++) {
-            $ret = (($base * $ret) + strpos(self::ALL, $digits[$i])) | 0;
+            $ret = (($base * $ret) + strpos(self::ALL_CHARS, $digits[$i])) | 0;
         }
 
         return $ret;
@@ -207,7 +207,7 @@ final class Base
         $ret = '';
 
         do {
-            $ret = self::ALL[$digits % $base] . $ret;
+            $ret = self::ALL_CHARS[$digits % $base] . $ret;
             $digits = ($digits / $base) | 0;
         } while ($digits);
 

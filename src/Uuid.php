@@ -53,6 +53,17 @@ final class Uuid
     }
 
     /**
+     * Generate hash.
+     * @param  int $hashLength
+     * @return string
+     * @since  4.3
+     */
+    public static function generateHash(int $hashLength = 32): string
+    {
+        return self::hash(self::generate(), $hashLength);
+    }
+
+    /**
      * Generate uniq.
      * @param  bool $dash
      * @param  bool $guid
@@ -68,17 +79,6 @@ final class Uuid
         $bytes = hex2bin($uniq) . random_bytes(9);
 
         return self::format($bytes, $dash, $guid);
-    }
-
-    /**
-     * Generate hash.
-     * @param  int $hashLength
-     * @return string
-     * @since  4.3
-     */
-    public static function generateHash(int $hashLength = 32): string
-    {
-        return self::hash(self::generate(), $hashLength);
     }
 
     /**
@@ -171,13 +171,13 @@ final class Uuid
         [$sec, $msec, $hsec] = self::secs();
 
         if ($type == 1) {        // Digits (0-9) @default.
-            $out = $sec . $hsec . $msec;
+            $out = $sec . $msec . $hsec;
         } elseif ($type == 2) {  // Hexes (0-9, a-f).
-            $out = Base::toBase($sec, 16) . Base::toBase($hsec, 16) . Base::toBase($msec, 16);
+            $out = Base::toBase($sec, 16) . Base::toBase($msec, 16) . Base::toBase($hsec, 16);
         } elseif ($type == 3) {  // Chars (0-9, a-z).
-            $out = Base::toBase($sec, 36) . Base::toBase($hsec, 36) . Base::toBase($msec, 36);
+            $out = Base::toBase($sec, 36) . Base::toBase($msec, 36) . Base::toBase($hsec, 36);
         } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
-            $out = Base::toBase($sec, 62) . Base::toBase($hsec, 62) . Base::toBase($msec, 62);
+            $out = Base::toBase($sec, 62) . Base::toBase($msec, 62) . Base::toBase($hsec, 62);
         } else {
             throw new EncryptingException('Invalid type value "%s" given, valids are: 1, 2, 3, 4',
                 [$type]);
@@ -192,9 +192,9 @@ final class Uuid
      */
     private static function secs(): array
     {
-        $secs = sscanf(microtime(), '%d.%d %d');
+        $secs = explode(' ', microtime());
 
-        return [$secs[2], $secs[1], hrtime(true)];
+        return [(int) $secs[1], (int) substr($secs[0], 2, -2), hrtime(true)];
     }
 
     /**
