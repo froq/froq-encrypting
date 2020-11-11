@@ -39,7 +39,7 @@ final class Password extends Oneway
 {
     /**
      * Algo.
-     * @const int
+     * @const string
      */
     public const ALGO = PASSWORD_DEFAULT;
 
