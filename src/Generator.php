@@ -320,6 +320,7 @@ final class Generator
      * Generate one time password.
      * @param  string $key
      * @param  int    $length
+     * @param  bool   $timed
      * @return string
      * @since  4.0
      */
