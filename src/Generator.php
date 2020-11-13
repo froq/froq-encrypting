@@ -107,8 +107,8 @@ final class Generator
 
     /**
      * Generate serial.
-     * @param  int    $length
-     * @param  bool   $dated
+     * @param  int  $length
+     * @param  bool $dated
      * @return string
      * @since  4.8
      */
