@@ -55,16 +55,14 @@ final class Hash
      */
     public static function make(string $input, int $length, array $lengths = null): string
     {
-        if ($lengths && !in_array($length, $lengths, true)) {
+        $lengths = $lengths ?? array_keys(self::ALGOS);
+
+        if (!in_array($length, $lengths, true)) {
             throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
                 [$length, join(', ', $lengths)]);
         }
 
-        $algo = self::ALGOS[$length] ?? null;
-        if (!$algo) {
-            throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
-                [$length, join(', ', array_keys(self::ALGOS))]);
-        }
+        $algo = self::ALGOS[$length];
 
         return hash($algo, $input);
     }

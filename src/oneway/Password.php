@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace froq\encrypting\oneway;
 
 use froq\encrypting\oneway\{Oneway, OnewayException};
+use froq\encrypting\Base;
 
 /**
  * Password.
@@ -83,5 +84,34 @@ final class Password extends Oneway
     public function verify(string $input, string $inputHash): bool
     {
         return (bool) password_verify($input, $inputHash);
+    }
+
+    /**
+     * Generate.
+     * @param  int  $length
+     * @param  bool $puncted
+     * @return string
+     * @throws froq\encrypting\oneway\OnewayException
+     */
+    public static final function generate(int $length, bool $puncted = false): string
+    {
+        if ($length < 2) {
+            throw new OnewayException('Invalid length value "%s" given, length must be equal or '.
+                'greater than 2', [$length]);
+        }
+
+        $chars = Base::ALL_CHARS;
+        if ($puncted) { // Add punctuation chars.
+            $chars .= '!^+%&/\(){}[]<>=*?-_|$#.:,;';
+        }
+        $charsLength = strlen($chars);
+
+        $ret = '';
+
+        while (strlen($ret) < $length) {
+            $ret .= $chars[mt_rand(0, $charsLength - 1)];
+        }
+
+        return $ret;
     }
 }

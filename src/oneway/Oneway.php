@@ -60,37 +60,6 @@ abstract class Oneway
     }
 
     /**
-     * Generate.
-     * @param  int  $length
-     * @param  bool $lettersOnly
-     * @return string
-     * @since  1.0, 4.5 (Moved from Password).
-     */
-    public static final function generate(int $length = 8, bool $lettersOnly = true): string
-    {
-        // Alpha-numeric & graph characters.
-        static $alChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        static $grChars = '!^+%&/\(){}[]<>=*?-_|$#.:,;';
-
-        if ($length < 2) {
-            throw new OnewayException('Invalid length value "%s" given, length must be greater '.
-                'than 1', [$length]);
-        }
-
-        $out    = '';
-        $outLen = 0;
-
-        while ($outLen < $length) {
-            $out .= $lettersOnly
-                ? str_shuffle($alChars)
-                : str_shuffle($alChars . $grChars);
-            $outLen = strlen($out);
-        }
-
-        return substr($out, 0, $length);
-    }
-
-    /**
      * Hash make.
      * @param  string     $input
      * @param  array|null $options

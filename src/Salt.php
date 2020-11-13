@@ -70,14 +70,11 @@ final class Salt
                 '4, 5, 6', [$bpc]);
         }
 
-        $chars = Base::BASE_62_CHARS;
-        $charsLen = strlen($chars);
-        if ($bpc < 6) {
-            $chars = ($bpc == 5) ? Base::BASE_36_CHARS : Base::BASE_16_CHARS;
-            $charsLen = strlen($chars);
-        }
-
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
+
+        $chars = ($bpc == 6) ? Base::BASE_62_CHARS : (
+            ($bpc == 5) ? Base::BASE_36_CHARS : Base::BASE_16_CHARS);
+        $charsLength = strlen($chars);
 
         // Original source https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326.
         $p = 0; $q = strlen($bytes);
@@ -97,9 +94,10 @@ final class Salt
             }
 
             $i = $w & $mask;
+
             // Fix up index picking a random index.
-            if ($i > $charsLen - 1) {
-                $i = rand(0, $charsLen - 1);
+            if ($i > $charsLength - 1) {
+                $i = mt_rand(0, $charsLength - 1);
             }
 
             $out .= $chars[$i];

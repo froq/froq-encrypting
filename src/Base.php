@@ -42,15 +42,15 @@ final class Base
      * Characters.
      * @const string
      */
-    public const BASE_10_CHARS  = '0123456789',
-                 BASE_16_CHARS  = '0123456789abcdef',
-                 BASE_36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
-                 BASE_62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                 // Natural. @since 4.4
-                 BASE_62N_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+    public const // From util.sugars-constant.
+                 BASE_10_CHARS  = BASE_10_CHARS,
+                 BASE_16_CHARS  = BASE_16_CHARS,
+                 BASE_36_CHARS  = BASE_36_CHARS,
+                 BASE_62_CHARS  = BASE_62_CHARS,
+                 BASE_62N_CHARS = BASE_62N_CHARS,
                  // Misc.
                  BASE_32_CHARS  = '0123456789abcdefghjkmnpqrstvwxyz',
-                 BASE_58_CHARS  = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+                 BASE_58_CHARS  = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
                  // Fun & alias.
                  FUN_CHARS      = 'fFuUnN',
                  HEX_CHARS      = self::BASE_16_CHARS,
@@ -59,7 +59,7 @@ final class Base
     /**
      * Encode.
      * @param  string      $input
-     * @param  string|null $chars @default=base62.
+     * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
@@ -96,7 +96,7 @@ final class Base
     /**
      * Decode.
      * @param  string      $input
-     * @param  string|null $chars @default=base62.
+     * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
@@ -173,20 +173,27 @@ final class Base
 
     /**
      * From base.
-     * @param  string $digits
-     * @param  int    $base
+     * @param  int        $base
+     * @param  int|string $digits
      * @return int
+     * @throws froq\encrypting\EncryptingException
      */
-    public static function fromBase(string $digits, int $base = 62): int
+    public static function fromBase(int $base, $digits): int
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
+            throw new EncryptingException('Argument $base must be between 2-62, %s given',
+                [$base]);
+        } elseif (!is_int($digits) && !is_string($digits)) {
+            throw new EncryptingException('Argument $digits must be int|string, %s given',
+                [gettype($digits)]);
         }
 
-        $ret = strpos(self::ALL_CHARS, $digits[0]) | 0;
+        $digits = strval($digits);
+
+        $ret = strpos(self::BASE_62_CHARS, $digits[0]) | 0;
 
         for ($i = 1, $il = strlen($digits); $i < $il; $i++) {
-            $ret = (($base * $ret) + strpos(self::ALL_CHARS, $digits[$i])) | 0;
+            $ret = (($base * $ret) + strpos(self::BASE_62_CHARS, $digits[$i])) | 0;
         }
 
         return $ret;
@@ -194,20 +201,27 @@ final class Base
 
     /**
      * To base.
-     * @param  int $digits
-     * @param  int $base
+     * @param  int        $base
+     * @param  int|string $digits
      * @return string
+     * @throws froq\encrypting\EncryptingException
      */
-    public static function toBase(int $digits, int $base = 62): string
+    public static function toBase(int $base, $digits): string
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Base must be between 2 and 62, %s given', [$base]);
+            throw new EncryptingException('Argument $base must be between 2-62, %s given',
+                [$base]);
+        } elseif (!is_int($digits) && !is_string($digits)) {
+            throw new EncryptingException('Argument $digits must be int|string, %s given',
+                [gettype($digits)]);
         }
+
+        $digits = intval($digits);
 
         $ret = '';
 
         do {
-            $ret = self::ALL_CHARS[$digits % $base] . $ret;
+            $ret = self::BASE_62_CHARS[$digits % $base] . $ret;
             $digits = ($digits / $base) | 0;
         } while ($digits);
 

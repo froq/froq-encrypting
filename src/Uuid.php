@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{Base, Hash, EncryptingException};
+use froq\encrypting\{Generator, Hash};
 
 /**
  * Uuid.
@@ -40,16 +40,16 @@ final class Uuid
 {
     /**
      * Generate.
-     * @param  bool $dash
+     * @param  bool $dashed
      * @param  bool $guid
      * @return string
      */
-    public static function generate(bool $dash = true, bool $guid = false): string
+    public static function generate(bool $dashed = true, bool $guid = false): string
     {
         // Random (UUID/v4 or GUID).
         $bytes = random_bytes(16);
 
-        return self::format($bytes, $dash, $guid);
+        return self::formatBinary($bytes, $dashed, $guid);
     }
 
     /**
@@ -60,25 +60,25 @@ final class Uuid
      */
     public static function generateHash(int $hashLength = 32): string
     {
-        return self::hash(self::generate(), $hashLength);
+        return Hash::make(self::generate(false), $hashLength, [40, 16, 32, 64]);
     }
 
     /**
      * Generate uniq.
-     * @param  bool $dash
+     * @param  bool $dashed
      * @param  bool $guid
      * @return string
      * @since  4.6
      */
-    public static function generateUniq(bool $dash = true, bool $guid = false): string
+    public static function generateUniq(bool $dashed = true, bool $guid = false): string
     {
-        // Uniqid prefix (timestamp) with a random int to pad.
+        // Uniqid prefix with a random int (for fixing 14-length).
         $uniq = uniqid() . mt_rand(0, 9);
 
         // Binary of uniqid with 9-random bytes.
         $bytes = hex2bin($uniq) . random_bytes(9);
 
-        return self::format($bytes, $dash, $guid);
+        return self::formatBinary($bytes, $dashed, $guid);
     }
 
     /**
@@ -89,182 +89,92 @@ final class Uuid
      */
     public static function generateUniqHash(int $hashLength = 32): string
     {
-        return self::hash(self::generateUniq(), $hashLength);
+        return Hash::make(self::generateUniq(false), $hashLength, [40, 16, 32, 64]);
     }
 
     /**
-     * Generate simple.
+     * Generate guid.
+     * @param  bool $dashed
      * @return string
-     * @since  4.0
+     * @since  4.8
      */
-    public static function generateSimple(): string
+    public static function generateGuid(bool $dashed = true): string
     {
-        // Simple serial.
-        $date = getdate();
-        $uniq = sscanf(uniqid('', true), '%8s%6s.%s');
-
-        return sprintf('%.08s-%04x-%04x-%04x-%.6s%.6s',
-            $uniq[0], $date['year'],
-            ($date['mon'] . $date['mday']),
-            ($date['minutes'] . $date['seconds']),
-            $uniq[1], $uniq[2]
-        );
+        return self::generate($dashed, true);
     }
 
     /**
-     * Generate digit.
-     * @param  bool $rand
+     * Generate guid hash.
+     * @param  int $hashLength
      * @return string
-     * @since  4.0
+     * @since  4.8
      */
-    public static function generateDigit(bool $rand = true): string
+    public static function generateGuidHash(int $hashLength = 32): string
     {
-        // All digit.
-        if ($rand) {
-            $digits = '';
-            do {
-                $digits .= mt_rand();
-            } while (strlen($digits) < 32);
-        } else {
-            [$msec, $sec] = explode(' ', microtime());
-            $digits = $sec . hrtime(true) . substr($msec, 2);
-        }
-
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($digits, 4));
+        return Hash::make(self::generateGuid(false), $hashLength, [40, 16, 32, 64]);
     }
 
     /**
-     * Generate short.
-     * @param  int $type
-     * @return string A 16-length id.
-     * @throws froq\encrypting\EncryptingException
-     */
-    public static function generateShort(int $type = 1): string
-    {
-        [$sec, $msec] = self::secs();
-
-        if ($type == 1) { // Digits (0-9) @default.
-            $out = $sec . $msec;
-        } elseif ($type == 2) {  // Hexes (0-9, a-f).
-            $out = Base::toBase($sec, 16) . Base::toBase($msec, 16);
-        } elseif ($type == 3) {  // Chars (0-9, a-z).
-            $out = Base::toBase($sec, 36) . Base::toBase($msec, 36);
-        } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
-            $out = Base::toBase($sec, 62) . Base::toBase($msec, 62);
-        } else {
-            throw new EncryptingException('Invalid type value "%s" given, valids are: 1, 2, 3, 4',
-                [$type]);
-        }
-
-        return self::pads($out, $type, 16);
-    }
-
-    /**
-     * Generate long.
-     * @param  int $type
-     * @return string A 32-length id.
-     * @throws froq\encrypting\EncryptingException
-     * @since  3.6
-     */
-    public static function generateLong(int $type = 1): string
-    {
-        [$sec, $msec, $hsec] = self::secs();
-
-        if ($type == 1) {        // Digits (0-9) @default.
-            $out = $sec . $msec . $hsec;
-        } elseif ($type == 2) {  // Hexes (0-9, a-f).
-            $out = Base::toBase($sec, 16) . Base::toBase($msec, 16) . Base::toBase($hsec, 16);
-        } elseif ($type == 3) {  // Chars (0-9, a-z).
-            $out = Base::toBase($sec, 36) . Base::toBase($msec, 36) . Base::toBase($hsec, 36);
-        } elseif ($type == 4) {  // Chars (0-9, a-z, A-Z).
-            $out = Base::toBase($sec, 62) . Base::toBase($msec, 62) . Base::toBase($hsec, 62);
-        } else {
-            throw new EncryptingException('Invalid type value "%s" given, valids are: 1, 2, 3, 4',
-                [$type]);
-        }
-
-        return self::pads($out, $type, 32);
-    }
-
-    /**
-     * Secs.
-     * @return array<int, int>
-     */
-    private static function secs(): array
-    {
-        $secs = explode(' ', microtime());
-
-        return [(int) $secs[1], (int) substr($secs[0], 2, -2), hrtime(true)];
-    }
-
-    /**
-     * Pads.
-     * @param  string $input
-     * @param  int    $type
-     * @param  int    $length
+     * Generate serial.
+     * @param  bool $dashed
+     * @param  bool $dated
+     * @param  bool $hexed
      * @return string
+     * @since  4.0, 4.8 Replaced with generateSimple().
      */
-    private static function pads(string $input, int $type, int $length): string
+    public static function generateSerial(bool $dashed = true, bool $hexed = false, bool $dated = false): string
     {
-        $pads = '';
+        $serial = Generator::generateId(32, ($hexed ? 16 : 10), $dated);
 
-        if (strlen($input) < $length) {
-            if ($type == 1) {
-                $pads = str_shuffle(Base::BASE_10_CHARS); // Numeric.
-            } elseif ($type == 2) {
-                $pads = str_shuffle(Base::BASE_16_CHARS); // Base 16.
-            } elseif ($type == 3) {
-                $pads = str_shuffle(Base::BASE_36_CHARS); // Base 36.
-            } elseif ($type == 4) {
-                $pads = str_shuffle(Base::BASE_62_CHARS); // Base 62.
-            }
-        }
-
-        return substr($input . $pads, 0, $length);
+        return self::format($serial, $dashed);
     }
 
     /**
-     * Hash.
-     * @param  string $input
-     * @param  int    $hashLength
+     * Generate random serial.
+     * @param  bool $dashed
+     * @param  bool $hexed
      * @return string
-     * @throws froq\encrypting\EncryptingException
-     * @since  4.6
+     * @since  4.0, 4.8 Replaced with generateDigit().
      */
-    private static function hash(string $input, int $hashLength = 32): string
+    public static function generateRandomSerial(bool $dashed = true, bool $hexed = false): string
     {
-        static $hashLengths = [40, 16, 32, 64];
+        $serial = Generator::generateRandomId(32, ($hexed ? 16 : 10));
 
-        if (in_array($hashLength, $hashLengths, true)) {
-            return Hash::make($input, $hashLength);
-        }
-
-        throw new EncryptingException('Invalid hash length value "%s" given, valids are: %s',
-            [$hashLength, join(', ', $hashLengths)]);
+        return self::format($serial, $dashed);
     }
 
     /**
      * Format.
-     * @param  string $bytes
-     * @param  bool   $dash
-     * @param  bool   $guid
+     * @param  string $input
+     * @param  bool   $dashed
      * @return string
-     * @since  4.6
      */
-    private static function format(string $bytes, bool $dash, bool $guid): string
+    private static function format(string $input, bool $dashed): string
     {
-        // GUID doesn't use 4 (version) or 8, 9, A, or B.
-        if (!$guid) {
-            $bytes[6] = chr(ord($bytes[6]) & 0x0f | 0x40);
-            $bytes[8] = chr(ord($bytes[8]) & 0x3f | 0x80);
-        }
+        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
 
-        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
-
-        if (!$dash) {
+        if (!$dashed) {
             $ret = str_replace('-', '', $ret);
         }
 
         return $ret;
+    }
+
+    /**
+     * Format binary.
+     * @param  string $input
+     * @param  bool   $dashed
+     * @param  bool   $guid
+     * @return string
+     */
+    private static function formatBinary(string $input, bool $dashed, bool $guid): string
+    {
+        // GUID doesn't use 4 (version) or 8, 9, A, B.
+        if (!$guid) {
+            $input[6] = chr(ord($input[6]) & 0x0f | 0x40);
+            $input[8] = chr(ord($input[8]) & 0x3f | 0x80);
+        }
+
+        return self::format(bin2hex($input), $dashed);
     }
 }

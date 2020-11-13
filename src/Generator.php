@@ -26,128 +26,29 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{EncryptingException, Hash, Salt, Uuid};
+use froq\encrypting\{EncryptingException, Base, Hash, Salt, Uuid};
 use froq\encrypting\oneway\Password;
+use Error;
 
 /**
  * Generator.
  * @package froq\encrypting
  * @object  froq\encrypting\Generator
  * @author  Kerem Güneş <k-gun@mail.com>
- * @since   1.0
+ * @since   3.0
  * @static
  */
 final class Generator
 {
     /**
      * Generate salt.
-     * @param  int|null $length
-     * @param  int|null $bitsPerChar
+     * @param  int $length
+     * @param  int $bitsPerChar
      * @return string
-     * @since  3.0
      */
-    public static function generateSalt(int $length = null, int $bitsPerChar = null): string
+    public static function generateSalt(int $length = 40, int $bitsPerChar = 6): string
     {
         return Salt::generate($length, $bitsPerChar);
-    }
-
-    /**
-     * Generate uuid.
-     * @param  bool $dash
-     * @param  bool $guid
-     * @return string
-     * @since  3.0
-     */
-    public static function generateUuid(bool $dash = true, bool $guid = false): string
-    {
-        return Uuid::generate($dash, $guid);
-    }
-
-    /**
-     * Generate uuid hash.
-     * @param  int $hashLength
-     * @return string
-     * @since  4.3
-     */
-    public static function generateUuidHash(int $hashLength = 32): string
-    {
-        return Uuid::generateHash($hashLength);
-    }
-
-    /**
-     * Generate uniq uuid.
-     * @param  bool $dash
-     * @param  bool $guid
-     * @return string
-     * @since  4.6
-     */
-    public static function generateUniqUuid(bool $dash = true, bool $guid = false): string
-    {
-        return Uuid::generateUniq($dash, $guid);
-    }
-
-    /**
-     * Generate uniq uuid hash.
-     * @param  int $hashLength
-     * @return string
-     * @since  4.6
-     */
-    public static function generateUniqUuidHash(int $hashLength = 32): string
-    {
-        return Uuid::generateUniqHash($hashLength);
-    }
-
-    /**
-     * Generate simple uuid.
-     * @return string
-     * @since  4.0
-     */
-    public static function generateSimpleUuid(): string
-    {
-        return Uuid::generateSimple();
-    }
-
-    /**
-     * Generate digit uuid.
-     * @param  bool $rand
-     * @return string
-     * @since  4.0
-     */
-    public static function generateDigitUuid(bool $rand = true): string
-    {
-        return Uuid::generateDigit($rand);
-    }
-
-    /**
-     * Generate short uuid.
-     * @param  int $type
-     * @return string
-     * @since  3.0
-     */
-    public static function generateShortUuid(int $type = 1): string
-    {
-        return Uuid::generateShort($type);
-    }
-
-    /**
-     * Generate long uuid.
-     * @param  int $type
-     * @return string
-     * @since  3.6
-     */
-    public static function generateLongUuid(int $type = 1): string
-    {
-        return Uuid::generateLong($type);
-    }
-
-    /**
-     * Generate guid.
-     * @return string
-     * @since  4.0
-     */
-    public static function generateGuid(): string
-    {
-        return Uuid::generate(true);
     }
 
     /**
@@ -155,105 +56,199 @@ final class Generator
      * @param  int $length
      * @param  int $bitsPerChar
      * @return string
-     * @since  3.0
      */
-    public static function generateNonce(int $length = 40, int $bitsPerChar = 6): string
+    public static function generateNonce(int $length = 16, int $bitsPerChar = 4): string
     {
         return Salt::generate($length, $bitsPerChar);
     }
 
     /**
-     * Generate nonce hash.
-     * @param  int $length
-     * @param  int $bitsPerChar
-     * @param  int $hashLength
+     * Generate uuid.
+     * @param  bool $dashed
+     * @return string
+     */
+    public static function generateUuid(bool $dashed = true): string
+    {
+        return Uuid::generate($dashed);
+    }
+
+    /**
+     * Generate guid.
+     * @param  bool $dashed
      * @return string
      * @since  4.0
      */
-    public static function generateNonceHash(int $length = 40, int $bitsPerChar = 6, int $hashLength = 40): string
+    public static function generateGuid(bool $dashed = true): string
     {
-        return Hash::make(Salt::generate($length, $bitsPerChar), $hashLength);
+        return Uuid::generateGuid($dashed);
+    }
+
+    /**
+     * Generate uniq uuid.
+     * @param  bool $dashed
+     * @return string
+     * @since  4.6
+     */
+    public static function generateUniqUuid(bool $dashed = true): string
+    {
+        return Uuid::generateUniq($dashed);
     }
 
     /**
      * Generate token.
      * @param  int $hashLength
      * @return string
-     * @throws froq\encrypting\EncryptingException
      * @since  4.4
      */
-    public static function generateToken(int $hashLength = 40): string
+    public static function generateToken(int $hashLength = 32): string
     {
-        return Hash::make(
-            uniqid(random_bytes(16), true),
-            $hashLength, $hashLengths=[40, 16, 32, 64, 128] // For a safe token hash.
-        );
+        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [40, 16, 32, 64]);
     }
 
     /**
      * Generate serial.
-     * @aliasOf generateId().
-     * @since   3.7
+     * @param  int    $length
+     * @param  bool   $dated
+     * @return string
+     * @since  4.8
      */
-    public static function generateSerial(bool $useDate = false): string
+    public static function generateSerial(int $length = 20, bool $dated = false): string
     {
-        return self::generateId($useDate);
+        if ($length < 20) {
+            throw new EncryptingException('Argument $length must be minimun 20, %s given',
+                [$length]);
+        }
+
+        return self::generateId($length, 10, $dated);
     }
 
     /**
-     * Generate serial hash.
-     * @param  bool $useDate
-     * @param  int  $hashLength
-     * @return string 16|N-length hex.
-     * @since  3.7
+     * Generate random serial.
+     * @param  int $length
+     * @return string
+     * @since  4.8
      */
-    public static function generateSerialHash(bool $useDate = false, int $hashLength = 16): string
+    public static function generateRandomSerial(int $length = 20): string
     {
-        return Hash::make(self::generateSerial($useDate), $hashLength);
+        if ($length < 20) {
+            throw new EncryptingException('Argument $length must be minimun 20, %s given',
+                [$length]);
+        }
+
+        return self::generateRandomId($length, 10);
     }
 
     /**
      * Generate id.
-     * @param  bool $useDate
-     * @return string A 20|24-length digits.
-     * @since  4.0
+     * @param  int  $length
+     * @param  int  $base
+     * @param  bool $dated
+     * @return string
+     * @throws froq\encrypting\EncryptingException
+     * @since  4.8
      */
-    public static function generateId(bool $useDate = false): string
+    public static function generateId(int $length, int $base = 10, bool $dated = false): string
     {
-        $mic = explode(' ', microtime());
-        $ret = !$useDate ? $mic[1] : date('YmdHis');
+        if ($length < 10) {
+            throw new EncryptingException('Argument $length must be minimun 10, %s given',
+                [$length]);
+        } elseif ($base < 10 || $base > 62) {
+            throw new EncryptingException('Argument $base must be between 10-62, %s given',
+                [$base]);
+        }
 
-        return $ret . substr($mic[0], 2, 6) . mt_rand(1000, 9999);
+        // Now (date/time object).
+        $now = udate('', 'UTC');
+
+        // Use a date prefix or time (eg: 20121229.. or 1401873..).
+        $id = $dated ? $now->format('YmdHisu') : $now->format('Uu');
+
+        if ($base == 10) {
+            $ret = $id;
+        } else {
+            $ret = '';
+            foreach (str_split($id, 10) as $i) {
+                $ret .= Base::toBase($base, $i);
+            }
+        }
+
+        // Pad or crop if needed.
+        if (strlen($ret) < $length) {
+            $chars = substr(Base::ALL_CHARS, 0, $base);
+            $charsLength = strlen($chars);
+
+            while (strlen($ret) < $length) {
+                $ret .= $chars[mt_rand(0, $charsLength - 1)];
+            }
+        } else {
+            $ret = substr($ret, 0, $length);
+        }
+
+        return $ret;
     }
 
     /**
-     * Generate uniq id.
-     * @param  bool $useSimple
-     * @return string A 20|14-length hex.
-     * @since  4.0
+     * Generate short id.
+     * @param  int  $base
+     * @param  bool $dated
+     * @return string A 16-length id.
+     * @since  4.8 Moved from Uuid.generateShort().
      */
-    public static function generateUniqId(bool $useSimple = false): string
+    public static function generateShortId(int $base = 10, bool $dated = false): string
     {
-        $ret = uniqid('', true);
+        return self::generateId(16, $base, $dated);
+    }
 
-        if (!$useSimple) {
-            $ret = vsprintf('%14s%\'06x', explode('.', $ret));
-            return substr($ret, 0, 20);
-        }
+    /**
+     * Generate long id.
+     * @param  int  $base
+     * @param  bool $dated
+     * @return string A 32-length id.
+     * @since  4.8 Moved from Uuid.generateLong().
+     */
+    public static function generateLongId(int $base = 10, bool $dated = false): string
+    {
+        return self::generateId(32, $base, $dated);
+    }
 
-        return strstr($ret, '.', true);
+    /**
+     * Generate serial id.
+     * @param  bool $dated
+     * @return string A 20-length id (digits).
+     * @since  4.8
+     */
+    public static function generateSerialId(bool $dated = false): string
+    {
+        return self::generateId(20, 10, $dated);
     }
 
     /**
      * Generate random id.
      * @param  int $byteLength
      * @param  int $hashLength
-     * @return string N-length hex.
-     * @since  4.3
+     * @return string
+     * @since  4.8
      */
-    public static function generateRandomId(int $byteLength = 16, int $hashLength = 16): string
+    public static function generateRandomId(int $length, int $base = 10): string
     {
-        return Hash::make(random_bytes($byteLength), $hashLength);
+        if ($length < 4) {
+            throw new EncryptingException('Argument $length must be minimun 4, %s given',
+                [$length]);
+        } elseif ($base < 10 || $base > 62) {
+            throw new EncryptingException('Argument $base must be between 10-62, %s given',
+                [$base]);
+        }
+
+        $chars = substr(Base::ALL_CHARS, 0, $base);
+        $charsLength = strlen($chars);
+
+        $ret = '';
+
+        while (strlen($ret) < $length) {
+            $ret .= $chars[mt_rand(0, $charsLength - 1)];
+        }
+
+        return $ret;
     }
 
     /**
@@ -264,44 +259,42 @@ final class Generator
      */
     public static function generateSessionId(array $options = null): string
     {
-        $options = array_merge(['hash' => false, 'hashLength' => 32, 'hashUpperCase' => false],
-            $options ?? []);
+        // Extract options with defaults.
+        extract(($options ?? []) + ['hash' => false, 'hashLength' => 32, 'upper' => false]);
 
-        extract($options);
+        // Session may be not loaded.
+        try {
+            $ret = session_create_id() ?: null;
+        } catch (Error $e) {}
 
-        // May be not loaded, Salt mimics it (see the source).
-        $ret = function_exists('session_create_id') ? session_create_id() : Salt::generate(26, 5);
+        // Let Salt to mimic it.
+        $ret ??= Salt::generate(26, 5);
 
-        if ($hash) {
-            // Hash by length (default=32).
-            $ret = Hash::make($ret, $hashLength, $hashLengths=[40, 16, 32]);
-
-            if ($hashUpperCase) {
-                $ret = strtoupper($ret);
-            }
-        }
+        $hash && $ret = Hash::make($ret, $hashLength, [40, 16, 32]);
+        $upper && $ret = strtoupper($ret);
 
         return $ret;
     }
 
     /**
      * Generate object id.
-     * @param  bool   $count
+     * @param  bool   $counted
      * @return string A 24-length hex like Mongo.ObjectId.
      * @since  4.0
      */
-    public static function generateObjectId(bool $count = true): string
+    public static function generateObjectId(bool $counted = true): string
     {
         static $counter = 0;
 
-        $binary = pack('N', time()) . substr(md5(gethostname()), 0, 3)
-                . pack('n', getmypid()) . substr(pack('N', $count ? $counter++ : mt_rand()), 1, 3);
+        $number = $counted ? $counter++ : mt_rand();
+        $pack   = pack('N', time()) . substr(md5(gethostname()), 0, 3)
+                . pack('n', getmypid()) . substr(pack('N', $number), 1, 3);
 
         $ret = '';
 
-        // Convert to hex.
+        // Convert bin pack to hex.
         for ($i = 0; $i < 12; $i++) {
-            $ret .= sprintf('%02x', ord($binary[$i]));
+            $ret .= sprintf('%02x', ord($pack[$i]));
         }
 
         return $ret;
@@ -310,37 +303,36 @@ final class Generator
     /**
      * Generate password.
      * @param  int  $length
-     * @param  bool $lettersOnly
+     * @param  bool $puncted
      * @return string
-     * @since  3.0
      */
-    public static function generatePassword(int $length = 8, bool $lettersOnly = true): string
+    public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
-        return Password::generate($length, $lettersOnly);
+        return Password::generate($length, $puncted);
     }
 
     /**
      * Generate one time password.
      * @param  string $key
      * @param  int    $length
-     * @return string A time based OTP (One-Time-Password).
+     * @return string
      * @since  4.0
      */
-    public static function generateOneTimePassword(string $key, int $length = 6): string
+    public static function generateOneTimePassword(string $key, int $length = 6, bool $timed = true): string
     {
-        $time = time();
-        $data = pack('NNC*', $time >> 32, $time & 0xffffffff);
-        if (strlen($data) < 8) {
-            $data = str_pad($data, 8, chr(0), STR_PAD_LEFT);
+        $number = $timed ? time() : mt_rand();
+        $pack   = pack('NNC*', $number >> 32, $number & 0xffffffff);
+        if (strlen($pack) < 8) {
+            $pack = str_pad($pack, 8, chr(0), STR_PAD_LEFT);
         }
 
-        $hash   = hash_hmac('sha256', $data, $key);
+        $hash   = hash_hmac('sha256', $pack, $key);
         $offset = hexdec(substr($hash, -1)) * 2;
         $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
 
         $ret = strval($binary % pow(10, $length));
-        if (strlen($ret) < $length) {
-            $ret = str_pad($ret, $length, '0', STR_PAD_LEFT);
+        while (strlen($ret) < $length) {
+            $ret .= mt_rand(0, 9);
         }
 
         return $ret;
