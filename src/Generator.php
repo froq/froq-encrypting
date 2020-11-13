@@ -286,6 +286,11 @@ final class Generator
     {
         static $counter = 0;
 
+        // Init with a random start.
+        if ($counted) {
+            $counter = $counter ?: mt_rand(1000, 9999);
+        }
+
         $number = $counted ? $counter++ : mt_rand();
         $pack   = pack('N', time()) . substr(md5(gethostname()), 0, 3)
                 . pack('n', getmypid()) . substr(pack('N', $number), 1, 3);
