@@ -43,11 +43,11 @@ final class Base
      * @const string
      */
     public const // From util.sugars-constant.
-                 BASE_10_CHARS  = BASE_10_CHARS,
-                 BASE_16_CHARS  = BASE_16_CHARS,
-                 BASE_36_CHARS  = BASE_36_CHARS,
-                 BASE_62_CHARS  = BASE_62_CHARS,
-                 BASE_62N_CHARS = BASE_62N_CHARS,
+                 BASE_10_CHARS  = '0123456789',
+                 BASE_16_CHARS  = '0123456789abcdef',
+                 BASE_36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
+                 BASE_62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                 BASE_62N_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                  // Misc.
                  BASE_32_CHARS  = '0123456789abcdefghjkmnpqrstvwxyz',
                  BASE_58_CHARS  = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
