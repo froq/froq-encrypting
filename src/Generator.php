@@ -84,17 +84,6 @@ final class Generator
     }
 
     /**
-     * Generate uniq uuid.
-     * @param  bool $dashed
-     * @return string
-     * @since  4.6
-     */
-    public static function generateUniqUuid(bool $dashed = true): string
-    {
-        return Uuid::generateUniq($dashed);
-    }
-
-    /**
      * Generate token.
      * @param  int $hashLength
      * @return string
