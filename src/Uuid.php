@@ -54,13 +54,20 @@ final class Uuid
 
     /**
      * Generate hash.
-     * @param  int $hashLength
+     * @param  int  $hashLength
+     * @param  bool $format
      * @return string
      * @since  4.3
      */
-    public static function generateHash(int $hashLength = 32): string
+    public static function generateHash(int $hashLength = 32, bool $format = false): string
     {
-        return Hash::make(self::generate(false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generate(false), $hashLength, [40, 16, 32, 64]);
+
+        if ($format && strlen($hash) == 32) {
+            $hash = self::format($hash, true);
+        }
+
+        return $hash;
     }
 
     /**
@@ -76,13 +83,20 @@ final class Uuid
 
     /**
      * Generate hash guid.
-     * @param  int $hashLength
+     * @param  int  $hashLength
+     * @param  bool $format
      * @return string
      * @since  4.8
      */
-    public static function generateHashGuid(int $hashLength = 32): string
+    public static function generateHashGuid(int $hashLength = 32, bool $format = false): string
     {
-        return Hash::make(self::generateGuid(false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generateGuid(false), $hashLength, [40, 16, 32, 64]);
+
+        if ($format && strlen($hash) == 32) {
+            $hash = self::format($hash, true);
+        }
+
+        return $hash;
     }
 
     /**
@@ -105,13 +119,20 @@ final class Uuid
 
     /**
      * Generate with timestamp hash.
-     * @param  int $hashLength
+     * @param  int  $hashLength
+     * @param  bool $format
      * @return string
      * @since  4.6, 4.9 Converted from generateUniqHash().
      */
-    public static function generateHashWithTimestamp(int $hashLength = 32): string
+    public static function generateHashWithTimestamp(int $hashLength = 32, bool $format = false): string
     {
-        return Hash::make(self::generateWithTimestamp(false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generateWithTimestamp(false), $hashLength, [40, 16, 32, 64]);
+
+        if ($format && strlen($hash) == 32) {
+            $hash = self::format($hash, true);
+        }
+
+        return $hash;
     }
 
     /**
@@ -139,12 +160,19 @@ final class Uuid
      * Generate hash with namespace.
      * @param  string $namespace
      * @param  int    $hashLength
+     * @param  bool   $format
      * @return string
      * @since  4.9
      */
-    public static function generateHashWithNamespace(string $namespace, int $hashLength = 32): string
+    public static function generateHashWithNamespace(string $namespace, int $hashLength = 32, bool $format = false): string
     {
-        return Hash::make(self::generateWithNamespace($namespace, false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generateWithNamespace($namespace, false), $hashLength, [40, 16, 32, 64]);
+
+        if ($format && strlen($hash) == 32) {
+            $hash = self::format($hash, true);
+        }
+
+        return $hash;
     }
 
     /**
