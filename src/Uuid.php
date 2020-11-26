@@ -63,7 +63,7 @@ final class Uuid
     {
         $hash = Hash::make(self::generate(false), $hashLength, [40, 16, 32, 64]);
 
-        if ($format && strlen($hash) == 32) {
+        if ($format && $hashLength == 32) {
             $hash = self::format($hash, true);
         }
 
