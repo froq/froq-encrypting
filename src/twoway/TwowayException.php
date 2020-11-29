@@ -17,5 +17,5 @@ use froq\encrypting\EncryptingException;
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  */
-final class TwowayException extends EncryptingException
+class TwowayException extends EncryptingException
 {}

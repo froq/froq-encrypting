@@ -17,5 +17,5 @@ use froq\encrypting\EncryptingException;
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   4.0
  */
-final class OnewayException extends EncryptingException
+class OnewayException extends EncryptingException
 {}
