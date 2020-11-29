@@ -21,7 +21,7 @@ abstract class Oneway
      * Options.
      * @var array<string, any|null>
      */
-    protected array $options = [];
+    protected array $options;
 
     /**
      * Constructor.
@@ -29,7 +29,7 @@ abstract class Oneway
      */
     public function __construct(array $options = null)
     {
-        $this->options = array_merge($this->options, $options ?? []);
+        $this->options = $options ?? [];
     }
 
     /**
