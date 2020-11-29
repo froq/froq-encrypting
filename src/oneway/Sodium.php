@@ -73,7 +73,7 @@ final class Sodium extends Oneway
         $inputHash = false;
 
         try { // In case any other Sodium errors happen.
-            $inputHash =@ sodium_crypto_pwhash_str(
+            $inputHash = sodium_crypto_pwhash_str(
                 $input, $this->options['opslimit'], $this->options['memlimit']
             );
         } catch (SodiumException $e) {}

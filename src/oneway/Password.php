@@ -55,7 +55,7 @@ final class Password extends Oneway
         // Not used in function options.
         unset($options['algo']);
 
-        $inputHash =@ password_hash($input, $algo, $options);
+        $inputHash = password_hash($input, $algo, $options);
 
         return ($inputHash !== false) ? $inputHash : null; // Null=Error.
     }
