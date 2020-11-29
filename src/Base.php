@@ -56,8 +56,7 @@ final class Base
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
-                '%s given', [$base]);
+            throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
         }
 
         // Original source https://github.com/tuupola/base62.
@@ -93,14 +92,12 @@ final class Base
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
-                '%s given', [$base]);
+            throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
         }
 
         if (strlen($input) !== strspn($input, $chars)) {
             preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
-            throw new EncryptingException('Invalid characters "%s" found in given input',
-                [$match[0]]);
+            throw new EncryptingException("Invalid characters '%s' found in given input", $match[0]);
         }
 
         // Original source https://github.com/tuupola/base62.
@@ -163,11 +160,9 @@ final class Base
     public static function fromBase(int $base, $digits): int
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given',
-                [$base]);
+            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         } elseif (!is_int($digits) && !is_string($digits)) {
-            throw new EncryptingException('Argument $digits must be int|string, %s given',
-                [gettype($digits)]);
+            throw new EncryptingException('Argument $digits must be int|string, %s given', gettype($digits));
         }
 
         $digits = strval($digits);
@@ -191,11 +186,9 @@ final class Base
     public static function toBase(int $base, $digits): string
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given',
-                [$base]);
+            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         } elseif (!is_int($digits) && !is_string($digits)) {
-            throw new EncryptingException('Argument $digits must be int|string, %s given',
-                [gettype($digits)]);
+            throw new EncryptingException('Argument $digits must be int|string, %s given', gettype($digits));
         }
 
         $digits = intval($digits);

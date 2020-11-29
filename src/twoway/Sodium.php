@@ -42,8 +42,8 @@ final class Sodium extends Twoway
 
         // Check key length.
         if ($keyLength < 16) {
-            throw new TwowayException('Invalid key given, minimum key length is 16 (tip: use '.
-                'Sodium::generateKey() method to get a strong key)');
+            throw new TwowayException("Invalid key length '%s', minimum key length is 16 (tip: use "
+                . "Sodium::generateKey() method to get a strong key)", $keyLength);
         }
 
         // Key size must be 32-length.
@@ -53,8 +53,8 @@ final class Sodium extends Twoway
 
         // Check nonce length.
         if (strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
-            throw new TwowayException('Invalid nonce given, nonce length must be '.
-                SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+            throw new TwowayException("Invalid nonce length '%s', nonce length must be '%s'",
+                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]);
         }
 
         $this->nonce = $nonce;

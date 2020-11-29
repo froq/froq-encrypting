@@ -40,7 +40,7 @@ final class Hash
         $lengths = $lengths ?? array_keys(self::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
-            throw new EncryptingException('Invalid length value "%s" given, valids are: %s',
+            throw new EncryptingException("Invalid length value '%s' given, valids are: %s",
                 [$length, join(', ', $lengths)]);
         }
 

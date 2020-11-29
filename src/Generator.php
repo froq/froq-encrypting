@@ -86,8 +86,7 @@ final class Generator
     public static function generateSerial(int $length = 20, bool $dated = false): string
     {
         if ($length < 20) {
-            throw new EncryptingException('Argument $length must be minimun 20, %s given',
-                [$length]);
+            throw new EncryptingException('Argument $length must be minimun 20, %s given', $length);
         }
 
         return self::generateId($length, 10, $dated);
@@ -102,8 +101,7 @@ final class Generator
     public static function generateRandomSerial(int $length = 20): string
     {
         if ($length < 20) {
-            throw new EncryptingException('Argument $length must be minimun 20, %s given',
-                [$length]);
+            throw new EncryptingException('Argument $length must be minimun 20, %s given', $length);
         }
 
         return self::generateRandomId($length, 10);
@@ -121,11 +119,9 @@ final class Generator
     public static function generateId(int $length, int $base = 10, bool $dated = false): string
     {
         if ($length < 10) {
-            throw new EncryptingException('Argument $length must be minimun 10, %s given',
-                [$length]);
+            throw new EncryptingException('Argument $length must be minimun 10, %s given', $length);
         } elseif ($base < 10 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 10-62, %s given',
-                [$base]);
+            throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
         }
 
         // Now (date/time object).
@@ -203,11 +199,9 @@ final class Generator
     public static function generateRandomId(int $length, int $base = 10): string
     {
         if ($length < 4) {
-            throw new EncryptingException('Argument $length must be minimun 4, %s given',
-                [$length]);
+            throw new EncryptingException('Argument $length must be minimun 4, %s given', $length);
         } elseif ($base < 10 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 10-62, %s given',
-                [$base]);
+            throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
         }
 
         $chars = substr(Base::ALL_CHARS, 0, $base);
