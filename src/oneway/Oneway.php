@@ -43,40 +43,40 @@ abstract class Oneway
 
     /**
      * Hash make.
-     * @param  string     $input
+     * @param  string     $in
      * @param  array|null $options
      * @return ?string
      * @since  4.5
      */
-    public static final function make(string $input, array $options = null): ?string
+    public static final function make(string $in, array $options = null): ?string
     {
-        return (new static($options))->hash($input);
+        return (new static($options))->hash($in);
     }
 
     /**
      * Hash verify.
-     * @param  string $input
-     * @param  string $inputHash
+     * @param  string $in
+     * @param  string $hash
      * @return bool
      * @since  4.5
      */
-    public static final function validate(string $input, string $inputHash): bool
+    public static final function validate(string $in, string $hash): bool
     {
-        return (new static())->verify($input, $inputHash);
+        return (new static)->verify($in, $hash);
     }
 
     /**
      * Hash.
-     * @param  string $input
+     * @param  string $in
      * @return ?string
      */
-    public abstract function hash(string $input): ?string;
+    public abstract function hash(string $in): ?string;
 
     /**
      * Verify.
-     * @param  string $input
-     * @param  string $inputHash
+     * @param  string $in
+     * @param  string $hash
      * @return bool
      */
-    public abstract function verify(string $input, string $inputHash): bool;
+    public abstract function verify(string $in, string $hash): bool;
 }

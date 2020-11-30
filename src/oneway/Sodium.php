@@ -67,24 +67,24 @@ final class Sodium extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $input): ?string
+    public function hash(string $in): ?string
     {
-        $inputHash = false;
+        $hash = false;
 
         try { // In case any other Sodium errors happen.
-            $inputHash = sodium_crypto_pwhash_str(
-                $input, $this->options['opslimit'], $this->options['memlimit']
+            $hash = sodium_crypto_pwhash_str(
+                $in, $this->options['opslimit'], $this->options['memlimit']
             );
         } catch (SodiumException $e) {}
 
-        return ($inputHash !== false) ? $inputHash : null; // Null=Error.
+        return ($hash !== false) ? $hash : null; // Null=Error.
     }
 
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function verify(string $input, string $inputHash): bool
+    public function verify(string $in, string $hash): bool
     {
-        return (bool) sodium_crypto_pwhash_str_verify($inputHash, $input);
+        return (bool) sodium_crypto_pwhash_str_verify($hash, $in);
     }
 }

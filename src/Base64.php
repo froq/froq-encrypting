@@ -20,43 +20,43 @@ final class Base64
 {
     /**
      * Encode.
-     * @param  string $input
+     * @param  string $in
      * @return string
      */
-    public static function encode(string $input): string
+    public static function encode(string $in): string
     {
-        return (string) base64_encode($input);
+        return (string) base64_encode($in);
     }
 
     /**
      * Decode.
-     * @param  string $input
+     * @param  string $in
      * @param  bool   $strict
      * @return string
      */
-    public static function decode(string $input, bool $strict = false): string
+    public static function decode(string $in, bool $strict = false): string
     {
-        return (string) base64_decode($input, $strict);
+        return (string) base64_decode($in, $strict);
     }
 
     /**
      * Encode URL-safe.
-     * @param  string $input
+     * @param  string $in
      * @return string
      */
-    public static function encodeUrlSafe(string $input): string
+    public static function encodeUrlSafe(string $in): string
     {
-        return chop(strtr((string) base64_encode($input), '/+', '_-'), '=');
+        return chop(strtr((string) base64_encode($in), '/+', '_-'), '=');
     }
 
     /**
      * Decode URL-safe.
-     * @param  string $input
+     * @param  string $in
      * @param  bool   $strict
      * @return string
      */
-    public static function decodeUrlSafe(string $input, bool $strict = false): string
+    public static function decodeUrlSafe(string $in, bool $strict = false): string
     {
-        return (string) base64_decode(strtr($input, '_-', '/+'), $strict);
+        return (string) base64_decode(strtr($in, '_-', '/+'), $strict);
     }
 }

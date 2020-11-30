@@ -208,35 +208,35 @@ final class Uuid
 
     /**
      * Format.
-     * @param  string $input
+     * @param  string $in
      * @param  bool   $dashed
      * @return string
      */
-    private static function format(string $input, bool $dashed): string
+    private static function format(string $in, bool $dashed): string
     {
-        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
+        $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
 
         // Drop if false.
-        $dashed || $ret = str_replace('-', '', $ret);
+        $dashed || $out = str_replace('-', '', $out);
 
-        return $ret;
+        return $out;
     }
 
     /**
      * Format binary.
-     * @param  string $input
+     * @param  string $in
      * @param  bool   $dashed
      * @param  bool   $guid
      * @return string
      */
-    private static function formatBinary(string $input, bool $dashed, bool $guid): string
+    private static function formatBinary(string $in, bool $dashed, bool $guid): string
     {
         // GUID doesn't use 4 (version) or 8, 9, A, B.
         if (!$guid) {
-            $input[6] = chr(ord($input[6]) & 0x0f | 0x40);
-            $input[8] = chr(ord($input[8]) & 0x3f | 0x80);
+            $in[6] = chr(ord($in[6]) & 0x0f | 0x40);
+            $in[8] = chr(ord($in[8]) & 0x3f | 0x80);
         }
 
-        return self::format(bin2hex($input), $dashed);
+        return self::format(bin2hex($in), $dashed);
     }
 }

@@ -29,13 +29,13 @@ final class Hash
 
     /**
      * Hash.
-     * @param  string     $input
+     * @param  string     $in
      * @param  int        $length
      * @param  array|null $lengths
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function make(string $input, int $length, array $lengths = null): string
+    public static function make(string $in, int $length, array $lengths = null): string
     {
         $lengths = $lengths ?? array_keys(self::ALGOS);
 
@@ -46,6 +46,6 @@ final class Hash
 
         $algo = self::ALGOS[$length];
 
-        return hash($algo, $input);
+        return hash($algo, $in);
     }
 }

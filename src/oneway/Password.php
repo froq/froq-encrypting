@@ -47,7 +47,7 @@ final class Password extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $input): ?string
+    public function hash(string $in): ?string
     {
         $algo    = $this->options['algo'];
         $options = $this->options;
@@ -55,17 +55,17 @@ final class Password extends Oneway
         // Not used in function options.
         unset($options['algo']);
 
-        $inputHash = password_hash($input, $algo, $options);
+        $hash = password_hash($in, $algo, $options);
 
-        return ($inputHash !== false) ? $inputHash : null; // Null=Error.
+        return ($hash !== false) ? $hash : null; // Null=Error.
     }
 
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function verify(string $input, string $inputHash): bool
+    public function verify(string $in, string $hash): bool
     {
-        return (bool) password_verify($input, $inputHash);
+        return (bool) password_verify($in, $hash);
     }
 
     /**
