@@ -141,13 +141,11 @@ final class Generator
 
         // Pad if needed.
         while (strlen($ret) < $length) {
-            $pad = mt_rand();
-
-            // Convert non-dec ids.
-            $ret .= ($base == 10) ? $pad : Base::toBase($base, $pad);
+            $ret .= ($base == 10) ? mt_rand()
+                : Base::toBase($base, mt_rand());
         }
 
-        $ret = strcut($ret, $length);
+        $ret = substr($ret, 0, $length);
 
         return $ret;
     }
