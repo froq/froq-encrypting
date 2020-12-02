@@ -139,17 +139,15 @@ final class Generator
             }
         }
 
-        // Pad or crop if needed.
-        if (strlen($ret) < $length) {
-            $chars = substr(Base::ALL_CHARS, 0, $base);
-            $charsLength = strlen($chars);
+        // Pad if needed.
+        while (strlen($ret) < $length) {
+            $pad = mt_rand();
 
-            while (strlen($ret) < $length) {
-                $ret .= $chars[mt_rand(0, $charsLength - 1)];
-            }
-        } else {
-            $ret = substr($ret, 0, $length);
+            // Convert non-dec ids.
+            $ret .= ($base == 10) ? $pad : Base::toBase($base, $pad);
         }
+
+        $ret = strcut($ret, $length);
 
         return $ret;
     }
