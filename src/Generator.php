@@ -226,7 +226,7 @@ final class Generator
         // Session may be not loaded.
         try {
             $ret = session_create_id() ?: null;
-        } catch (Error $e) {}
+        } catch (Error) {}
 
         // Let Salt to mimic it.
         $ret ??= Salt::generate(26, 5);
