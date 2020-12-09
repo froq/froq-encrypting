@@ -81,7 +81,7 @@ final class Sodium extends Twoway
             if ($out !== false) {
                 return !$raw ? base64_encode($out) : $out;
             }
-        } catch (SodiumException $e) {}
+        } catch (SodiumException) {}
 
         return null;
     }
@@ -98,7 +98,7 @@ final class Sodium extends Twoway
             if ($out !== false) {
                 return $out;
             }
-        } catch (SodiumException $e) {}
+        } catch (SodiumException) {}
 
         return null;
     }

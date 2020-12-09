@@ -75,7 +75,7 @@ final class Sodium extends Oneway
             $hash = sodium_crypto_pwhash_str(
                 $in, $this->options['opslimit'], $this->options['memlimit']
             );
-        } catch (SodiumException $e) {}
+        } catch (SodiumException) {}
 
         return ($hash !== false) ? $hash : null; // Null=Error.
     }
