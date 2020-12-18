@@ -157,12 +157,10 @@ final class Base
      * @return int
      * @throws froq\encrypting\EncryptingException
      */
-    public static function fromBase(int $base, $digits): int
+    public static function fromBase(int $base, int|string $digits): int
     {
         if ($base < 2 || $base > 62) {
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
-        } elseif (!is_int($digits) && !is_string($digits)) {
-            throw new EncryptingException('Argument $digits must be int|string, %s given', gettype($digits));
         }
 
         $digits = strval($digits);
@@ -183,12 +181,10 @@ final class Base
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function toBase(int $base, $digits): string
+    public static function toBase(int $base, int|string $digits): string
     {
         if ($base < 2 || $base > 62) {
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
-        } elseif (!is_int($digits) && !is_string($digits)) {
-            throw new EncryptingException('Argument $digits must be int|string, %s given', gettype($digits));
         }
 
         $digits = intval($digits);
