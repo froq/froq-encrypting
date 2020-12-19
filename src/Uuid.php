@@ -47,9 +47,7 @@ final class Uuid
         $hash = Hash::make(self::generate(false), $hashLength, [40, 16, 32, 64]);
 
         if ($format) {
-            if ($hashLength != 32) {
-                throw new EncryptingException('Format option for only 32-length hashes');
-            }
+            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
 
             $hash = self::format($hash, true);
         }
@@ -81,9 +79,7 @@ final class Uuid
         $hash = Hash::make(self::generateGuid(false), $hashLength, [40, 16, 32, 64]);
 
         if ($format) {
-            if ($hashLength != 32) {
-                throw new EncryptingException('Format option for only 32-length hashes');
-            }
+            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
 
             $hash = self::format($hash, true);
         }
@@ -122,9 +118,7 @@ final class Uuid
         $hash = Hash::make(self::generateWithTimestamp(false), $hashLength, [40, 16, 32, 64]);
 
         if ($format) {
-            if ($hashLength != 32) {
-                throw new EncryptingException('Format option for only 32-length hashes');
-            }
+            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
 
             $hash = self::format($hash, true);
         }
@@ -167,9 +161,7 @@ final class Uuid
         $hash = Hash::make(self::generateWithNamespace($namespace, false), $hashLength, [40, 16, 32, 64]);
 
         if ($format) {
-            if ($hashLength != 32) {
-                throw new EncryptingException('Format option for only 32-length hashes');
-            }
+            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
 
             $hash = self::format($hash, true);
         }
