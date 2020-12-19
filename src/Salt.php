@@ -27,27 +27,27 @@ final class Salt
     public const LENGTH = 128;
 
     /**
-     * Bits-per-char.
+     * Bits-per-character.
      * @const int
      */
     public const BITS_PER_CHAR = 6;
 
     /**
      * Generate.
-     * @param  int|null $length      Output length.
-     * @param  int|null $bitsPerChar 4=base16 (hex), 5=base36, 6=base62.
+     * @param  int|null $length Output length.
+     * @param  int|null $bpc    4=base16 (hex), 5=base36, 6=base62.
      * @return string
      * @throws froq\encrypting\EncryptingException.
      */
-    public static function generate(int $length = null, int $bitsPerChar = null): string
+    public static function generate(int $length = null, int $bpc = null): string
     {
         $len = $length ?? self::LENGTH;
-        $bpc = $bitsPerChar ?? self::BITS_PER_CHAR;
+        $bpc = $bpc    ?? self::BITS_PER_CHAR;
 
         if ($len < 2) {
-            throw new EncryptingException("Invalid length value '%s', length must be greater than 1", $len);
+            throw new EncryptingException('Invalid length value `%s`, length must be greater than 1', $len);
         } elseif ($bpc < 4 || $bpc > 6) {
-            throw new EncryptingException("Invalid bits-per-char value '%s', valids are: 4, 5, 6", $bpc);
+            throw new EncryptingException('Invalid bits-per-character value `%s`, valids are: 4, 5, 6', $bpc);
         }
 
         $bytes = random_bytes((int) ceil($len * $bpc / 8));

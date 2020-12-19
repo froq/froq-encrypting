@@ -25,23 +25,23 @@ final class Generator
     /**
      * Generate salt.
      * @param  int $length
-     * @param  int $bitsPerChar
+     * @param  int $bpc
      * @return string
      */
-    public static function generateSalt(int $length = 40, int $bitsPerChar = 6): string
+    public static function generateSalt(int $length = 40, int $bpc = 6): string
     {
-        return Salt::generate($length, $bitsPerChar);
+        return Salt::generate($length, $bpc);
     }
 
     /**
      * Generate nonce.
      * @param  int $length
-     * @param  int $bitsPerChar
+     * @param  int $bpc
      * @return string
      */
-    public static function generateNonce(int $length = 16, int $bitsPerChar = 4): string
+    public static function generateNonce(int $length = 16, int $bpc = 4): string
     {
-        return Salt::generate($length, $bitsPerChar);
+        return Salt::generate($length, $bpc);
     }
 
     /**

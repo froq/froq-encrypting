@@ -60,18 +60,18 @@ final class Base
         }
 
         // Original source https://github.com/tuupola/base62.
-        $tmp = array_map('ord', str_split($in));
-        $zrs = 0;
-        while ($tmp && $tmp[0] === 0) {
-            $zrs++; array_shift($tmp);
+        $temp = array_map('ord', str_split($in));
+        $zero = 0;
+        while ($temp && $temp[0] === 0) {
+            $zero++; array_shift($temp);
         }
 
-        $tmp = self::convert($tmp, 256, $base);
-        if ($zrs) {
-            $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
+        $temp = self::convert($temp, 256, $base);
+        if ($zero) {
+            $temp = array_merge(array_fill(0, $zero, 0), $temp);
         }
 
-        return join('', array_map(fn($i) => $chars[$i], $tmp));
+        return join('', array_map(fn($i) => $chars[$i], $temp));
     }
 
     /**
@@ -97,22 +97,22 @@ final class Base
 
         if (strlen($in) !== strspn($in, $chars)) {
             preg_match('~[^'. preg_quote($chars, '~') .']+~', $in, $match);
-            throw new EncryptingException("Invalid characters '%s' found in given input", $match[0]);
+            throw new EncryptingException('Invalid characters `%s` found in given input', $match[0]);
         }
 
         // Original source https://github.com/tuupola/base62.
-        $tmp = array_map(fn($c) => strpos($chars, $c), str_split($in));
-        $zrs = 0;
-        while ($tmp && $tmp[0] === 0) {
-            $zrs++; array_shift($tmp);
+        $temp = array_map(fn($c) => strpos($chars, $c), str_split($in));
+        $zero = 0;
+        while ($temp && $temp[0] === 0) {
+            $zero++; array_shift($temp);
         }
 
-        $tmp = self::convert($tmp, $base, 256);
-        if ($zrs) {
-            $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
+        $temp = self::convert($temp, $base, 256);
+        if ($zero) {
+            $temp = array_merge(array_fill(0, $zero, 0), $temp);
         }
 
-        return join('', array_map('chr', $tmp));
+        return join('', array_map('chr', $temp));
     }
 
     /**

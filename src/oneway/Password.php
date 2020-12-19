@@ -78,8 +78,8 @@ final class Password extends Oneway
     public static final function generate(int $length, bool $puncted = false): string
     {
         if ($length < 2) {
-            throw new OnewayException("Invalid length value '%s' given, length must be equal or "
-                . "greater than 2", $length);
+            throw new OnewayException('Invalid length value `%s`, length must be equal or greater'
+                . ' than 2', $length);
         }
 
         $chars = Base::ALL_CHARS;

@@ -55,10 +55,10 @@ final class Sodium extends Oneway
         static $minMemlimit = 1024 * 8; // 8KB
 
         if ($options['opslimit'] < 1) {
-            throw new OnewayException("Option 'opslimit' is too low, minimum value is 1");
+            throw new OnewayException('Option `opslimit` is too low, minimum value is 1');
         }
         if ($options['memlimit'] < $minMemlimit) {
-            throw new OnewayException("Option 'memlimit' is too low, minimum value is 8KB (8192 bytes)");
+            throw new OnewayException('Option `memlimit` is too low, minimum value is 8KB (8192 bytes)');
         }
 
         parent::__construct($options);
