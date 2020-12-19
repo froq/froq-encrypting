@@ -34,9 +34,7 @@ final class Sodium extends Twoway
      */
     public function __construct(string $key, string $nonce)
     {
-        if (!extension_loaded('sodium')) {
-            throw new TwowayException('sodium extension not loaded');
-        }
+        extension_loaded('sodium') || throw new TwowayException('sodium extension not loaded');
 
         $keyLength = strlen($key);
 

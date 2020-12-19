@@ -41,9 +41,7 @@ final class OpenSsl extends Twoway
      */
     public function __construct(string $key, string $method = null)
     {
-        if (!extension_loaded('openssl')) {
-            throw new TwowayException('openssl extension not found');
-        }
+        extension_loaded('openssl') || throw new TwowayException('openssl extension not found');
 
         // Check key length.
         if (strlen($key) < 16) {
@@ -53,7 +51,7 @@ final class OpenSsl extends Twoway
 
         // Check method validity.
         if ($method && !in_array($method, openssl_get_cipher_methods())) {
-            throw new TwowayException('Invalid method method `%s`', $method);
+            throw new TwowayException('Invalid cipher method `%s`', $method);
         }
 
         $this->method = $method ?? self::METHOD;
