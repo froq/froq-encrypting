@@ -36,7 +36,7 @@ abstract class Oneway
      * Get option.
      * @return array<string, any|null>
      */
-    public final function getOptions(): array
+    public final function options(): array
     {
         return $this->options;
     }
