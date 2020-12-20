@@ -63,33 +63,26 @@ abstract class Twoway
      */
     public static final function encrypt(string $data, array $options): ?string
     {
-        $instance = new static(
-            // Key is required, nonce for Sodium, method for OpenSsl.
-            $options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null
-        );
+        // Key is required, nonce for Sodium, method for OpenSsl.
+        $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
 
         if (isset($options['type'])) {
-            $data = $instance->encode($data, true);
+            $data = $that->encode($data, true);
 
-            switch ($options['type']) {
-                case 'base62':
-                    $data && $data = Base::encode($data);
-                    break;
-                case 'base64':
-                    $data && $data = Base64::encode($data);
-                    break;
-                case 'base64url':
-                    $data && $data = Base64::encodeUrlSafe($data);
-                    break;
-                default:
-                    throw new TwowayException('Invalid type `%s`, valids are: base62, base64, base64url',
-                        $options['type']);
-            }
+            $data = match ($options['type']) {
+                'base62'    => $data ? Base::encode($data) : null,
+                'base64'    => $data ? Base64::encode($data) : null,
+                'base64url' => $data ? Base64::encodeUrlSafe($data) : null,
+                default     => throw new TwowayException(
+                    'Invalid type `%s`, valids are: base62, base64, base64url',
+                    $options['type']
+                )
+            };
 
             return $data;
         }
 
-        return $instance->encode($data);
+        return $that->encode($data);
     }
 
     /**
@@ -101,31 +94,24 @@ abstract class Twoway
      */
     public static final function decrypt(string $data, array $options): ?string
     {
-        $instance = new static(
-            // Key is required, nonce for Sodium, method for OpenSsl.
-            $options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null
-        );
+        // Key is required, nonce for Sodium, method for OpenSsl.
+        $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
 
         if (isset($options['type'])) {
-            switch ($options['type']) {
-                case 'base62':
-                    $data = Base::decode($data);
-                    break;
-                case 'base64':
-                    $data = Base64::decode($data);
-                    break;
-                case 'base64url':
-                    $data = Base64::decodeUrlSafe($data);
-                    break;
-                default:
-                    throw new TwowayException('Invalid type `%s`, valids are: base62, base64, base64url',
-                        $options['type']);
-            }
+            $data = match ($options['type']) {
+                'base62'    => Base::decode($data),
+                'base64'    => Base64::decode($data),
+                'base64url' => Base64::decodeUrlSafe($data),
+                default     => throw new TwowayException(
+                    'Invalid type `%s`, valids are: base62, base64, base64url',
+                    $options['type'
+                ])
+            };
 
-            return $instance->decode($data, true);
+            return $that->decode($data, true);
         }
 
-        return $instance->decode($data);
+        return $that->decode($data);
     }
 
     /**
