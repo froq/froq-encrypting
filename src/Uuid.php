@@ -12,6 +12,10 @@ use froq\encrypting\{EncryptingException, Generator, Hash};
 /**
  * Uuid.
  *
+ * Represents a static UUID class that able to generate UUIDs (v4) from random bytes and optionally with
+ * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without given lengths, also able
+ * to generate time-based or random serials.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Uuid
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -21,7 +25,8 @@ use froq\encrypting\{EncryptingException, Generator, Hash};
 final class Uuid
 {
     /**
-     * Generate.
+     * Generate a UUID with random 16-length bytes.
+     *
      * @param  bool $dashed
      * @param  bool $guid
      * @return string
@@ -35,7 +40,8 @@ final class Uuid
     }
 
     /**
-     * Generate hash.
+     * Generate a hash from a generated UUID.
+     *
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
@@ -56,7 +62,8 @@ final class Uuid
     }
 
     /**
-     * Generate guid.
+     * Generate a GUID with random 16-length bytes.
+     *
      * @param  bool $dashed
      * @return string
      * @since  4.8
@@ -67,14 +74,15 @@ final class Uuid
     }
 
     /**
-     * Generate hash guid.
+     * Generate a GUID hash from a generated GUID.
+     *
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
      * @throws froq\encrypting\EncryptingException
      * @since  4.8
      */
-    public static function generateHashGuid(int $hashLength = 32, bool $format = false): string
+    public static function generateGuidHash(int $hashLength = 32, bool $format = false): string
     {
         $hash = Hash::make(self::generateGuid(false), $hashLength, [40, 16, 32, 64]);
 
@@ -88,7 +96,8 @@ final class Uuid
     }
 
     /**
-     * Generate with timestamp.
+     * Generate a UUID with timestamp and random 12-length bytes.
+     *
      * @param  bool $dashed
      * @param  bool $guid
      * @return string
@@ -106,14 +115,15 @@ final class Uuid
     }
 
     /**
-     * Generate with timestamp hash.
+     * Generate a timestamp-ed UUID hash.
+     *
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
      * @throws froq\encrypting\EncryptingException
      * @since  4.6, 4.9 Converted from generateUniqHash().
      */
-    public static function generateHashWithTimestamp(int $hashLength = 32, bool $format = false): string
+    public static function generateWithTimestampHash(int $hashLength = 32, bool $format = false): string
     {
         $hash = Hash::make(self::generateWithTimestamp(false), $hashLength, [40, 16, 32, 64]);
 
@@ -127,7 +137,8 @@ final class Uuid
     }
 
     /**
-     * Generate with namespace.
+     * Generate a UUID with a namespace and random 10-length bytes.
+     *
      * @param  string $namespace
      * @param  bool   $dashed
      * @param  bool   $guid
@@ -148,7 +159,8 @@ final class Uuid
     }
 
     /**
-     * Generate hash with namespace.
+     * Generate a namespace-d UUID hash.
+     *
      * @param  string $namespace
      * @param  int    $hashLength
      * @param  bool   $format
@@ -156,7 +168,7 @@ final class Uuid
      * @throws froq\encrypting\EncryptingException
      * @since  4.9
      */
-    public static function generateHashWithNamespace(string $namespace, int $hashLength = 32, bool $format = false): string
+    public static function generateWithNamespaceHash(string $namespace, int $hashLength = 32, bool $format = false): string
     {
         $hash = Hash::make(self::generateWithNamespace($namespace, false), $hashLength, [40, 16, 32, 64]);
 
@@ -170,7 +182,8 @@ final class Uuid
     }
 
     /**
-     * Generate serial.
+     * Generate a 32-length serial.
+     *
      * @param  bool $dashed
      * @param  bool $dated
      * @param  bool $hexed
@@ -185,7 +198,8 @@ final class Uuid
     }
 
     /**
-     * Generate random serial.
+     * Generate a 32-length random serial.
+     *
      * @param  bool $dashed
      * @param  bool $hexed
      * @return string
@@ -200,9 +214,11 @@ final class Uuid
 
     /**
      * Format.
+     *
      * @param  string $in
      * @param  bool   $dashed
      * @return string
+     * @internal
      */
     private static function format(string $in, bool $dashed): string
     {
@@ -216,10 +232,12 @@ final class Uuid
 
     /**
      * Format binary.
+     *
      * @param  string $in
      * @param  bool   $dashed
      * @param  bool   $guid
      * @return string
+     * @internal
      */
     private static function formatBinary(string $in, bool $dashed, bool $guid): string
     {
