@@ -10,6 +10,8 @@ namespace froq\encrypting;
 /**
  * Base 64.
  *
+ * Represents a static class which provides a Base-64 encoding/decoding methods and also URL-safe stuff.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Base64
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -19,7 +21,8 @@ namespace froq\encrypting;
 final class Base64
 {
     /**
-     * Encode.
+     * Encode given input.
+     *
      * @param  string $in
      * @return string
      */
@@ -29,7 +32,8 @@ final class Base64
     }
 
     /**
-     * Decode.
+     * Decode given input.
+     *
      * @param  string $in
      * @param  bool   $strict
      * @return string
@@ -40,7 +44,8 @@ final class Base64
     }
 
     /**
-     * Encode URL-safe.
+     * Encode given input with URL-safe method.
+     *
      * @param  string $in
      * @return string
      */
@@ -50,7 +55,8 @@ final class Base64
     }
 
     /**
-     * Decode URL-safe.
+     * Decode given input with URL-safe method.
+     *
      * @param  string $in
      * @param  bool   $strict
      * @return string

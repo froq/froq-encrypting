@@ -12,6 +12,9 @@ use froq\encrypting\{Base, EncryptingException};
 /**
  * Salt.
  *
+ * Represents a static class which is able to generate random characters with given length these may be used
+ * as IDs, salts or nonces.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Salt
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -33,7 +36,8 @@ final class Salt
     public const BITS_PER_CHAR = 6;
 
     /**
-     * Generate.
+     * Generate characters with/without given length or bpc.
+     *
      * @param  int|null $length Output length.
      * @param  int|null $bpc    4=base16 (hex), 5=base36, 6=base62.
      * @return string
@@ -53,7 +57,8 @@ final class Salt
         $bytes = random_bytes((int) ceil($len * $bpc / 8));
 
         $chars = ($bpc == 6) ? Base::BASE_62_CHARS : (
-            ($bpc == 5) ? Base::BASE_36_CHARS : Base::BASE_16_CHARS);
+            ($bpc == 5) ? Base::BASE_36_CHARS : Base::BASE_16_CHARS
+        );
         $charsLength = strlen($chars);
 
         // Original source https://github.com/php/php-src/blob/master/ext/session/session.c#L267,#L326.

@@ -12,6 +12,8 @@ use froq\encrypting\EncryptingException;
 /**
  * Hash.
  *
+ * Represents a static class which is able to generate hashes by given lengths.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Hash
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -28,10 +30,11 @@ final class Hash
         64 => 'sha256', 128 => 'sha512'];
 
     /**
-     * Hash.
+     * Make an hash by given length.
+     *
      * @param  string     $in
      * @param  int        $length
-     * @param  array|null $lengths
+     * @param  array|null $lengths @internal
      * @return string
      * @throws froq\encrypting\EncryptingException
      */

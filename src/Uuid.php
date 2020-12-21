@@ -12,8 +12,8 @@ use froq\encrypting\{EncryptingException, Generator, Hash};
 /**
  * Uuid.
  *
- * Represents a static UUID class that able to generate UUIDs (v4) from random bytes and optionally with
- * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without given lengths, also able
+ * Represents a static class which is able to generate UUIDs (v4) from random bytes and optionally with
+ * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without given lengths, also
  * to generate time-based or random serials.
  *
  * @package froq\encrypting

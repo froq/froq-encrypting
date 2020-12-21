@@ -14,6 +14,9 @@ use Error;
 /**
  * Generator.
  *
+ * Represents a static class which is able to generate UUIDs, GUIDs, salts, nonces, tokens, serials, ids
+ * and passwords.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Generator
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -23,7 +26,8 @@ use Error;
 final class Generator
 {
     /**
-     * Generate salt.
+     * Generate a salt.
+     *
      * @param  int $length
      * @param  int $bpc
      * @return string
@@ -34,7 +38,8 @@ final class Generator
     }
 
     /**
-     * Generate nonce.
+     * Generate a nonce.
+     *
      * @param  int $length
      * @param  int $bpc
      * @return string
@@ -45,7 +50,8 @@ final class Generator
     }
 
     /**
-     * Generate uuid.
+     * Generate a UUID.
+     *
      * @param  bool $dashed
      * @return string
      */
@@ -55,7 +61,8 @@ final class Generator
     }
 
     /**
-     * Generate guid.
+     * Generate a GUID.
+     *
      * @param  bool $dashed
      * @return string
      * @since  4.0
@@ -66,7 +73,8 @@ final class Generator
     }
 
     /**
-     * Generate token.
+     * Generate a token.
+     *
      * @param  int $hashLength
      * @return string
      * @since  4.4
@@ -77,10 +85,12 @@ final class Generator
     }
 
     /**
-     * Generate serial.
+     * Generate a serial.
+     *
      * @param  int  $length
      * @param  bool $dated
      * @return string
+     * @throws froq\encrypting\EncryptingException
      * @since  4.8
      */
     public static function generateSerial(int $length = 20, bool $dated = false): string
@@ -93,9 +103,11 @@ final class Generator
     }
 
     /**
-     * Generate random serial.
+     * Generate a random serial.
+     *
      * @param  int $length
      * @return string
+     * @throws froq\encrypting\EncryptingException
      * @since  4.8
      */
     public static function generateRandomSerial(int $length = 20): string
@@ -108,7 +120,8 @@ final class Generator
     }
 
     /**
-     * Generate id.
+     * Generate a time/date based ID by given length.
+     *
      * @param  int  $length
      * @param  int  $base
      * @param  bool $dated
@@ -127,8 +140,8 @@ final class Generator
         // Now (date/time object).
         $now = udate('', 'UTC');
 
-        // Use a date prefix or time (eg: 20121229.. or 1401873..).
-        $id = $dated ? $now->format('YmdHisu') : $now->format('Uu');
+        // Use a date prefix or time (eg: 1401873.. or 20121229).
+        $id = !$dated ? $now->format('Uu') : $now->format('YmdHisu');
 
         if ($base == 10) {
             $ret = $id;
@@ -151,10 +164,11 @@ final class Generator
     }
 
     /**
-     * Generate short id.
+     * Generate a short ID (16-length).
+     *
      * @param  int  $base
      * @param  bool $dated
-     * @return string A 16-length id.
+     * @return string
      * @since  4.8 Moved from Uuid.generateShort().
      */
     public static function generateShortId(int $base = 10, bool $dated = false): string
@@ -163,10 +177,11 @@ final class Generator
     }
 
     /**
-     * Generate long id.
+     * Generate a long ID (32-length).
+     *
      * @param  int  $base
      * @param  bool $dated
-     * @return string A 32-length id.
+     * @return string
      * @since  4.8 Moved from Uuid.generateLong().
      */
     public static function generateLongId(int $base = 10, bool $dated = false): string
@@ -175,9 +190,10 @@ final class Generator
     }
 
     /**
-     * Generate serial id.
+     * Generate a serial ID (20-length digits).
+     *
      * @param  bool $dated
-     * @return string A 20-length id (digits).
+     * @return string
      * @since  4.8
      */
     public static function generateSerialId(bool $dated = false): string
@@ -186,10 +202,12 @@ final class Generator
     }
 
     /**
-     * Generate random id.
+     * Generate a random ID by given length.
+     *
      * @param  int $byteLength
      * @param  int $hashLength
      * @return string
+     * @throws froq\encrypting\EncryptingException
      * @since  4.8
      */
     public static function generateRandomId(int $length, int $base = 10): string
@@ -200,7 +218,7 @@ final class Generator
             throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
         }
 
-        $chars = substr(Base::ALL_CHARS, 0, $base);
+        $chars       = substr(Base::ALL_CHARS, 0, $base);
         $charsLength = strlen($chars);
 
         $ret = '';
@@ -213,7 +231,8 @@ final class Generator
     }
 
     /**
-     * Generate session id.
+     * Generate a session ID.
+     *
      * @param  array|null $options
      * @return string
      * @since  4.7
@@ -231,16 +250,17 @@ final class Generator
         // Let Salt to mimic it.
         $ret ??= Salt::generate(26, 5);
 
-        $hash && $ret = Hash::make($ret, $hashLength, [40, 16, 32]);
+        $hash  && $ret = Hash::make($ret, $hashLength, [40, 16, 32]);
         $upper && $ret = strtoupper($ret);
 
         return $ret;
     }
 
     /**
-     * Generate object id.
-     * @param  bool   $counted
-     * @return string A 24-length hex like Mongo.ObjectId.
+     * Generate object ID (24-length hex like Mongo.ObjectId).
+     *
+     * @param  bool $counted
+     * @return string
      * @since  4.0
      */
     public static function generateObjectId(bool $counted = true): string
@@ -267,7 +287,8 @@ final class Generator
     }
 
     /**
-     * Generate password.
+     * Generate a password.
+     *
      * @param  int  $length
      * @param  bool $puncted
      * @return string
@@ -278,7 +299,8 @@ final class Generator
     }
 
     /**
-     * Generate one time password.
+     * Generate a one-time password.
+     *
      * @param  string $key
      * @param  int    $length
      * @param  bool   $timed
@@ -298,6 +320,7 @@ final class Generator
         $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
 
         $ret = strval($binary % pow(10, $length));
+
         while (strlen($ret) < $length) {
             $ret .= mt_rand(0, 9);
         }

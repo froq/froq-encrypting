@@ -12,6 +12,8 @@ use froq\encrypting\EncryptingException;
 /**
  * Base.
  *
+ * Represents a static class which provides encode/decode methods for base conversions.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Base
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -24,8 +26,7 @@ final class Base
      * Characters.
      * @const string
      */
-    public const // From util.sugars-constant.
-                 BASE_10_CHARS  = '0123456789',
+    public const BASE_10_CHARS  = '0123456789',
                  BASE_16_CHARS  = '0123456789abcdef',
                  BASE_36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
                  BASE_62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
