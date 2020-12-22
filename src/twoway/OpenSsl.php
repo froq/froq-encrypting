@@ -12,6 +12,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Open Ssl.
  *
+ * Represents a class entity which is able to twoway encrypting operations utilizing OpenSsl extension.
  * Original source https://stackoverflow.com/a/30189841/362780.
  *
  * @package froq\encrypting\twoway
@@ -22,19 +23,17 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 final class OpenSsl extends Twoway
 {
     /**
-     * Method.
+     * Default method.
      * @const string
      */
     public const METHOD = 'aes-256-ctr';
 
-    /**
-     * Method.
-     * @var string
-     */
+    /** @var string */
     private string $method;
 
     /**
      * Constructor.
+     *
      * @param  string      $key
      * @param  string|null $method
      * @throws froq\encrypting\twoway\TwowayException
@@ -60,10 +59,11 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * Get method.
+     * Get method property.
+     *
      * @return string
      */
-    public function getMethod(): string
+    public function method(): string
     {
         return $this->method;
     }
@@ -71,7 +71,7 @@ final class OpenSsl extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): ?string
+    public function encode(string $data, bool $raw = false): string|null
     {
         [$encKey, $autKey] = $this->keys();
 
@@ -92,7 +92,7 @@ final class OpenSsl extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): ?string
+    public function decode(string $data, bool $raw = false): string|null
     {
         $data = !$raw ? base64_decode($data, true) : $data;
 
@@ -120,7 +120,8 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * Keys.
+     * Prepare keys.
+     *
      * @return array<binary>
      * @internal
      */

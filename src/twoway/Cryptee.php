@@ -12,6 +12,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Cryptee.
  *
+ * Represents a class entity which is able to twoway encrypting operations utilizing XOR way.
  * Original source https://github.com/k-gun/cryptee.
  *
  * @package froq\encrypting\twoway
@@ -23,6 +24,7 @@ final class Cryptee extends Twoway
 {
     /**
      * Constructor.
+     *
      * @param  string $key
      * @throws froq\encrypting\twoway\TwowayException
      */
@@ -40,7 +42,7 @@ final class Cryptee extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): ?string
+    public function encode(string $data, bool $raw = false): string|null
     {
         $out = $this->crypt($data);
 
@@ -50,7 +52,7 @@ final class Cryptee extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): ?string
+    public function decode(string $data, bool $raw = false): string|null
     {
         $data = !$raw ? base64_decode($data, true) : $data;
 
@@ -59,8 +61,10 @@ final class Cryptee extends Twoway
 
     /**
      * Crypt.
+     *
      * @param  string $data
      * @return string
+     * @internal
      */
     private function crypt(string $data): string
     {

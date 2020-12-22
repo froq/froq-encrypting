@@ -13,6 +13,9 @@ use froq\encrypting\twoway\TwowayException;
 /**
  * Twoway.
  *
+ * Represents a abstract class entity that used in `twoway` package only, and also provided encrypt/decrypt
+ * methods as shortcut for encode/decode method of extender classes.
+ *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Twoway
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -20,10 +23,7 @@ use froq\encrypting\twoway\TwowayException;
  */
 abstract class Twoway
 {
-    /**
-     * Key.
-     * @var string
-     */
+    /** @var string */
     protected string $key;
 
     /**
@@ -36,16 +36,18 @@ abstract class Twoway
     }
 
     /**
-     * Get key.
+     * Get key property.
+     *
      * @return string
      */
-    public final function getKey(): string
+    public final function key(): string
     {
         return $this->key;
     }
 
     /**
-     * Generate key.
+     * Generate a key using Salt class.
+     *
      * @param  int $length
      * @return string
      */
@@ -55,13 +57,14 @@ abstract class Twoway
     }
 
     /**
-     * Encrypt.
+     * Encrypt given data by given options.
+     *
      * @param  string $data
      * @param  array  $options
-     * @return ?string
+     * @return string|null
      * @since  4.5
      */
-    public static final function encrypt(string $data, array $options): ?string
+    public static final function encrypt(string $data, array $options): string|null
     {
         // Key is required, nonce for Sodium, method for OpenSsl.
         $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
@@ -86,13 +89,14 @@ abstract class Twoway
     }
 
     /**
-     * Decrypt.
+     * Decrypt given data by given options.
+     *
      * @param  string $data
      * @param  array  $options
-     * @return ?string
+     * @return string|null
      * @since  4.5
      */
-    public static final function decrypt(string $data, array $options): ?string
+    public static final function decrypt(string $data, array $options): string|null
     {
         // Key is required, nonce for Sodium, method for OpenSsl.
         $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
@@ -115,18 +119,20 @@ abstract class Twoway
     }
 
     /**
-     * Encode.
+     * Encode given data.
+     *
      * @param  string $data
      * @param  bool   $raw
-     * @return ?string
+     * @return string|null
      */
-    public abstract function encode(string $data, bool $raw = false): ?string;
+    public abstract function encode(string $data, bool $raw = false): string|null;
 
     /**
-     * Decode.
+     * Decode given data.
+     *
      * @param  string $data
      * @param  bool   $raw
-     * @return ?string
+     * @return string|null
      */
-    public abstract function decode(string $data, bool $raw = false): ?string;
+    public abstract function decode(string $data, bool $raw = false): string|null;
 }

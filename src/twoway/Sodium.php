@@ -13,6 +13,8 @@ use SodiumException;
 /**
  * Sodium.
  *
+ * Represents a class entity which is able to twoway encrypting operations utilizing Sodium extension.
+ *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Sodium
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -20,14 +22,12 @@ use SodiumException;
  */
 final class Sodium extends Twoway
 {
-    /**
-     * Nonce.
-     * @var string
-     */
+    /** @var string */
     private string $nonce;
 
     /**
      * Constructor.
+     *
      * @param  string $key
      * @param  string $nonce
      * @throws froq\encrypting\twoway\TwowayException
@@ -61,10 +61,11 @@ final class Sodium extends Twoway
     }
 
     /**
-     * Get nonce.
+     * Get nonce property.
+     *
      * @return string
      */
-    public function getNonce(): string
+    public function nonce(): string
     {
         return $this->nonce;
     }
@@ -72,7 +73,7 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): ?string
+    public function encode(string $data, bool $raw = false): string|null
     {
         try {
             $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
@@ -87,7 +88,7 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): ?string
+    public function decode(string $data, bool $raw = false): string|null
     {
         $data = !$raw ? base64_decode($data, true) : $data;
 
