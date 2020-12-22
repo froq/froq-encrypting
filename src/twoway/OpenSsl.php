@@ -12,7 +12,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Open Ssl.
  *
- * Represents a class entity which is able to twoway encrypting operations utilizing OpenSsl extension.
+ * Represents a class entity which is able to perform twoway encrypting operations utilizing OpenSsl extension.
  * Original source https://stackoverflow.com/a/30189841/362780.
  *
  * @package froq\encrypting\twoway

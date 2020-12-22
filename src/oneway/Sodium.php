@@ -13,6 +13,8 @@ use SodiumException;
 /**
  * Sodium.
  *
+ * Represents a class entity which is able to perform oneway encrypting operations utilizing sodium stuff.
+ *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Sodium
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -44,6 +46,7 @@ final class Sodium extends Oneway
 
     /**
      * Constructor.
+     *
      * @param  array<string, any|null>|null $options
      * @throws froq\encrypting\oneway\OnewayException
      */
@@ -67,7 +70,7 @@ final class Sodium extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $in): ?string
+    public function hash(string $in): string|null
     {
         $hash = false;
 

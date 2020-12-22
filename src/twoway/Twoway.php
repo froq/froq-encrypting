@@ -13,8 +13,8 @@ use froq\encrypting\twoway\TwowayException;
 /**
  * Twoway.
  *
- * Represents a abstract class entity that used in `twoway` package only, and also provided encrypt/decrypt
- * methods as shortcut for encode/decode method of extender classes.
+ * Represents a abstract class entity that used in `twoway` package only, and also provides encrypt/decrypt
+ * methods as shortcut for encode/decode methods of extender classes.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Twoway

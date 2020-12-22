@@ -12,7 +12,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Cryptee.
  *
- * Represents a class entity which is able to twoway encrypting operations utilizing XOR way.
+ * Represents a class entity which is able to perform twoway encrypting operations utilizing XOR way.
  * Original source https://github.com/k-gun/cryptee.
  *
  * @package froq\encrypting\twoway

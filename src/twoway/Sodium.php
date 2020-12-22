@@ -13,7 +13,7 @@ use SodiumException;
 /**
  * Sodium.
  *
- * Represents a class entity which is able to twoway encrypting operations utilizing Sodium extension.
+ * Represents a class entity which is able to perform twoway encrypting operations utilizing Sodium extension.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Sodium

@@ -13,6 +13,8 @@ use froq\encrypting\Base;
 /**
  * Password.
  *
+ * Represents a class entity which is able to perform oneway encrypting operations utilizing password stuff.
+ *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Password
  * @author  Kerem Güneş <k-gun@mail.com>
@@ -21,19 +23,20 @@ use froq\encrypting\Base;
 final class Password extends Oneway
 {
     /**
-     * Algo.
+     * Default algo.
      * @const string
      */
     public const ALGO = PASSWORD_DEFAULT;
 
     /**
-     * Cost.
+     * Default cost.
      * @const int
      */
     public const COST = 9;
 
     /**
      * Constructor.
+     *
      * @param array<string, any|null>|null $options
      */
     public function __construct(array $options = null)
@@ -47,7 +50,7 @@ final class Password extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $in): ?string
+    public function hash(string $in): string|null
     {
         $algo    = $this->options['algo'];
         $options = $this->options;
@@ -69,7 +72,8 @@ final class Password extends Oneway
     }
 
     /**
-     * Generate.
+     * Generate a password by given length.
+     *
      * @param  int  $length
      * @param  bool $puncted
      * @return string
