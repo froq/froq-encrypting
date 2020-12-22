@@ -125,7 +125,7 @@ abstract class Twoway
      * @param  bool   $raw
      * @return string|null
      */
-    public abstract function encode(string $data, bool $raw = false): string|null;
+    abstract public function encode(string $data, bool $raw = false): string|null;
 
     /**
      * Decode given data.
@@ -134,5 +134,5 @@ abstract class Twoway
      * @param  bool   $raw
      * @return string|null
      */
-    public abstract function decode(string $data, bool $raw = false): string|null;
+    abstract public function decode(string $data, bool $raw = false): string|null;
 }
