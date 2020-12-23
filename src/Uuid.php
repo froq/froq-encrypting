@@ -213,6 +213,32 @@ final class Uuid
     }
 
     /**
+     * Check whether given UUID is is valid.
+     *
+     * @param  string $uuid
+     * @param  bool   $dashed
+     * @return bool
+     * @since  5.0
+     */
+    public static function valid(string $uuid, bool $dashed = true): bool
+    {
+        return $dashed ? preg_match('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~', $in)
+                       : preg_match('~^[a-f0-9]{32}$~', $in);
+    }
+
+    /**
+     * Check whether given UUID hash is is valid.
+     *
+     * @param  string $hash
+     * @return bool
+     * @since  5.0
+     */
+    public static function validHash(string $hash): bool
+    {
+        return preg_match('~^[a-f0-9]{32}$~', $in);
+    }
+
+    /**
      * Format.
      *
      * @param  string $in
