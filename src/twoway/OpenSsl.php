@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2015 · Kerem Güneş
- * Apache License 2.0 <https://opensource.org/licenses/apache-2.0>
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -17,7 +17,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\OpenSsl
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   3.0
  */
 final class OpenSsl extends Twoway
