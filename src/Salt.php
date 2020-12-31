@@ -82,7 +82,7 @@ final class Salt
 
             // Fix up index picking a random index.
             if ($i > $charsLength - 1) {
-                $i = mt_rand(0, $charsLength - 1);
+                $i = rand(0, $charsLength - 1);
             }
 
             $out .= $chars[$i];

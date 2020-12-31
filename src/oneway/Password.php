@@ -95,7 +95,7 @@ final class Password extends Oneway
         $ret = '';
 
         while (strlen($ret) < $length) {
-            $ret .= $chars[mt_rand(0, $charsLength - 1)];
+            $ret .= $chars[rand(0, $charsLength - 1)];
         }
 
         return $ret;
