@@ -70,6 +70,14 @@ abstract class Oneway
     }
 
     /**
+     * @alias of validate()
+     */
+    public static final function okay(...$args)
+    {
+        return self::validate(...$args);
+    }
+
+    /**
      * Hash given input.
      *
      * @param  string $in
