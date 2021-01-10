@@ -47,7 +47,14 @@ final class Base62
     {
         $in = (string) convert_base($in, 62, $base);
 
-        $bin && $in = hex2bin($in);
+        if ($bin) {
+            // Fix: "Hexadecimal input string must have an even length .." error.
+            if (strlen($in) % 2) {
+                $in .= '0';
+            }
+
+            $in = hex2bin($in);
+        }
 
         return $in;
     }
