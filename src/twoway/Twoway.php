@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\{Salt, Base, Base64};
+use froq\encrypting\{Salt, Base62, Base64};
 use froq\encrypting\twoway\TwowayException;
 
 /**
@@ -73,7 +73,7 @@ abstract class Twoway
             $data = $that->encode($data, true);
 
             $data = match ($options['type']) {
-                'base62'    => $data ? Base::encode($data) : null,
+                'base62'    => $data ? Base62::encode($data, 16, true) : null,
                 'base64'    => $data ? Base64::encode($data) : null,
                 'base64url' => $data ? Base64::encodeUrlSafe($data) : null,
                 default     => throw new TwowayException(
@@ -103,13 +103,13 @@ abstract class Twoway
 
         if (isset($options['type'])) {
             $data = match ($options['type']) {
-                'base62'    => Base::decode($data),
+                'base62'    => Base62::decode($data, 16, true),
                 'base64'    => Base64::decode($data),
                 'base64url' => Base64::decodeUrlSafe($data),
                 default     => throw new TwowayException(
                     'Invalid type `%s`, valids are: base62, base64, base64url',
-                    $options['type'
-                ])
+                    $options['type']
+                )
             };
 
             return $that->decode($data, true);
