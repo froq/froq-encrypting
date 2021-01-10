@@ -63,6 +63,6 @@ final class Base64
      */
     public static function decodeUrlSafe(string $in, bool $strict = false): string
     {
-        return (string) self::decode(strtr($in, '_-', '/+'), $strict);
+        return self::decode(strtr($in, '_-', '/+'), $strict);
     }
 }
