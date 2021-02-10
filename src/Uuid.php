@@ -24,6 +24,10 @@ use froq\encrypting\{EncryptingException, Generator, Hash};
  */
 final class Uuid
 {
+    /** @const string @since 5.0 */
+    public const NULL      = '00000000-0000-0000-0000-000000000000',
+                 NULL_HASH = '00000000000000000000000000000000';
+
     /**
      * Generate a UUID with random 16-length bytes.
      *
@@ -213,14 +217,14 @@ final class Uuid
     }
 
     /**
-     * Check whether given UUID is is valid.
+     * Check whether given UUID is valid.
      *
      * @param  string $uuid
      * @param  bool   $dashed
      * @return bool
      * @since  5.0
      */
-    public static function valid(string $uuid, bool $dashed = true): bool
+    public static function isValid(string $uuid, bool $dashed = true): bool
     {
         $length = strlen($uuid);
 
@@ -231,13 +235,13 @@ final class Uuid
     }
 
     /**
-     * Check whether given UUID hash is is valid.
+     * Check whether given UUID hash is valid.
      *
      * @param  string $hash
      * @return bool
      * @since  5.0
      */
-    public static function validHash(string $hash): bool
+    public static function isValidHash(string $hash): bool
     {
         return preg_test('~^[a-f0-9]{32}$~', $hash);
     }
