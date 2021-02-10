@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 use froq\encrypting\{EncryptingException, Generator, Hash};
-use ValueError;
 
 /**
  * Uuid.
@@ -223,8 +222,12 @@ final class Uuid
      */
     public static function valid(string $uuid, bool $dashed = true): bool
     {
-        return $dashed ? preg_match('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~', $in)
-                       : preg_match('~^[a-f0-9]{32}$~', $in);
+        $length = strlen($uuid);
+
+        return ($length == 36 || $length == 32) && (
+            $dashed ? preg_test('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~', $uuid)
+                    : preg_test('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|[a-f0-9]{32}$~', $uuid)
+        );
     }
 
     /**
@@ -236,7 +239,7 @@ final class Uuid
      */
     public static function validHash(string $hash): bool
     {
-        return preg_match('~^[a-f0-9]{32}$~', $in);
+        return preg_test('~^[a-f0-9]{32}$~', $hash);
     }
 
     /**
@@ -249,12 +252,12 @@ final class Uuid
      */
     public static function format(string $in, bool $dashed = true): string
     {
-        try {
-            $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
-        } catch (ValueError $e) {
-            throw new EncryptingException('Invalid UUID input, it must be 32-length hexed hash [given input: %s]',
+        if (strlen($in) != 32) {
+            throw new EncryptingException('Invalid UUID input, its length must be 32 [given input: %s]',
                 $in, previous: $e);
         }
+
+        $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
 
         // Drop if false.
         $dashed || $out = str_replace('-', '', $out);
