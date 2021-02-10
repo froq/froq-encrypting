@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 use froq\encrypting\{EncryptingException, Generator, Hash};
+use ValueError;
 
 /**
  * Uuid.
@@ -244,11 +245,16 @@ final class Uuid
      * @param  string $in
      * @param  bool   $dashed
      * @return string
-     * @internal
+     * @throws froq\encrypting\EncryptingException
      */
-    private static function format(string $in, bool $dashed): string
+    public static function format(string $in, bool $dashed = true): string
     {
-        $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
+        try {
+            $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
+        } catch (ValueError $e) {
+            throw new EncryptingException('Invalid UUID input, it must be 32-length hexed hash [given input: %s]',
+                $in, previous: $e);
+        }
 
         // Drop if false.
         $dashed || $out = str_replace('-', '', $out);
@@ -263,9 +269,9 @@ final class Uuid
      * @param  bool   $dashed
      * @param  bool   $guid
      * @return string
-     * @internal
+     * @causes froq\encrypting\EncryptingException
      */
-    private static function formatBinary(string $in, bool $dashed, bool $guid): string
+    public static function formatBinary(string $in, bool $dashed = true, bool $guid = false): string
     {
         // GUID doesn't use 4 (version) or 8, 9, A, B.
         if (!$guid) {
