@@ -226,12 +226,8 @@ final class Uuid
      */
     public static function isValid(string $uuid, bool $dashed = true): bool
     {
-        $length = strlen($uuid);
-
-        return ($length == 36 || $length == 32) && (
-            $dashed ? preg_test('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~', $uuid)
-                    : preg_test('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|[a-f0-9]{32}$~', $uuid)
-        );
+        return $dashed ? preg_test('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~', $uuid)
+                       : preg_test('~^[a-f0-9]{32}$~', str_replace('-', '', $uuid));
     }
 
     /**
