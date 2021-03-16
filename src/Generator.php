@@ -7,14 +7,14 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{EncryptingException, Base, Hash, Salt, Uuid};
+use froq\encrypting\{EncryptingException, Base, Hash, Suid, Uuid};
 use froq\encrypting\oneway\Password;
 use Error;
 
 /**
  * Generator.
  *
- * Represents a static class which is able to generate UUIDs, GUIDs, salts, nonces, tokens, serials, ids
+ * Represents a static class which is able to generate UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
  * and passwords.
  *
  * @package froq\encrypting
@@ -29,24 +29,24 @@ final class Generator
      * Generate a salt.
      *
      * @param  int $length
-     * @param  int $bpc
+     * @param  int $base
      * @return string
      */
-    public static function generateSalt(int $length = 40, int $bpc = 6): string
+    public static function generateSalt(int $length = 40, int $base = 62): string
     {
-        return Salt::generate($length, $bpc);
+        return Suid::generate($length, $base);
     }
 
     /**
      * Generate a nonce.
      *
      * @param  int $length
-     * @param  int $bpc
+     * @param  int $base
      * @return string
      */
-    public static function generateNonce(int $length = 16, int $bpc = 4): string
+    public static function generateNonce(int $length = 16, int $base = 16): string
     {
-        return Salt::generate($length, $bpc);
+        return Suid::generate($length, $base);
     }
 
     /**
@@ -246,8 +246,8 @@ final class Generator
             $ret = session_create_id() ?: null;
         } catch (Error) {}
 
-        // Let Salt to mimic it.
-        $ret ??= Salt::generate(26, 5);
+        // Let Suid to mimic it.
+        $ret ??= Suid::generate(26, 36);
 
         $hash  && $ret = Hash::make($ret, $hashLength, [40, 16, 32]);
         $upper && $ret = strtoupper($ret);

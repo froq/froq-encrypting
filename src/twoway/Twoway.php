@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\{Salt, Base62, Base64};
+use froq\encrypting\{Suid, Base62, Base64};
 use froq\encrypting\twoway\TwowayException;
 
 /**
@@ -46,14 +46,14 @@ abstract class Twoway
     }
 
     /**
-     * Generate a key using Salt class.
+     * Generate a key.
      *
      * @param  int $length
      * @return string
      */
     public static final function generateKey(int $length = 40): string
     {
-        return Salt::generate($length);
+        return Suid::generate($length);
     }
 
     /**
