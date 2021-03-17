@@ -34,7 +34,7 @@ final class Suid
     public static function generate(int $length, int $base = 62): string
     {
         if ($length < 1) {
-            throw new EncryptingException('Invalid length value `%s`, length must be greater than 1', $len);
+            throw new EncryptingException('Invalid length value `%s`, length must be greater than 1', $length);
         } elseif ($base < 2 || $base > 62) {
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         }
