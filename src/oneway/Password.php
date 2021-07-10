@@ -1,26 +1,7 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -31,27 +12,31 @@ use froq\encrypting\Base;
 
 /**
  * Password.
+ *
+ * Represents a class entity which is able to perform oneway encrypting operations utilizing password stuff.
+ *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Password
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   1.0
  */
 final class Password extends Oneway
 {
     /**
-     * Algo.
+     * Default algo.
      * @const string
      */
     public const ALGO = PASSWORD_DEFAULT;
 
     /**
-     * Cost.
+     * Default cost.
      * @const int
      */
     public const COST = 9;
 
     /**
      * Constructor.
+     *
      * @param array<string, any|null>|null $options
      */
     public function __construct(array $options = null)
@@ -65,7 +50,7 @@ final class Password extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $input): ?string
+    public function hash(string $in): string|null
     {
         $algo    = $this->options['algo'];
         $options = $this->options;
@@ -73,21 +58,22 @@ final class Password extends Oneway
         // Not used in function options.
         unset($options['algo']);
 
-        $inputHash =@ password_hash($input, $algo, $options);
+        $hash = password_hash($in, $algo, $options);
 
-        return ($inputHash !== false) ? $inputHash : null; // Null=Error.
+        return ($hash !== false) ? $hash : null; // Null=Error.
     }
 
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function verify(string $input, string $inputHash): bool
+    public function verify(string $in, string $hash): bool
     {
-        return (bool) password_verify($input, $inputHash);
+        return (bool) password_verify($in, $hash);
     }
 
     /**
-     * Generate.
+     * Generate a password by given length.
+     *
      * @param  int  $length
      * @param  bool $puncted
      * @return string
@@ -96,8 +82,8 @@ final class Password extends Oneway
     public static final function generate(int $length, bool $puncted = false): string
     {
         if ($length < 2) {
-            throw new OnewayException('Invalid length value "%s" given, length must be equal or '.
-                'greater than 2', [$length]);
+            throw new OnewayException('Invalid length value `%s`, length must be equal or greater'
+                . ' than 2', $length);
         }
 
         $chars = Base::ALL_CHARS;
@@ -108,8 +94,9 @@ final class Password extends Oneway
 
         $ret = '';
 
+        srand();
         while (strlen($ret) < $length) {
-            $ret .= $chars[mt_rand(0, $charsLength - 1)];
+            $ret .= $chars[rand(0, $charsLength - 1)];
         }
 
         return $ret;

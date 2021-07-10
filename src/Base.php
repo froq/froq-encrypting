@@ -1,26 +1,7 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -30,9 +11,12 @@ use froq\encrypting\EncryptingException;
 
 /**
  * Base.
+ *
+ * Represents a static class which provides encode/decode methods for base conversions.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Base
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   4.0
  * @static
  */
@@ -42,8 +26,7 @@ final class Base
      * Characters.
      * @const string
      */
-    public const // From util.sugars-constant.
-                 BASE_10_CHARS  = '0123456789',
+    public const BASE_10_CHARS  = '0123456789',
                  BASE_16_CHARS  = '0123456789abcdef',
                  BASE_36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
                  BASE_62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -58,14 +41,14 @@ final class Base
 
     /**
      * Encode.
-     * @param  string      $input
+     * @param  string      $in
      * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function encode(string $input, string $chars = null): string
+    public static function encode(string $in, string $chars = null): string
     {
-        if ($input == '') return '';
+        if ($in == '') return '';
 
         $chars = $chars ?? self::BASE_62_CHARS;
         if ($chars == '') {
@@ -74,35 +57,34 @@ final class Base
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
-                '%s given', [$base]);
+            throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
         }
 
         // Original source https://github.com/tuupola/base62.
-        $tmp = array_map('ord', str_split($input));
-        $zrs = 0;
-        while ($tmp && $tmp[0] === 0) {
-            $zrs++; array_shift($tmp);
+        $temp = array_map('ord', str_split($in));
+        $zero = 0;
+        while ($temp && $temp[0] === 0) {
+            $zero++; array_shift($temp);
         }
 
-        $tmp = self::convert($tmp, 256, $base);
-        if ($zrs) {
-            $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
+        $temp = self::convert($temp, 256, $base);
+        if ($zero) {
+            $temp = array_merge(array_fill(0, $zero, 0), $temp);
         }
 
-        return join('', array_map(fn($i) => $chars[$i], $tmp));
+        return join('', array_map(fn($i) => $chars[$i], $temp));
     }
 
     /**
      * Decode.
-     * @param  string      $input
+     * @param  string      $in
      * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function decode(string $input, string $chars = null): string
+    public static function decode(string $in, string $chars = null): string
     {
-        if ($input == '') return '';
+        if ($in == '') return '';
 
         $chars = $chars ?? self::BASE_62_CHARS;
         if ($chars == '') {
@@ -111,50 +93,48 @@ final class Base
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters base (length) must be min 2 and max 256, '.
-                '%s given', [$base]);
+            throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
         }
 
-        if (strlen($input) !== strspn($input, $chars)) {
-            preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
-            throw new EncryptingException('Invalid characters "%s" found in given input',
-                [$match[0]]);
+        if (strlen($in) !== strspn($in, $chars)) {
+            preg_match('~[^'. preg_quote($chars, '~') .']+~', $in, $match);
+            throw new EncryptingException('Invalid characters `%s` found in given input', $match[0]);
         }
 
         // Original source https://github.com/tuupola/base62.
-        $tmp = array_map(fn($c) => strpos($chars, $c), str_split($input));
-        $zrs = 0;
-        while ($tmp && $tmp[0] === 0) {
-            $zrs++; array_shift($tmp);
+        $temp = array_map(fn($c) => strpos($chars, $c), str_split($in));
+        $zero = 0;
+        while ($temp && $temp[0] === 0) {
+            $zero++; array_shift($temp);
         }
 
-        $tmp = self::convert($tmp, $base, 256);
-        if ($zrs) {
-            $tmp = array_merge(array_fill(0, $zrs, 0), $tmp);
+        $temp = self::convert($temp, $base, 256);
+        if ($zero) {
+            $temp = array_merge(array_fill(0, $zero, 0), $temp);
         }
 
-        return join('', array_map('chr', $tmp));
+        return join('', array_map('chr', $temp));
     }
 
     /**
      * Convert.
-     * @param  array<int> $input
+     * @param  array<int> $in
      * @param  int        $fromBase
      * @param  int        $toBase
      * @return array<int>
      */
-    public static function convert(array $input, int $fromBase, int $toBase): array
+    public static function convert(array $in, int $fromBase, int $toBase): array
     {
         // Original source http://codegolf.stackexchange.com/a/21672.
-        $ret = [];
+        $out = [];
 
-        while ($count = count($input)) {
+        while ($count = count($in)) {
             $quotient  = [];
             $remainder = 0;
 
             $i = 0;
             while ($i < $count) {
-                $accumulator = $input[$i++] + ($remainder * $fromBase);
+                $accumulator = $in[$i++] + ($remainder * $fromBase);
                 $digit       = ($accumulator / $toBase) | 0; // Int-div.
                 $remainder   = $accumulator % $toBase;
 
@@ -163,12 +143,12 @@ final class Base
                 }
             }
 
-            array_unshift($ret, $remainder);
+            array_unshift($out, $remainder);
 
-            $input = $quotient;
+            $in = $quotient;
         }
 
-        return $ret;
+        return $out;
     }
 
     /**
@@ -178,14 +158,10 @@ final class Base
      * @return int
      * @throws froq\encrypting\EncryptingException
      */
-    public static function fromBase(int $base, $digits): int
+    public static function fromBase(int $base, int|string $digits): int
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given',
-                [$base]);
-        } elseif (!is_int($digits) && !is_string($digits)) {
-            throw new EncryptingException('Argument $digits must be int|string, %s given',
-                [gettype($digits)]);
+            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         }
 
         $digits = strval($digits);
@@ -206,14 +182,10 @@ final class Base
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function toBase(int $base, $digits): string
+    public static function toBase(int $base, int|string $digits): string
     {
         if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given',
-                [$base]);
-        } elseif (!is_int($digits) && !is_string($digits)) {
-            throw new EncryptingException('Argument $digits must be int|string, %s given',
-                [gettype($digits)]);
+            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         }
 
         $digits = intval($digits);

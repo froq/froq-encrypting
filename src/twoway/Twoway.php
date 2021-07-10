@@ -1,47 +1,29 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\{Salt, Base, Base64};
+use froq\encrypting\{Suid, Base62, Base64};
 use froq\encrypting\twoway\TwowayException;
 
 /**
  * Twoway.
+ *
+ * Represents a abstract class entity that used in `twoway` package only, and also provides encrypt/decrypt
+ * methods as shortcut for encode/decode methods of extender classes.
+ *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Twoway
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   3.0
  */
 abstract class Twoway
 {
-    /**
-     * Key.
-     * @var string
-     */
+    /** @var string */
     protected string $key;
 
     /**
@@ -54,111 +36,103 @@ abstract class Twoway
     }
 
     /**
-     * Get key.
+     * Get key property.
+     *
      * @return string
      */
-    public final function getKey(): string
+    public final function key(): string
     {
         return $this->key;
     }
 
     /**
-     * Generate key.
+     * Generate a key.
+     *
      * @param  int $length
      * @return string
      */
     public static final function generateKey(int $length = 40): string
     {
-        return Salt::generate($length);
+        return Suid::generate($length);
     }
 
     /**
-     * Encrypt.
+     * Encrypt given data by given options.
+     *
      * @param  string $data
      * @param  array  $options
-     * @return ?string
+     * @return string|null
      * @since  4.5
      */
-    public static final function encrypt(string $data, array $options): ?string
+    public static final function encrypt(string $data, array $options): string|null
     {
-        $instance = new static(
-            // Key is required, nonce for Sodium, method for OpenSsl.
-            $options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null
-        );
+        // Key is required, nonce for Sodium, method for OpenSsl.
+        $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
 
         if (isset($options['type'])) {
-            $data = $instance->encode($data, true);
+            $data = $that->encode($data, true);
 
-            switch ($options['type']) {
-                case 'base62':
-                    $data && $data = Base::encode($data);
-                    break;
-                case 'base64':
-                    $data && $data = Base64::encode($data);
-                    break;
-                case 'base64url':
-                    $data && $data = Base64::encodeUrlSafe($data);
-                    break;
-                default:
-                    throw new TwowayException('Invalid type "%s" given, valids are: base62, '.
-                        'base64, base64url', [$options['type']]);
-            }
+            $data = match ($options['type']) {
+                'base62'    => $data ? Base62::encode($data, 16, true) : null,
+                'base64'    => $data ? Base64::encode($data) : null,
+                'base64url' => $data ? Base64::encodeUrlSafe($data) : null,
+                default     => throw new TwowayException(
+                    'Invalid type `%s`, valids are: base62, base64, base64url',
+                    $options['type']
+                )
+            };
 
             return $data;
         }
 
-        return $instance->encode($data);
+        return $that->encode($data);
     }
 
     /**
-     * Decrypt.
+     * Decrypt given data by given options.
+     *
      * @param  string $data
      * @param  array  $options
-     * @return ?string
+     * @return string|null
      * @since  4.5
      */
-    public static final function decrypt(string $data, array $options): ?string
+    public static final function decrypt(string $data, array $options): string|null
     {
-        $instance = new static(
-            // Key is required, nonce for Sodium, method for OpenSsl.
-            $options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null
-        );
+        // Key is required, nonce for Sodium, method for OpenSsl.
+        $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
 
         if (isset($options['type'])) {
-            switch ($options['type']) {
-                case 'base62':
-                    $data = Base::decode($data);
-                    break;
-                case 'base64':
-                    $data = Base64::decode($data);
-                    break;
-                case 'base64url':
-                    $data = Base64::decodeUrlSafe($data);
-                    break;
-                default:
-                    throw new TwowayException('Invalid type "%s" given, valids are: base62, '.
-                        'base64, base64url', [$options['type']]);
-            }
+            $data = match ($options['type']) {
+                'base62'    => Base62::decode($data, 16, true),
+                'base64'    => Base64::decode($data),
+                'base64url' => Base64::decodeUrlSafe($data),
+                default     => throw new TwowayException(
+                    'Invalid type `%s`, valids are: base62, base64, base64url',
+                    $options['type']
+                )
+            };
 
-            return $instance->decode($data, true);
+            return $that->decode($data, true);
         }
 
-        return $instance->decode($data);
+        return $that->decode($data);
     }
 
     /**
-     * Encode.
+     * Encode given data.
+     *
      * @param  string $data
      * @param  bool   $raw
-     * @return ?string
+     * @return string|null
      */
-    public abstract function encode(string $data, bool $raw = false): ?string;
+    abstract public function encode(string $data, bool $raw = false): string|null;
 
     /**
-     * Decode.
+     * Decode given data.
+     *
      * @param  string $data
      * @param  bool   $raw
-     * @return ?string
+     * @return string|null
      */
-    public abstract function decode(string $data, bool $raw = false): ?string;
+    abstract public function decode(string $data, bool $raw = false): string|null;
 }

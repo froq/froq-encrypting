@@ -1,26 +1,7 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -31,17 +12,19 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Cryptee.
  *
+ * Represents a class entity which is able to perform twoway encrypting operations utilizing XOR way.
  * Original source https://github.com/k-gun/cryptee.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Cryptee
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   3.0
  */
 final class Cryptee extends Twoway
 {
     /**
      * Constructor.
+     *
      * @param  string $key
      * @throws froq\encrypting\twoway\TwowayException
      */
@@ -49,8 +32,8 @@ final class Cryptee extends Twoway
     {
         // Check key length.
         if (strlen($key) < 16) {
-            throw new TwowayException('Invalid key given, minimum key length is 16 (tip: use '.
-                'Cryptee::generateKey() method to get a strong key)');
+            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
+                . 'Cryptee::generateKey() method to get a strong key]', strlen($key));
         }
 
         parent::__construct($key);
@@ -59,7 +42,7 @@ final class Cryptee extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): ?string
+    public function encode(string $data, bool $raw = false): string|null
     {
         $out = $this->crypt($data);
 
@@ -69,7 +52,7 @@ final class Cryptee extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): ?string
+    public function decode(string $data, bool $raw = false): string|null
     {
         $data = !$raw ? base64_decode($data, true) : $data;
 
@@ -78,8 +61,10 @@ final class Cryptee extends Twoway
 
     /**
      * Crypt.
+     *
      * @param  string $data
      * @return string
+     * @internal
      */
     private function crypt(string $data): string
     {

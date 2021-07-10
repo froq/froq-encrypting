@@ -1,80 +1,68 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
 namespace froq\encrypting;
 
 /**
- * Base64.
+ * Base 64.
+ *
+ * Represents a static class which provides a Base-64 encoding/decoding methods and also URL-safe stuff.
+ *
  * @package froq\encrypting
  * @object  froq\encrypting\Base64
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   4.2
  * @static
  */
 final class Base64
 {
     /**
-     * Encode.
-     * @param  string $input
+     * Encode given input.
+     *
+     * @param  string $in
      * @return string
      */
-    public static function encode(string $input): string
+    public static function encode(string $in): string
     {
-        return (string) base64_encode($input);
+        return (string) base64_encode($in);
     }
 
     /**
-     * Decode.
-     * @param  string $input
+     * Decode given input.
+     *
+     * @param  string $in
      * @param  bool   $strict
      * @return string
      */
-    public static function decode(string $input, bool $strict = false): string
+    public static function decode(string $in, bool $strict = false): string
     {
-        return (string) base64_decode($input, $strict);
+        return (string) base64_decode($in, $strict);
     }
 
     /**
-     * Encode URL-safe.
-     * @param  string $input
+     * Encode given input with URL-safe method.
+     *
+     * @param  string $in
      * @return string
      */
-    public static function encodeUrlSafe(string $input): string
+    public static function encodeUrlSafe(string $in): string
     {
-        return chop(strtr((string) base64_encode($input), '/+', '_-'), '=');
+        return chop(strtr(self::encode($in), '/+', '_-'), '=');
     }
 
     /**
-     * Decode URL-safe.
-     * @param  string $input
+     * Decode given input with URL-safe method.
+     *
+     * @param  string $in
      * @param  bool   $strict
      * @return string
      */
-    public static function decodeUrlSafe(string $input, bool $strict = false): string
+    public static function decodeUrlSafe(string $in, bool $strict = false): string
     {
-        return (string) base64_decode(strtr($input, '_-', '/+'), $strict);
+        return self::decode(strtr($in, '_-', '/+'), $strict);
     }
 }

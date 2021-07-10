@@ -1,26 +1,7 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -31,9 +12,12 @@ use SodiumException;
 
 /**
  * Sodium.
+ *
+ * Represents a class entity which is able to perform oneway encrypting operations utilizing sodium stuff.
+ *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Sodium
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   4.0
  */
 final class Sodium extends Oneway
@@ -62,6 +46,7 @@ final class Sodium extends Oneway
 
     /**
      * Constructor.
+     *
      * @param  array<string, any|null>|null $options
      * @throws froq\encrypting\oneway\OnewayException
      */
@@ -73,11 +58,10 @@ final class Sodium extends Oneway
         static $minMemlimit = 1024 * 8; // 8KB
 
         if ($options['opslimit'] < 1) {
-            throw new OnewayException('Option "opslimit" is to low, minimum value is 1');
+            throw new OnewayException('Option `opslimit` is too low, minimum value is 1');
         }
         if ($options['memlimit'] < $minMemlimit) {
-            throw new OnewayException('Option "memlimit" is to low, minimum value is 8KB '.
-                '(8192 bytes)');
+            throw new OnewayException('Option `memlimit` is too low, minimum value is 8KB (8192 bytes)');
         }
 
         parent::__construct($options);
@@ -86,24 +70,24 @@ final class Sodium extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $input): ?string
+    public function hash(string $in): string|null
     {
-        $inputHash = false;
+        $hash = false;
 
         try { // In case any other Sodium errors happen.
-            $inputHash =@ sodium_crypto_pwhash_str(
-                $input, $this->options['opslimit'], $this->options['memlimit']
+            $hash = sodium_crypto_pwhash_str(
+                $in, $this->options['opslimit'], $this->options['memlimit']
             );
-        } catch (SodiumException $e) {}
+        } catch (SodiumException) {}
 
-        return ($inputHash !== false) ? $inputHash : null; // Null=Error.
+        return ($hash !== false) ? $hash : null; // Null=Error.
     }
 
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function verify(string $input, string $inputHash): bool
+    public function verify(string $in, string $hash): bool
     {
-        return (bool) sodium_crypto_pwhash_str_verify($inputHash, $input);
+        return (bool) sodium_crypto_pwhash_str_verify($hash, $in);
     }
 }

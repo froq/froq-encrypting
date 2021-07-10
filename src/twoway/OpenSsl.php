@@ -1,26 +1,7 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -31,48 +12,45 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Open Ssl.
  *
+ * Represents a class entity which is able to perform twoway encrypting operations utilizing OpenSsl extension.
  * Original source https://stackoverflow.com/a/30189841/362780.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\OpenSsl
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   3.0
  */
 final class OpenSsl extends Twoway
 {
     /**
-     * Method.
+     * Default method.
      * @const string
      */
     public const METHOD = 'aes-256-ctr';
 
-    /**
-     * Method.
-     * @var string
-     */
+    /** @var string */
     private string $method;
 
     /**
      * Constructor.
+     *
      * @param  string      $key
      * @param  string|null $method
      * @throws froq\encrypting\twoway\TwowayException
      */
     public function __construct(string $key, string $method = null)
     {
-        if (!extension_loaded('openssl')) {
-            throw new TwowayException('openssl extension not found');
-        }
+        extension_loaded('openssl') || throw new TwowayException('openssl extension not found');
 
         // Check key length.
         if (strlen($key) < 16) {
-            throw new TwowayException('Invalid key given, minimum key length is 16 (tip: use '.
-                'OpenSSL::generateKey() method to get a strong key)');
+            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
+                . 'OpenSSL::generateKey() method to get a strong key]', strlen($key));
         }
 
         // Check method validity.
         if ($method && !in_array($method, openssl_get_cipher_methods())) {
-            throw new TwowayException('Invalid method "%s" given', [$method]);
+            throw new TwowayException('Invalid cipher method `%s`', $method);
         }
 
         $this->method = $method ?? self::METHOD;
@@ -81,10 +59,11 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * Get method.
+     * Get method property.
+     *
      * @return string
      */
-    public function getMethod(): string
+    public function method(): string
     {
         return $this->method;
     }
@@ -92,13 +71,13 @@ final class OpenSsl extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): ?string
+    public function encode(string $data, bool $raw = false): string|null
     {
         [$encKey, $autKey] = $this->keys();
 
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
 
-        $out =@ openssl_encrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        $out = openssl_encrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
         if ($out === false) {
             return null;
         }
@@ -113,7 +92,7 @@ final class OpenSsl extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): ?string
+    public function decode(string $data, bool $raw = false): string|null
     {
         $data = !$raw ? base64_decode($data, true) : $data;
 
@@ -132,7 +111,7 @@ final class OpenSsl extends Twoway
         $iv    = mb_substr($data, 0, $ivLen, '8bit');
         $data  = mb_substr($data, $ivLen, null, '8bit');
 
-        $out =@ openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        $out = openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
         if ($out === false) {
             return null;
         }
@@ -141,7 +120,8 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * Keys.
+     * Prepare keys.
+     *
      * @return array<binary>
      * @internal
      */

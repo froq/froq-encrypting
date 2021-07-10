@@ -1,26 +1,7 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
 declare(strict_types=1);
 
@@ -31,37 +12,36 @@ use SodiumException;
 
 /**
  * Sodium.
+ *
+ * Represents a class entity which is able to perform twoway encrypting operations utilizing Sodium extension.
+ *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Sodium
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   3.0
  */
 final class Sodium extends Twoway
 {
-    /**
-     * Nonce.
-     * @var string
-     */
+    /** @var string */
     private string $nonce;
 
     /**
      * Constructor.
+     *
      * @param  string $key
      * @param  string $nonce
      * @throws froq\encrypting\twoway\TwowayException
      */
     public function __construct(string $key, string $nonce)
     {
-        if (!extension_loaded('sodium')) {
-            throw new TwowayException('sodium extension not loaded');
-        }
+        extension_loaded('sodium') || throw new TwowayException('sodium extension not loaded');
 
         $keyLength = strlen($key);
 
         // Check key length.
         if ($keyLength < 16) {
-            throw new TwowayException('Invalid key given, minimum key length is 16 (tip: use '.
-                'Sodium::generateKey() method to get a strong key)');
+            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
+                . 'Sodium::generateKey() method to get a strong key]', $keyLength);
         }
 
         // Key size must be 32-length.
@@ -71,8 +51,8 @@ final class Sodium extends Twoway
 
         // Check nonce length.
         if (strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
-            throw new TwowayException('Invalid nonce given, nonce length must be '.
-                SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+            throw new TwowayException('Invalid nonce length `%s`, nonce length must be %s',
+                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]);
         }
 
         $this->nonce = $nonce;
@@ -81,10 +61,11 @@ final class Sodium extends Twoway
     }
 
     /**
-     * Get nonce.
+     * Get nonce property.
+     *
      * @return string
      */
-    public function getNonce(): string
+    public function nonce(): string
     {
         return $this->nonce;
     }
@@ -92,14 +73,14 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): ?string
+    public function encode(string $data, bool $raw = false): string|null
     {
         try {
-            $out =@ sodium_crypto_secretbox($data, $this->nonce, $this->key);
+            $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
             if ($out !== false) {
                 return !$raw ? base64_encode($out) : $out;
             }
-        } catch (SodiumException $e) {}
+        } catch (SodiumException) {}
 
         return null;
     }
@@ -107,16 +88,16 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): ?string
+    public function decode(string $data, bool $raw = false): string|null
     {
         $data = !$raw ? base64_decode($data, true) : $data;
 
         try {
-            $out =@ sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
+            $out = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
             if ($out !== false) {
                 return $out;
             }
-        } catch (SodiumException $e) {}
+        } catch (SodiumException) {}
 
         return null;
     }
