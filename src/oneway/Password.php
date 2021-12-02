@@ -86,18 +86,6 @@ final class Password extends Oneway
                 . ' than 2', $length);
         }
 
-        $chars = Base::ALL_CHARS;
-        if ($puncted) { // Add punctuation chars.
-            $chars .= '!^+%&/\(){}[]<>=*?-_|$#.:,;';
-        }
-        $charsLength = strlen($chars);
-
-        $ret = '';
-
-        while (strlen($ret) < $length) {
-            $ret .= $chars[random(0, $charsLength - 1)];
-        }
-
-        return $ret;
+        return random_string($length, $puncted);
     }
 }
