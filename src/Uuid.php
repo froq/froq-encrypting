@@ -252,9 +252,8 @@ final class Uuid
      */
     public static function format(string $in, bool $dashed = true): string
     {
-        if (strlen($in) != 32) {
-            throw new EncryptingException('Invalid UUID input, its length must be 32 [given input: %s]',
-                $in, previous: $e);
+        if (strlen($in) != 32 || !ctype_xdigit($in)) {
+            throw new EncryptingException('Input must be a 32-length UUID/GUID');
         }
 
         $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
