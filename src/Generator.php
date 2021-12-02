@@ -154,7 +154,7 @@ final class Generator
 
         // Pad if needed.
         while (strlen($ret) < $length) {
-            $ret .= ($base == 10) ? rand() : Base::toBase($base, rand());
+            $ret .= ($base == 10) ? random() : Base::toBase($base, random());
         }
 
         $ret = substr($ret, 0, $length);
@@ -223,7 +223,7 @@ final class Generator
         $ret = '';
 
         while (strlen($ret) < $length) {
-            $ret .= $chars[rand(0, $charsLength - 1)];
+            $ret .= $chars[random(0, $charsLength - 1)];
         }
 
         return $ret;
@@ -266,7 +266,7 @@ final class Generator
     {
         static $counter = 0;
 
-        $number = $counted ? ++$counter : rand();
+        $number = $counted ? ++$counter : random();
         $pack   = pack('N', time())     . substr(md5(gethostname()), 0, 3)
                 . pack('n', getmypid()) . substr(pack('N', $number), 1, 3);
 
@@ -303,7 +303,7 @@ final class Generator
      */
     public static function generateOneTimePassword(string $key, int $length = 6, bool $timed = true): string
     {
-        $number = $timed ? time() : rand();
+        $number = $timed ? time() : random();
         $pack   = pack('NNC*', $number >> 32, $number & 0xffffffff);
         if (strlen($pack) < 8) {
             $pack = str_pad($pack, 8, chr(0), STR_PAD_LEFT);
@@ -313,10 +313,10 @@ final class Generator
         $offset = hexdec(substr($hash, -1)) * 2;
         $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
 
-        $ret = strval($binary % pow(10, $length));
+        $ret = (string) fmod($binary, (10 ** $length));
 
         while (strlen($ret) < $length) {
-            $ret .= rand(0, 9);
+            $ret .= random(0, 9);
         }
 
         return $ret;
