@@ -39,18 +39,18 @@ final class Suid
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         }
 
-        $ALPHABET = substr(Base::BASE_62_CHARS, 0, $base);
-        $ALPHABET_LENGTH = strlen($ALPHABET);
+        $chars = substr(Base::BASE_62_CHARS, 0, $base);
+        $charsLength = strlen($chars);
 
         // Original source: https://github.com/ai/nanoid/blob/main/index.browser.js
-        $mask = (2 << log($ALPHABET_LENGTH - 1) / M_LN2) - 1;
-        $step = (1.6 * $mask * $length / $ALPHABET_LENGTH) | 0;
+        $mask = (2 << log($charsLength - 1) / M_LN2) - 1;
+        $step = (1.6 * $mask * $length / $charsLength) | 0;
 
         $ret = '';
 
         $bytes = random_bytes($step);
         while ($step-- && strlen($ret) < $length) {
-            $ret .= $ALPHABET[ord($bytes[$step]) & $mask] ?? '';
+            $ret .= $chars[ord($bytes[$step]) & $mask] ?? '';
         }
 
         return $ret;

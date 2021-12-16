@@ -48,7 +48,9 @@ final class Base
      */
     public static function encode(string $in, string $chars = null): string
     {
-        if ($in == '') return '';
+        if ($in == '') {
+            return '';
+        }
 
         $chars = $chars ?? self::BASE_62_CHARS;
         if ($chars == '') {
@@ -84,7 +86,9 @@ final class Base
      */
     public static function decode(string $in, string $chars = null): string
     {
-        if ($in == '') return '';
+        if ($in == '') {
+            return '';
+        }
 
         $chars = $chars ?? self::BASE_62_CHARS;
         if ($chars == '') {
