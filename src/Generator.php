@@ -7,14 +7,12 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{EncryptingException, Base, Hash, Suid, Uuid};
 use froq\encrypting\oneway\Password;
-use Error;
 
 /**
  * Generator.
  *
- * Represents a static class which is able to generate UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
+ * A static class that generates UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
  * and passwords.
  *
  * @package froq\encrypting
@@ -81,7 +79,7 @@ final class Generator
      */
     public static function generateToken(int $hashLength = 32): string
     {
-        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [40, 16, 32, 64]);
+        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
     }
 
     /**
@@ -217,7 +215,7 @@ final class Generator
             throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
         }
 
-        $chars       = substr(Base::ALL_CHARS, 0, $base);
+        $chars = substr(Base::ALL_CHARS, 0, $base);
         $charsLength = strlen($chars);
 
         $ret = '';
@@ -244,12 +242,12 @@ final class Generator
         // Session may be not loaded.
         try {
             $ret = session_create_id() ?: null;
-        } catch (Error) {}
+        } catch (\Error) {}
 
         // Let Suid to mimic it.
         $ret ??= Suid::generate(26, 36);
 
-        $hash  && $ret = Hash::make($ret, $hashLength, [40, 16, 32]);
+        $hash  && $ret = Hash::make($ret, $hashLength, [32, 40, 16]);
         $upper && $ret = strtoupper($ret);
 
         return $ret;
