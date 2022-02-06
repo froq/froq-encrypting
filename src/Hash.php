@@ -41,7 +41,7 @@ final class Hash
 
         if (!in_array($length, $lengths, true)) {
             throw new EncryptingException(
-                'Invalid length value `%s` [valids: %s]',
+                'Invalid length `%s` [valids: %s]',
                 [$length, join(', ', $lengths)
             ]);
         }
