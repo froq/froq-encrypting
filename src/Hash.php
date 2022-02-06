@@ -22,8 +22,8 @@ final class Hash
 {
     /** @const array<int, string> */
     public const ALGOS = [
-        40 => 'sha1', 8  => 'fnv1a32', 16  => 'fnv1a64',
-        32 => 'md5',  64 => 'sha256',  128 => 'sha512'
+        8  => 'fnv1a32', 16 => 'fnv1a64', 32  => 'md5',
+        40 => 'sha1',    64 => 'sha256',  128 => 'sha512'
     ];
 
     /**
