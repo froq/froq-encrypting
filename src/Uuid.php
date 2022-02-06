@@ -251,7 +251,6 @@ final class Uuid
         } else {
             $pattern = $dashed ? self::PATTERN_DASHED_HASH : self::PATTERN_HASH;
         }
-        prd($pattern);
 
         return preg_test($pattern, ($dashed ? $uuid : str_replace('-', '', $uuid)));
     }
