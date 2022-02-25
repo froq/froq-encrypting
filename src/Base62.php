@@ -23,39 +23,39 @@ final class Base62
     /**
      * Encode given input as given base.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  int    $base
      * @param  bool   $bin
      * @return string
      */
-    public static function encode(string $in, int $base, bool $bin = false): string
+    public static function encode(string $input, int $base, bool $bin = false): string
     {
-        $bin && $in = bin2hex($in);
+        $bin && $input = bin2hex($input);
 
-        return (string) convert_base($in, $base, 62);
+        return (string) convert_base($input, $base, 62);
     }
 
     /**
      * Decode given input as given base.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  int    $base
      * @param  bool   $bin
      * @return string
      */
-    public static function decode(string $in, int $base, bool $bin = false): string
+    public static function decode(string $input, int $base, bool $bin = false): string
     {
-        $in = (string) convert_base($in, 62, $base);
+        $input = (string) convert_base($input, 62, $base);
 
         if ($bin) {
             // Fix: "Hexadecimal input string must have an even length .." error.
-            if (strlen($in) % 2) {
-                $in .= '0';
+            if (strlen($input) % 2) {
+                $input .= '0';
             }
 
-            $in = hex2bin($in);
+            $input = hex2bin($input);
         }
 
-        return $in;
+        return $input;
     }
 }

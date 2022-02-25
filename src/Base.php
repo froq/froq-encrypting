@@ -41,14 +41,14 @@ final class Base
 
     /**
      * Encode.
-     * @param  string      $in
+     * @param  string      $input
      * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function encode(string $in, string $chars = null): string
+    public static function encode(string $input, string $chars = null): string
     {
-        if ($in == '') {
+        if ($input == '') {
             return '';
         }
 
@@ -63,7 +63,7 @@ final class Base
         }
 
         // Original source https://github.com/tuupola/base62.
-        $temp = array_map('ord', str_split($in));
+        $temp = array_map('ord', str_split($input));
         $zero = 0;
         while ($temp && $temp[0] === 0) {
             $zero++; array_shift($temp);
@@ -79,14 +79,14 @@ final class Base
 
     /**
      * Decode.
-     * @param  string      $in
+     * @param  string      $input
      * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function decode(string $in, string $chars = null): string
+    public static function decode(string $input, string $chars = null): string
     {
-        if ($in == '') {
+        if ($input == '') {
             return '';
         }
 
@@ -100,13 +100,13 @@ final class Base
             throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
         }
 
-        if (strlen($in) !== strspn($in, $chars)) {
-            preg_match('~[^'. preg_quote($chars, '~') .']+~', $in, $match);
+        if (strlen($input) !== strspn($input, $chars)) {
+            preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
             throw new EncryptingException('Invalid characters `%s` found in given input', $match[0]);
         }
 
         // Original source https://github.com/tuupola/base62.
-        $temp = array_map(fn($c) => strpos($chars, $c), str_split($in));
+        $temp = array_map(fn($c) => strpos($chars, $c), str_split($input));
         $zero = 0;
         while ($temp && $temp[0] === 0) {
             $zero++; array_shift($temp);
@@ -122,23 +122,23 @@ final class Base
 
     /**
      * Convert.
-     * @param  array<int> $in
+     * @param  array<int> $input
      * @param  int        $fromBase
      * @param  int        $toBase
      * @return array<int>
      */
-    public static function convert(array $in, int $fromBase, int $toBase): array
+    public static function convert(array $input, int $fromBase, int $toBase): array
     {
         // Original source http://codegolf.stackexchange.com/a/21672.
         $out = [];
 
-        while ($count = count($in)) {
+        while ($count = count($input)) {
             $quotient  = [];
             $remainder = 0;
 
             $i = 0;
             while ($i < $count) {
-                $accumulator = $in[$i++] + ($remainder * $fromBase);
+                $accumulator = $input[$i++] + ($remainder * $fromBase);
                 $digit       = ($accumulator / $toBase) | 0; // Int-div.
                 $remainder   = $accumulator % $toBase;
 
@@ -149,7 +149,7 @@ final class Base
 
             array_unshift($out, $remainder);
 
-            $in = $quotient;
+            $input = $quotient;
         }
 
         return $out;

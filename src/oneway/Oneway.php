@@ -46,31 +46,31 @@ abstract class Oneway
     /**
      * Make a hash.
      *
-     * @param  string     $in
+     * @param  string     $input
      * @param  array|null $options
      * @return string|null
      * @since  4.5
      */
-    public static final function make(string $in, array $options = null): string|null
+    public static final function make(string $input, array $options = null): string|null
     {
-        return (new static($options))->hash($in);
+        return (new static($options))->hash($input);
     }
 
     /**
      * Verify a hash.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  string $hash
      * @return bool
      * @since  4.5
      */
-    public static final function validate(string $in, string $hash): bool
+    public static final function validate(string $input, string $hash): bool
     {
-        return (new static)->verify($in, $hash);
+        return (new static)->verify($input, $hash);
     }
 
     /**
-     * @alias of validate()
+     * @alias validate()
      */
     public static final function okay(...$args)
     {
@@ -80,17 +80,17 @@ abstract class Oneway
     /**
      * Hash given input.
      *
-     * @param  string $in
+     * @param  string $input
      * @return string|null
      */
-    abstract public function hash(string $in): string|null;
+    abstract public function hash(string $input): string|null;
 
     /**
      * Verify given input with given hash.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  string $hash
      * @return bool
      */
-    abstract public function verify(string $in, string $hash): bool;
+    abstract public function verify(string $input, string $hash): bool;
 }

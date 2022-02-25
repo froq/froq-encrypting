@@ -23,46 +23,46 @@ final class Base64
     /**
      * Encode given input.
      *
-     * @param  string $in
+     * @param  string $input
      * @return string
      */
-    public static function encode(string $in): string
+    public static function encode(string $input): string
     {
-        return (string) base64_encode($in);
+        return (string) base64_encode($input);
     }
 
     /**
      * Decode given input.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  bool   $strict
      * @return string
      */
-    public static function decode(string $in, bool $strict = false): string
+    public static function decode(string $input, bool $strict = false): string
     {
-        return (string) base64_decode($in, $strict);
+        return (string) base64_decode($input, $strict);
     }
 
     /**
      * Encode given input with URL-safe method.
      *
-     * @param  string $in
+     * @param  string $input
      * @return string
      */
-    public static function encodeUrlSafe(string $in): string
+    public static function encodeUrlSafe(string $input): string
     {
-        return chop(strtr(self::encode($in), '/+', '_-'), '=');
+        return chop(strtr(self::encode($input), '/+', '_-'), '=');
     }
 
     /**
      * Decode given input with URL-safe method.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  bool   $strict
      * @return string
      */
-    public static function decodeUrlSafe(string $in, bool $strict = false): string
+    public static function decodeUrlSafe(string $input, bool $strict = false): string
     {
-        return self::decode(strtr($in, '_-', '/+'), $strict);
+        return self::decode(strtr($input, '_-', '/+'), $strict);
     }
 }
