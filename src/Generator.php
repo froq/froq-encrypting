@@ -48,6 +48,18 @@ final class Generator
     }
 
     /**
+     * Generate a token.
+     *
+     * @param  int $hashLength
+     * @return string
+     * @since  4.4
+     */
+    public static function generateToken(int $hashLength = 32): string
+    {
+        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
+    }
+
+    /**
      * Generate a UUID.
      *
      * @param  bool $dashed
@@ -68,18 +80,6 @@ final class Generator
     public static function generateGuid(bool $dashed = true): string
     {
         return Uuid::generateGuid($dashed);
-    }
-
-    /**
-     * Generate a token.
-     *
-     * @param  int $hashLength
-     * @return string
-     * @since  4.4
-     */
-    public static function generateToken(int $hashLength = 32): string
-    {
-        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
     }
 
     /**
