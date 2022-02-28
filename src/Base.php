@@ -7,12 +7,10 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\EncryptingException;
-
 /**
  * Base.
  *
- * Represents a static class which provides encode/decode methods for base conversions.
+ * A static class, provides encode/decode methods for base conversions.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Base
@@ -52,9 +50,9 @@ final class Base
             return '';
         }
 
-        $chars = $chars ?? self::BASE_62_CHARS;
+        $chars ??= self::BASE_62_CHARS;
         if ($chars == '') {
-            throw new EncryptingException('Characters must not be empty');
+            throw new EncryptingException('Characters cannot be empty');
         }
 
         $base = strlen($chars);
@@ -90,9 +88,9 @@ final class Base
             return '';
         }
 
-        $chars = $chars ?? self::BASE_62_CHARS;
+        $chars ??= self::BASE_62_CHARS;
         if ($chars == '') {
-            throw new EncryptingException('Characters must not be empty');
+            throw new EncryptingException('Characters cannot be empty');
         }
 
         $base = strlen($chars);

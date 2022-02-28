@@ -12,7 +12,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Cryptee.
  *
- * Represents a class entity which is able to perform twoway encrypting operations utilizing XOR way.
+ * A class, able to perform twoway encrypting operations utilizing XOR way.
  * Original source https://github.com/k-gun/cryptee.
  *
  * @package froq\encrypting\twoway
@@ -32,8 +32,11 @@ final class Cryptee extends Twoway
     {
         // Check key length.
         if (strlen($key) < 16) {
-            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
-                . 'Cryptee::generateKey() method to get a strong key]', strlen($key));
+            throw new TwowayException(
+                'Invalid key length `%s`, minimum key length is 16 '.
+                '[tip: use Cryptee::generateKey() method to get a key]',
+                strlen($key)
+            );
         }
 
         parent::__construct($key);
@@ -46,7 +49,7 @@ final class Cryptee extends Twoway
     {
         $out = $this->crypt($data);
 
-        return !$raw ? base64_encode($out) : $out;
+        return $raw ? $out : base64_encode($out);
     }
 
     /**
@@ -54,17 +57,18 @@ final class Cryptee extends Twoway
      */
     public function decode(string $data, bool $raw = false): string|null
     {
-        $data = !$raw ? base64_decode($data, true) : $data;
+        $data = $raw ? $data : base64_decode($data, true);
+
+        // Invalid.
+        if ($data === false) {
+            return null;
+        }
 
         return $this->crypt($data);
     }
 
     /**
      * Crypt.
-     *
-     * @param  string $data
-     * @return string
-     * @internal
      */
     private function crypt(string $data): string
     {

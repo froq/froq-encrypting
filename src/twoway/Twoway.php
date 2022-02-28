@@ -8,12 +8,11 @@ declare(strict_types=1);
 namespace froq\encrypting\twoway;
 
 use froq\encrypting\{Suid, Base62, Base64};
-use froq\encrypting\twoway\TwowayException;
 
 /**
  * Twoway.
  *
- * Represents a abstract class entity that used in `twoway` package only, and also provides encrypt/decrypt
+ * An abstract class, used in `twoway` package only, also provides encrypt/decrypt
  * methods as shortcut for encode/decode methods of extender classes.
  *
  * @package froq\encrypting\twoway
@@ -77,7 +76,7 @@ abstract class Twoway
                 'base64'    => $data ? Base64::encode($data) : null,
                 'base64url' => $data ? Base64::encodeUrlSafe($data) : null,
                 default     => throw new TwowayException(
-                    'Invalid type `%s`, valids are: base62, base64, base64url',
+                    'Invalid type `%s` [valids: base62, base64, base64url]',
                     $options['type']
                 )
             };
@@ -107,7 +106,7 @@ abstract class Twoway
                 'base64'    => Base64::decode($data),
                 'base64url' => Base64::decodeUrlSafe($data),
                 default     => throw new TwowayException(
-                    'Invalid type `%s`, valids are: base62, base64, base64url',
+                    'Invalid type `%s` [valids: base62, base64, base64url]',
                     $options['type']
                 )
             };

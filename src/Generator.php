@@ -7,12 +7,10 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\oneway\Password;
-
 /**
  * Generator.
  *
- * A static class that generates UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
+ * A static class, generates UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
  * and passwords.
  *
  * @package froq\encrypting
@@ -287,7 +285,7 @@ final class Generator
      */
     public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
-        return Password::generate($length, $puncted);
+        return oneway\Password::generate($length, $puncted);
     }
 
     /**

@@ -10,7 +10,7 @@ namespace froq\encrypting;
 /**
  * Base 62.
  *
- * Represents a static class which provides a Base-62 encoding/decoding methods.
+ * A static class, provides a Base-62 encoding/decoding methods.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Base62

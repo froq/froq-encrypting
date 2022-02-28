@@ -7,13 +7,10 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\twoway\{Twoway, TwowayException};
-use SodiumException;
-
 /**
  * Sodium.
  *
- * Represents a class entity which is able to perform twoway encrypting operations utilizing Sodium extension.
+ * A class, able to perform twoway encrypting operations utilizing Sodium extension.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Sodium
@@ -34,14 +31,19 @@ final class Sodium extends Twoway
      */
     public function __construct(string $key, string $nonce)
     {
-        extension_loaded('sodium') || throw new TwowayException('sodium extension not loaded');
+        if (!extension_loaded('sodium')) {
+            throw new TwowayException('Sodium extension not loaded');
+        }
 
         $keyLength = strlen($key);
 
         // Check key length.
         if ($keyLength < 16) {
-            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
-                . 'Sodium::generateKey() method to get a strong key]', $keyLength);
+            throw new TwowayException(
+                'Invalid key length `%s`, minimum key length is 16 '.
+                '[tip: use Sodium::generateKey() method to get a strong key]',
+                $keyLength
+            );
         }
 
         // Key size must be 32-length.
@@ -51,8 +53,10 @@ final class Sodium extends Twoway
 
         // Check nonce length.
         if (strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
-            throw new TwowayException('Invalid nonce length `%s`, nonce length must be %s',
-                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]);
+            throw new TwowayException(
+                'Invalid nonce length `%s`, nonce length must be %s',
+                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]
+            );
         }
 
         $this->nonce = $nonce;
@@ -78,9 +82,9 @@ final class Sodium extends Twoway
         try {
             $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
             if ($out !== false) {
-                return !$raw ? base64_encode($out) : $out;
+                return $raw ? $out : base64_encode($out);
             }
-        } catch (SodiumException) {}
+        } catch (\SodiumException) {}
 
         return null;
     }
@@ -90,14 +94,19 @@ final class Sodium extends Twoway
      */
     public function decode(string $data, bool $raw = false): string|null
     {
-        $data = !$raw ? base64_decode($data, true) : $data;
+        $data = $raw ? $data : base64_decode($data, true);
+
+        // Invalid.
+        if ($data === false) {
+            return null;
+        }
 
         try {
             $out = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
             if ($out !== false) {
                 return $out;
             }
-        } catch (SodiumException) {}
+        } catch (\SodiumException) {}
 
         return null;
     }

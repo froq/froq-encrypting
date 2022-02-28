@@ -7,14 +7,12 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{EncryptingException, Generator, Hash};
-
 /**
  * Uuid.
  *
- * Represents a static class which is able to generate UUIDs (v4) from random bytes and optionally with
- * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without given lengths, also
- * to generate time-based or random serials.
+ * A static class, able to generate UUIDs (v4) from random bytes and optionally with
+ * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without
+ * given lengths, also to generate time-based or random serials.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Uuid
@@ -304,9 +302,7 @@ final class Uuid
     public static function format(string $input, bool $dashed = true): string
     {
         if (strlen($input) != self::HASH_LENGTH || !ctype_xdigit($input)) {
-            throw new EncryptingException(
-                'Input must be a 32-length UUID/GUID'
-            );
+            throw new EncryptingException('Input must be a 32-length x-digit');
         }
 
         $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));

@@ -10,7 +10,7 @@ namespace froq\encrypting;
 /**
  * Base 64.
  *
- * Represents a static class which provides a Base-64 encoding/decoding methods and also URL-safe stuff.
+ * A static class, provides a Base-64 encoding/decoding methods and URL-safe stuff.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Base64

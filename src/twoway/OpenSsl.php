@@ -12,7 +12,7 @@ use froq\encrypting\twoway\{Twoway, TwowayException};
 /**
  * Open Ssl.
  *
- * Represents a class entity which is able to perform twoway encrypting operations utilizing OpenSsl extension.
+ * A class, able to perform twoway encrypting operations utilizing OpenSsl extension.
  * Original source https://stackoverflow.com/a/30189841/362780.
  *
  * @package froq\encrypting\twoway
@@ -40,12 +40,17 @@ final class OpenSsl extends Twoway
      */
     public function __construct(string $key, string $method = null)
     {
-        extension_loaded('openssl') || throw new TwowayException('openssl extension not found');
+        if (!extension_loaded('openssl')) {
+            throw new TwowayException('Openssl extension not loaded');
+        }
 
         // Check key length.
         if (strlen($key) < 16) {
-            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
-                . 'OpenSSL::generateKey() method to get a strong key]', strlen($key));
+            throw new TwowayException(
+                'Invalid key length `%s`, minimum key length is 16 '.
+                '[tip: use OpenSSL::generateKey() method to get a key]',
+                strlen($key)
+            );
         }
 
         // Check method validity.
@@ -86,7 +91,7 @@ final class OpenSsl extends Twoway
         $mac = hash_hmac('sha256', $out, $autKey, true);
         $out = $mac . $out;
 
-        return !$raw ? base64_encode($out) : $out;
+        return $raw ? $out : base64_encode($out);
     }
 
     /**
@@ -94,7 +99,12 @@ final class OpenSsl extends Twoway
      */
     public function decode(string $data, bool $raw = false): string|null
     {
-        $data = !$raw ? base64_decode($data, true) : $data;
+        $data = $raw ? $data : base64_decode($data, true);
+
+        // Invalid.
+        if ($data === false) {
+            return null;
+        }
 
         [$encKey, $autKey] = $this->keys();
 
@@ -120,10 +130,7 @@ final class OpenSsl extends Twoway
     }
 
     /**
-     * Prepare keys.
-     *
-     * @return array<binary>
-     * @internal
+     * Keys.
      */
     private function keys(): array
     {

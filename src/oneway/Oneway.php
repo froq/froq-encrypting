@@ -10,7 +10,7 @@ namespace froq\encrypting\oneway;
 /**
  * Oneway.
  *
- * Represents a abstract class entity that used in `oneway` package only, and also provided make/validate
+ * An abstract class, used in `oneway` package only, also provided make/validate
  * methods as shortcut for hash/verify methods of extender classes.
  *
  * @package froq\encrypting\oneway
@@ -20,13 +20,13 @@ namespace froq\encrypting\oneway;
  */
 abstract class Oneway
 {
-    /** @var array<string, any|null> */
+    /** @var array */
     protected array $options;
 
     /**
      * Constructor.
      *
-     * @param array<string, any|null>|null $options
+     * @param array|null $options
      */
     public function __construct(array $options = null)
     {

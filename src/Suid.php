@@ -7,18 +7,16 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{Base, EncryptingException};
-
 /**
  * Suid.
  *
- * Represents a static class which is able to generate simple unique IDs with random character blocks these
+ * A static class, able to generate simple unique IDs with random character blocks these
  * can be used as salts, nonces or IDs.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Suid
  * @author  Kerem Güneş
- * @since   3.0, 5.0 Replaced with Salt & refactored with "nanoid" style.
+ * @since   3.0, 5.0
  * @static
  */
 final class Suid
@@ -34,7 +32,7 @@ final class Suid
     public static function generate(int $length, int $base = 62): string
     {
         if ($length < 1) {
-            throw new EncryptingException('Invalid length value `%s`, length must be greater than 1', $length);
+            throw new EncryptingException('Argument $length must be greater than 1, %s` given', $length);
         } elseif ($base < 2 || $base > 62) {
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         }
@@ -43,8 +41,8 @@ final class Suid
         $charsLength = strlen($chars);
 
         // Original source: https://github.com/ai/nanoid/blob/main/index.browser.js
-        $mask = (2 << log($charsLength - 1) / M_LN2) - 1;
-        $step = (1.6 * $mask * $length / $charsLength) | 0;
+        $mask = (2 << (int) (log($charsLength - 1) / M_LN2)) - 1;
+        $step = (int) ((1.6 * $mask * $length) / $charsLength);
 
         $ret = '';
 

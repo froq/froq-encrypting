@@ -10,7 +10,7 @@ namespace froq\encrypting;
 /**
  * Hash.
  *
- * A static class that generates hashes by given lengths.
+ * A static class, generates hashes by given lengths.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Hash
@@ -20,7 +20,7 @@ namespace froq\encrypting;
  */
 final class Hash
 {
-    /** @const array<int, string> */
+    /** @const array */
     public const ALGOS = [
         8  => 'fnv1a32', 16 => 'fnv1a64', 32  => 'md5',
         40 => 'sha1',    64 => 'sha256',  128 => 'sha512'

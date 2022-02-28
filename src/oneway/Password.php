@@ -7,13 +7,10 @@ declare(strict_types=1);
 
 namespace froq\encrypting\oneway;
 
-use froq\encrypting\oneway\{Oneway, OnewayException};
-use froq\encrypting\Base;
-
 /**
  * Password.
  *
- * Represents a class entity which is able to perform oneway encrypting operations utilizing password stuff.
+ * A class, able to perform oneway encrypting operations utilizing password stuff.
  *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Password
@@ -37,7 +34,7 @@ final class Password extends Oneway
     /**
      * Constructor.
      *
-     * @param array<string, any|null>|null $options
+     * @param array|null $options
      */
     public function __construct(array $options = null)
     {
@@ -60,7 +57,7 @@ final class Password extends Oneway
 
         $hash = password_hash($input, $algo, $options);
 
-        return ($hash !== false) ? $hash : null; // Null=Error.
+        return ($hash !== false) ? $hash : null;
     }
 
     /**
@@ -82,8 +79,7 @@ final class Password extends Oneway
     public static final function generate(int $length, bool $puncted = false): string
     {
         if ($length < 2) {
-            throw new OnewayException('Invalid length value `%s`, length must be equal or greater'
-                . ' than 2', $length);
+            throw new OnewayException('Argument $length must be greater than 1, %s given', $length);
         }
 
         return random_string($length, $puncted);
