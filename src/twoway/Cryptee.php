@@ -32,8 +32,8 @@ final class Cryptee extends Twoway
         if (strlen($key) < 16) {
             throw new TwowayException(
                 'Invalid key length `%s`, minimum key length is 16 '.
-                '[tip: use Cryptee::generateKey() method to get a key]',
-                strlen($key)
+                '[tip: use %s::generateKey() method to get a key]',
+                [strlen($key), self::class]
             );
         }
 

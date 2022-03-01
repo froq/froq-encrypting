@@ -41,8 +41,8 @@ final class Sodium extends Twoway
         if ($keyLength < 16) {
             throw new TwowayException(
                 'Invalid key length `%s`, minimum key length is 16 '.
-                '[tip: use Sodium::generateKey() method to get a strong key]',
-                $keyLength
+                '[tip: use %s::generateKey() method to get a key]',
+                [$keyLength, self::class]
             );
         }
 
