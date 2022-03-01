@@ -119,7 +119,7 @@ final class Uuid
      * @param  bool $dashed
      * @param  bool $guid
      * @return string
-     * @since  4.6, 4.9 Converted from generateUniq().
+     * @since  4.6, 4.9
      */
     public static function generateWithTimestamp(bool $dashed = true, bool $guid = false): string
     {
@@ -139,7 +139,7 @@ final class Uuid
      * @param  bool $format
      * @return string
      * @throws froq\encrypting\EncryptingException
-     * @since  4.6, 4.9 Converted from generateUniqHash().
+     * @since  4.6, 4.9
      */
     public static function generateWithTimestampHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
     {
@@ -209,7 +209,7 @@ final class Uuid
      * @param  bool $dated
      * @param  bool $hexed
      * @return string
-     * @since  4.0, 4.8 Replaced with generateSimple().
+     * @since  4.0, 4.8
      */
     public static function generateSerial(bool $dashed = true, bool $hexed = false, bool $dated = false): string
     {
@@ -224,7 +224,7 @@ final class Uuid
      * @param  bool $dashed
      * @param  bool $hexed
      * @return string
-     * @since  4.0, 4.8 Replaced with generateDigit().
+     * @since  4.0, 4.8
      */
     public static function generateRandomSerial(bool $dashed = true, bool $hexed = false): string
     {
