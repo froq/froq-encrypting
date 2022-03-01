@@ -136,8 +136,8 @@ final class Generator
         // Now (date/time object).
         $now = udate('', 'UTC');
 
-        // Use a date prefix or time (eg: 1401873.. or 20121229).
-        $id = !$dated ? $now->format('Uu') : $now->format('YmdHisu');
+        // Use a date or time prefix (eg: 20121212.. or 1355270400..).
+        $id = $dated ? $now->format('YmdHisu'): $now->format('Uu');
 
         if ($base == 10) {
             $ret = $id;
