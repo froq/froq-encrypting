@@ -40,10 +40,7 @@ final class Hash
         $lengths ??= array_keys(self::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
-            throw new EncryptingException(
-                'Invalid length `%s` [valids: %s]',
-                [$length, join(', ', $lengths)
-            ]);
+            throw new EncryptingException('Invalid length `%s` [valids: %a]', [$length, $lengths]);
         }
 
         $algo = self::ALGOS[$length];
