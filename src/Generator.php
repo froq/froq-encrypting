@@ -164,7 +164,7 @@ final class Generator
      * @param  int  $base
      * @param  bool $dated
      * @return string
-     * @since  4.8 Moved from Uuid.generateShort().
+     * @since  4.8
      */
     public static function generateShortId(int $base = 10, bool $dated = false): string
     {
@@ -177,7 +177,7 @@ final class Generator
      * @param  int  $base
      * @param  bool $dated
      * @return string
-     * @since  4.8 Moved from Uuid.generateLong().
+     * @since  4.8
      */
     public static function generateLongId(int $base = 10, bool $dated = false): string
     {
