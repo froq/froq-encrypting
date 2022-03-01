@@ -7,8 +7,6 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\twoway\{Twoway, TwowayException};
-
 /**
  * Cryptee.
  *
