@@ -72,7 +72,7 @@ final class Base
             $temp = array_merge(array_fill(0, $zero, 0), $temp);
         }
 
-        return join('', array_map(fn($i) => $chars[$i], $temp));
+        return join(array_map(fn($i) => $chars[$i], $temp));
     }
 
     /**
@@ -115,7 +115,7 @@ final class Base
             $temp = array_merge(array_fill(0, $zero, 0), $temp);
         }
 
-        return join('', array_map('chr', $temp));
+        return join(array_map('chr', $temp));
     }
 
     /**
