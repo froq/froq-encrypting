@@ -52,7 +52,7 @@ final class OpenSsl extends Twoway
         }
 
         // Check method validity.
-        if ($method && !in_array($method, openssl_get_cipher_methods())) {
+        if ($method && !in_array($method, openssl_get_cipher_methods(), true)) {
             throw new TwowayException('Invalid cipher method `%s`', $method);
         }
 
