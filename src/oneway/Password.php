@@ -34,7 +34,7 @@ final class Password extends Oneway
     /**
      * Constructor.
      *
-     * @param array|null $options
+     * @param  array<string, mixed>|null $options
      */
     public function __construct(array $options = null)
     {

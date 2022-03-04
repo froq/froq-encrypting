@@ -44,7 +44,7 @@ final class Sodium extends Oneway
     /**
      * Constructor.
      *
-     * @param  array<string, any|null>|null $options
+     * @param  array<string, mixed>|null $options
      * @throws froq\encrypting\oneway\OnewayException
      */
     public function __construct(array $options = null)

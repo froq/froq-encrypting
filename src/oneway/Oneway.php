@@ -20,7 +20,7 @@ namespace froq\encrypting\oneway;
  */
 abstract class Oneway
 {
-    /** @var array */
+    /** @var array<string, mixed> */
     protected array $options;
 
     /**
@@ -36,7 +36,7 @@ abstract class Oneway
     /**
      * Get options property.
      *
-     * @return array<string, any|null>
+     * @return array<string, mixed>
      */
     public final function options(): array
     {
