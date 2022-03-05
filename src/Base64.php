@@ -28,7 +28,7 @@ final class Base64
      */
     public static function encode(string $input): string
     {
-        return (string) base64_encode($input);
+        return base64_encode($input);
     }
 
     /**
@@ -51,7 +51,7 @@ final class Base64
      */
     public static function encodeUrlSafe(string $input): string
     {
-        return chop(strtr(self::encode($input), '/+', '_-'), '=');
+        return chop(strtr(base64_encode($input), '/+', '_-'), '=');
     }
 
     /**
@@ -63,6 +63,6 @@ final class Base64
      */
     public static function decodeUrlSafe(string $input, bool $strict = false): string
     {
-        return self::decode(strtr($input, '_-', '/+'), $strict);
+        return (string) base64_decode(strtr($input, '_-', '/+'), $strict);
     }
 }
