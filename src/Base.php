@@ -24,18 +24,20 @@ final class Base
      * Characters.
      * @const string
      */
-    public const BASE_10_CHARS  = '0123456789',
-                 BASE_16_CHARS  = '0123456789abcdef',
-                 BASE_36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
-                 BASE_62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                 BASE_62N_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+    public const BASE10_CHARS  = '0123456789',
+                 BASE16_CHARS  = '0123456789abcdef',
+                 BASE36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
+                 BASE62_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                 // Native 62.
+                 BASE62N_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                  // Misc.
-                 BASE_32_CHARS  = '0123456789abcdefghjkmnpqrstvwxyz',
-                 BASE_58_CHARS  = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
-                 // Fun & alias.
-                 FUN_CHARS      = 'fFuUnN',
-                 HEX_CHARS      = self::BASE_16_CHARS,
-                 ALL_CHARS      = self::BASE_62_CHARS;
+                 BASE32_CHARS  = '0123456789abcdefghjkmnpqrstvwxyz',
+                 BASE58_CHARS  = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
+                 // Fun.
+                 FUN_CHARS     = 'fFuUnN',
+                 // Alias.
+                 HEX_CHARS     = self::BASE16_CHARS,
+                 ALL_CHARS     = self::BASE62_CHARS;
 
     /**
      * Encode.
@@ -50,7 +52,7 @@ final class Base
             return '';
         }
 
-        $chars ??= self::BASE_62_CHARS;
+        $chars ??= self::BASE62_CHARS;
         if ($chars == '') {
             throw new EncryptingException('Characters cannot be empty');
         }
@@ -88,7 +90,7 @@ final class Base
             return '';
         }
 
-        $chars ??= self::BASE_62_CHARS;
+        $chars ??= self::BASE62_CHARS;
         if ($chars == '') {
             throw new EncryptingException('Characters cannot be empty');
         }
@@ -168,10 +170,10 @@ final class Base
 
         $digits = strval($digits);
 
-        $ret = strpos(self::BASE_62_CHARS, $digits[0]) | 0;
+        $ret = strpos(self::BASE62_CHARS, $digits[0]) | 0;
 
         for ($i = 1, $il = strlen($digits); $i < $il; $i++) {
-            $ret = (($base * $ret) + strpos(self::BASE_62_CHARS, $digits[$i])) | 0;
+            $ret = (($base * $ret) + strpos(self::BASE62_CHARS, $digits[$i])) | 0;
         }
 
         return $ret;
@@ -195,7 +197,7 @@ final class Base
         $ret = '';
 
         do {
-            $ret = self::BASE_62_CHARS[$digits % $base] . $ret;
+            $ret = self::BASE62_CHARS[$digits % $base] . $ret;
             $digits = (int) ($digits / $base);
         } while ($digits);
 

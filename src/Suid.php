@@ -37,7 +37,7 @@ final class Suid
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
         }
 
-        $chars = substr(Base::BASE_62_CHARS, 0, $base);
+        $chars = substr(BASE62_ALPHABET, 0, $base);
         $charsLength = strlen($chars);
 
         // Original source: https://github.com/ai/nanoid/blob/main/index.browser.js
