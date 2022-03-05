@@ -128,7 +128,7 @@ final class Base
     public static function convert(array $input, int $fromBase, int $toBase): array
     {
         // Original source http://codegolf.stackexchange.com/a/21672.
-        $out = [];
+        $ret = [];
 
         while ($count = count($input)) {
             $quotient  = [];
@@ -136,8 +136,8 @@ final class Base
 
             $i = 0;
             while ($i < $count) {
-                $accumulator = $input[$i++] + ($remainder * $fromBase);
-                $digit       = ($accumulator / $toBase) | 0; // Int-div.
+                $accumulator = intval($input[$i++]) + ($remainder * $fromBase);
+                $digit       = intdiv($accumulator, $toBase);
                 $remainder   = $accumulator % $toBase;
 
                 if ($quotient || $digit) {
@@ -145,22 +145,22 @@ final class Base
                 }
             }
 
-            array_unshift($out, $remainder);
+            array_unshift($ret, $remainder);
 
             $input = $quotient;
         }
 
-        return $out;
+        return $ret;
     }
 
     /**
      * From base.
-     * @param  int        $base
      * @param  int|string $digits
+     * @param  int        $base
      * @return int
      * @throws froq\encrypting\EncryptingException
      */
-    public static function fromBase(int $base, int|string $digits): int
+    public static function fromBase(int|string $digits, int $base): int
     {
         if ($base < 2 || $base > 62) {
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
@@ -179,12 +179,12 @@ final class Base
 
     /**
      * To base.
-     * @param  int        $base
      * @param  int|string $digits
+     * @param  int        $base
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function toBase(int $base, int|string $digits): string
+    public static function toBase(int|string $digits, int $base): string
     {
         if ($base < 2 || $base > 62) {
             throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
@@ -196,7 +196,7 @@ final class Base
 
         do {
             $ret = self::BASE_62_CHARS[$digits % $base] . $ret;
-            $digits = ($digits / $base) | 0;
+            $digits = (int) ($digits / $base);
         } while ($digits);
 
         return $ret;

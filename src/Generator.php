@@ -144,13 +144,13 @@ final class Generator
         } else {
             $ret = '';
             foreach (str_split($id, 10) as $i) {
-                $ret .= Base::toBase($base, $i);
+                $ret .= Base::toBase($i, $base);
             }
         }
 
         // Pad if needed.
         while (strlen($ret) < $length) {
-            $ret .= ($base == 10) ? random() : Base::toBase($base, random());
+            $ret .= ($base == 10) ? random() : Base::toBase(random(), $base);
         }
 
         $ret = substr($ret, 0, $length);
