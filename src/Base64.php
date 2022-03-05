@@ -44,7 +44,7 @@ final class Base64
     }
 
     /**
-     * Encode given input with URL-safe method.
+     * Encode given input as URL-safe.
      *
      * @param  string $input
      * @return string
@@ -55,7 +55,7 @@ final class Base64
     }
 
     /**
-     * Decode given input with URL-safe method.
+     * Decode given input as URL-safe.
      *
      * @param  string $input
      * @param  bool   $strict
