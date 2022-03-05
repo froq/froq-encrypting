@@ -27,16 +27,16 @@ final class Crypt
     public const CIPHER_METHOD = 'aes-256-ctr';
 
     /**
-     * Encrypt given non-encrypted input.
+     * Encrypt given non-encrypted input with given passphrase & initialization vector.
      *
      * @param  string $input
-     * @param  string $key
+     * @param  string $pp
      * @param  string $iv
      * @param  bool   $encode
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function encrypt(string $input, string $key, string $iv, bool $encode = false): string
+    public static function encrypt(string $input, string $pp, string $iv, bool $encode = false): string
     {
         if (strlen($iv) != 16) {
             throw new EncryptingException(
@@ -45,22 +45,22 @@ final class Crypt
             );
         }
 
-        $data = openssl_encrypt($input, self::CIPHER_METHOD, $key, iv: $iv);
+        $data = openssl_encrypt($input, self::CIPHER_METHOD, $pp, iv: $iv);
 
         return $encode ? Base62::encode($data) : $data;
     }
 
     /**
-     * Decrypt given encrypted input.
+     * Decrypt given encrypted input with given passphrase & initialization vector.
      *
      * @param  string $input
-     * @param  string $key
+     * @param  string $pp
      * @param  string $iv
      * @param  bool   $decode
      * @return string
      * @throws froq\encrypting\EncryptingException
      */
-    public static function decrypt(string $input, string $key, string $iv, bool $decode = false): string
+    public static function decrypt(string $input, string $pp, string $iv, bool $decode = false): string
     {
         if (strlen($iv) != 16) {
             throw new EncryptingException(
@@ -71,6 +71,6 @@ final class Crypt
 
         $data = $decode ? Base62::decode($input) : $input;
 
-        return openssl_decrypt($data, self::CIPHER_METHOD, $key, iv: $iv);
+        return openssl_decrypt($data, self::CIPHER_METHOD, $pp, iv: $iv);
     }
 }

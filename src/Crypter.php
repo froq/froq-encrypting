@@ -22,11 +22,11 @@ class Crypter
     /**
      * Constructor.
      *
-     * @param string $key
-     * @param string $iv
+     * @param string $pp The passphrase (key).
+     * @param string $iv The initialization vector.
      */
     public function __construct(
-        private string $key,
+        private string $pp,
         private string $iv
     ) {}
 
@@ -39,7 +39,7 @@ class Crypter
      */
     public function encrypt(string $input, bool $encode = false): string
     {
-        return Crypt::encrypt($input, $this->key, $this->iv, $encode);
+        return Crypt::encrypt($input, $this->pp, $this->iv, $encode);
     }
 
     /**
@@ -51,6 +51,6 @@ class Crypter
      */
     public function decrypt(string $input, bool $decode = false): string
     {
-        return Crypt::decrypt($input, $this->key, $this->iv, $decode);
+        return Crypt::decrypt($input, $this->pp, $this->iv, $decode);
     }
 }
