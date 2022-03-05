@@ -72,10 +72,11 @@ abstract class Twoway
             $data = $that->encode($data, true);
 
             $data = match ($options['type']) {
-                'base62'    => $data ? Base62::encode($data, 16, true) : null,
-                'base64'    => $data ? Base64::encode($data) : null,
+                'base62'    => $data ? Base62::encode($data, true)  : null,
+                'base64'    => $data ? Base64::encode($data)        : null,
                 'base64url' => $data ? Base64::encodeUrlSafe($data) : null,
-                default     => throw new TwowayException(
+
+                default => throw new TwowayException(
                     'Invalid type `%s` [valids: base62, base64, base64url]',
                     $options['type']
                 )
@@ -102,10 +103,11 @@ abstract class Twoway
 
         if (isset($options['type'])) {
             $data = match ($options['type']) {
-                'base62'    => Base62::decode($data, 16, true),
+                'base62'    => Base62::decode($data, true),
                 'base64'    => Base64::decode($data),
                 'base64url' => Base64::decodeUrlSafe($data),
-                default     => throw new TwowayException(
+
+                default => throw new TwowayException(
                     'Invalid type `%s` [valids: base62, base64, base64url]',
                     $options['type']
                 )

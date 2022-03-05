@@ -21,40 +21,31 @@ namespace froq\encrypting;
 final class Base62
 {
     /**
-     * Encode given input as given base.
+     * Encode given input.
      *
      * @param  string $input
-     * @param  int    $base
      * @param  bool   $bin
      * @return string
      */
-    public static function encode(string $input, int $base, bool $bin = false): string
+    public static function encode(string $input, bool $bin = false): string
     {
         $bin && $input = bin2hex($input);
 
-        return (string) convert_base($input, $base, 62);
+        return Base::encode($input);
     }
 
     /**
-     * Decode given input as given base.
+     * Decode given input.
      *
      * @param  string $input
-     * @param  int    $base
      * @param  bool   $bin
      * @return string
      */
-    public static function decode(string $input, int $base, bool $bin = false): string
+    public static function decode(string $input, bool $bin = false): string
     {
-        $input = (string) convert_base($input, 62, $base);
+        $input = Base::decode($input);
 
-        if ($bin) {
-            // Fix: "Hexadecimal input string must have an even length .." error.
-            if (strlen($input) % 2) {
-                $input .= '0';
-            }
-
-            $input = hex2bin($input);
-        }
+        $bin && $input = hex2bin($input);
 
         return $input;
     }
