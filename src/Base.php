@@ -41,6 +41,7 @@ final class Base
 
     /**
      * Encode.
+     *
      * @param  string      $input
      * @param  string|null $chars @default=base62
      * @return string
@@ -79,6 +80,7 @@ final class Base
 
     /**
      * Decode.
+     *
      * @param  string      $input
      * @param  string|null $chars @default=base62
      * @return string
@@ -122,6 +124,7 @@ final class Base
 
     /**
      * Convert.
+     *
      * @param  array<int> $input
      * @param  int        $fromBase
      * @param  int        $toBase
@@ -157,6 +160,7 @@ final class Base
 
     /**
      * From base.
+     *
      * @param  int|string $digits
      * @param  int        $base
      * @return int
@@ -181,6 +185,7 @@ final class Base
 
     /**
      * To base.
+     *
      * @param  int|string $digits
      * @param  int        $base
      * @return string
