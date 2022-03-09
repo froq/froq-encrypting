@@ -27,7 +27,7 @@ final class Uuid
                  NULL_HASH = '00000000000000000000000000000000';
 
     /** @const string */
-    public const PATTERN_DASHED      = '~^[a-f0-9]{8}[a-f0-9]{4}4[a-f0-9]{3}[ab89][a-f0-9]{3}[a-f0-9]{12}$~',
+    public const PATTERN_V4          = '~^[a-f0-9]{8}[a-f0-9]{4}4[a-f0-9]{3}[ab89][a-f0-9]{3}[a-f0-9]{12}$~',
                  PATTERN_DASHED_V4   = '~^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[ab89][a-f0-9]{3}-[a-f0-9]{12}$~',
                  PATTERN_HASH        = '~^[a-f0-9]{32}$~',
                  PATTERN_DASHED_HASH = '~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~';
@@ -234,61 +234,71 @@ final class Uuid
     }
 
     /**
-     * Check whether given UUID is valid.
+     * Check whether given input a valid UUID.
      *
-     * @param  string $uuid
+     * @param  string $input
      * @param  bool   $dashed
+     * @param  bool   $cased
      * @param  bool   $v4
      * @return bool
      * @since  5.0
      */
-    public static function isValid(string $uuid, bool $dashed = true, bool $v4 = false): bool
+    public static function isValid(string $input, bool $dashed = true, bool $cased = false, bool $v4 = false): bool
     {
-        if ($v4) {
-            $pattern = $dashed ? self::PATTERN_DASHED_V4 : self::PATTERN_V4;
-        } else {
-            $pattern = $dashed ? self::PATTERN_DASHED_HASH : self::PATTERN_HASH;
-        }
-
-        return preg_test($pattern, ($dashed ? $uuid : str_replace('-', '', $uuid)));
+        return self::validate($input, dashed: $dashed, cased: $cased, v4: $v4);
     }
 
     /**
-     * Check whether given UUID is valid by v4.
+     * Check whether given input is a valid UUID/v4.
      *
-     * @param  string $uuid
+     * @param  string $input
      * @param  bool   $dashed
+     * @param  bool   $cased
      * @return bool
      * @since  6.0
      */
-    public static function isValidV4(string $uuid, bool $dashed = true): bool
+    public static function isValidV4(string $input, bool $dashed = true, bool $cased = false): bool
     {
-        return self::isValid($uuid, $dashed, true);
+        return self::validate($input, dashed: $dashed, cased: $cased, v4: true);
     }
 
     /**
-     * Check whether given UUID hash is valid.
+     * Check whether given input is a valid hash.
      *
-     * @param  string $hash
-     * @param  int    $hashLength
+     * @param  string $input
+     * @param  int    $length
      * @param  bool   $dashed
+     * @param  bool   $cased
      * @return bool
      * @since  5.0
      */
-    public static function isValidHash(string $hash, int $hashLength = self::HASH_LENGTH, bool $dashed = false): bool
+    public static function isValidHash(string $input, int $length = self::HASH_LENGTH, bool $dashed = false, bool $cased = false): bool
     {
-        // Not formatted.
-        if ($hashLength != self::HASH_LENGTH) {
-            $dashed = false;
-        }
+        return self::validate($input, length: $length, dashed: $dashed, cased: $cased);
+    }
 
-        if (!$dashed) {
-            $pattern = '~^[a-f0-9]{' . $hashLength . '}$~';
+    /**
+     * Validate given input as UUUD, GUID, UUID/v4 or hash by given length.
+     *
+     * @param  string      $input
+     * @param  bool|int ...$options
+     * @return bool
+     * @since  6.0
+     */
+    public static function validate(string $input, bool|int ...$options): bool
+    {
+        [$v4, $length, $dashed, $cased] = array_select($options, ['v4', 'length', 'dashed', 'cased']);
+
+        if ($v4) {
+            $pattern = $dashed ? self::PATTERN_DASHED_V4 : self::PATTERN_V4;
         } else {
-            $pattern = self::PATTERN_DASHED_HASH;
+            $pattern = $dashed ? self::PATTERN_DASHED_HASH : strtr(self::PATTERN_HASH, [self::HASH_LENGTH => $length]);
         }
 
-        return preg_test($pattern, ($dashed ? $hash : str_replace('-', '', $hash)));
+        $dashed || $input   = strtr($input, ['-' => '']); // Remove dashes.
+        $cased  && $pattern = strtoupper($pattern);       // Make case-sensitive.
+
+        return preg_test($pattern, $input);
     }
 
     /**
@@ -305,12 +315,12 @@ final class Uuid
             throw new EncryptingException('Input must be a 32-length x-digit');
         }
 
-        $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
+        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
 
-        // Drop if false.
-        $dashed || $out = str_replace('-', '', $out);
+        // Drop dashes if false.
+        $dashed || $ret = str_replace('-', '', $ret);
 
-        return $out;
+        return $ret;
     }
 
     /**
