@@ -66,15 +66,7 @@ abstract class Oneway
      */
     public static final function validate(string $input, string $hash): bool
     {
-        return (new static)->verify($input, $hash);
-    }
-
-    /**
-     * @alias validate()
-     */
-    public static final function okay(...$args)
-    {
-        return self::validate(...$args);
+        return (new static())->verify($input, $hash);
     }
 
     /**
