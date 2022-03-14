@@ -10,7 +10,7 @@ namespace froq\encrypting;
 /**
  * Crypter.
  *
- * A crypt class, provides encrypt/decrypt operations using Crypt class in OOP-way.
+ * A class, provides encrypt/decrypt operations using Crypt class in OOP-way.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Crypter
