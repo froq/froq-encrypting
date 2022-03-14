@@ -42,19 +42,18 @@ final class Base
     /**
      * Encode.
      *
-     * @param  string      $input
-     * @param  string|null $chars @default=base62
+     * @param  string $input
+     * @param  string $chars
      * @return string
      * @throws froq\encrypting\EncryptingException
      * @thanks https://github.com/tuupola/base62
      */
-    public static function encode(string $input, string $chars = null): string
+    public static function encode(string $input, string $chars = self::BASE62_CHARS): string
     {
         if ($input == '') {
             return '';
         }
 
-        $chars ??= self::BASE62_CHARS;
         if ($chars == '') {
             throw new EncryptingException('Characters cannot be empty');
         }
@@ -81,19 +80,18 @@ final class Base
     /**
      * Decode.
      *
-     * @param  string      $input
-     * @param  string|null $chars @default=base62
+     * @param  string $input
+     * @param  string $chars
      * @return string
      * @throws froq\encrypting\EncryptingException
      * @thanks https://github.com/tuupola/base62
      */
-    public static function decode(string $input, string $chars = null): string
+    public static function decode(string $input, string $chars = self::BASE62_CHARS): string
     {
         if ($input == '') {
             return '';
         }
 
-        $chars ??= self::BASE62_CHARS;
         if ($chars == '') {
             throw new EncryptingException('Characters cannot be empty');
         }
