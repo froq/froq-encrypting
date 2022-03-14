@@ -46,6 +46,7 @@ final class Base
      * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
+     * @thanks https://github.com/tuupola/base62
      */
     public static function encode(string $input, string $chars = null): string
     {
@@ -63,7 +64,6 @@ final class Base
             throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
         }
 
-        // Original source https://github.com/tuupola/base62.
         $temp = array_map('ord', str_split($input));
         $zero = 0;
         while ($temp && $temp[0] === 0) {
@@ -85,6 +85,7 @@ final class Base
      * @param  string|null $chars @default=base62
      * @return string
      * @throws froq\encrypting\EncryptingException
+     * @thanks https://github.com/tuupola/base62
      */
     public static function decode(string $input, string $chars = null): string
     {
@@ -107,7 +108,6 @@ final class Base
             throw new EncryptingException('Invalid characters `%s` found in given input', $match[0]);
         }
 
-        // Original source https://github.com/tuupola/base62.
         $temp = array_map(fn($c) => strpos($chars, $c), str_split($input));
         $zero = 0;
         while ($temp && $temp[0] === 0) {
@@ -129,10 +129,10 @@ final class Base
      * @param  int        $fromBase
      * @param  int        $toBase
      * @return array<int>
+     * @thanks http://codegolf.stackexchange.com/a/21672
      */
     public static function convert(array $input, int $fromBase, int $toBase): array
     {
-        // Original source http://codegolf.stackexchange.com/a/21672.
         $ret = [];
 
         while ($count = count($input)) {
