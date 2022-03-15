@@ -52,7 +52,7 @@ final class Sodium extends Oneway
         $options['opslimit'] ??= self::OPS_LIMIT;
         $options['memlimit'] ??= self::MEM_LIMIT;
 
-        $minMemlimit = 1024 * 8; // 8KB
+        static $minMemlimit = 1024 * 8; // 8KB
 
         if ($options['opslimit'] < 1) {
             throw new OnewayException('Option `opslimit` is too low, minimum value is 1');
@@ -69,13 +69,9 @@ final class Sodium extends Oneway
      */
     public function hash(string $input): string|null
     {
-        $ret = false;
-
-        try { // In case any other Sodium errors happen.
-            $ret = sodium_crypto_pwhash_str(
-                $input, $this->options['opslimit'], $this->options['memlimit']
-            );
-        } catch (\SodiumException) {}
+        $ret = sodium_crypto_pwhash_str(
+            $input, $this->options['opslimit'], $this->options['memlimit']
+        );
 
         return ($ret !== false) ? $ret : null;
     }

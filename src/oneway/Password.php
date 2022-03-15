@@ -49,13 +49,7 @@ final class Password extends Oneway
      */
     public function hash(string $input): string|null
     {
-        $algo    = $this->options['algo'];
-        $options = $this->options;
-
-        // Not used in function options.
-        unset($options['algo']);
-
-        $ret = password_hash($input, $algo, $options);
+        $ret = password_hash($input, $this->options['algo'], $this->options);
 
         return ($ret !== false) ? $ret : null;
     }
