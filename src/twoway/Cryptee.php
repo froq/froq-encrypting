@@ -43,38 +43,38 @@ final class Cryptee extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): string|null
+    public function encrypt(string $input, bool $raw = false): string|null
     {
-        $out = $this->crypt($data);
+        $ret = $this->process($input);
 
-        return $raw ? $out : base64_encode($out);
+        return $raw ? $ret : base64_encode($ret);
     }
 
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): string|null
+    public function decrypt(string $input, bool $raw = false): string|null
     {
-        $data = $raw ? $data : base64_decode($data, true);
+        $input = $raw ? $input : base64_decode($input, true);
 
         // Invalid.
-        if ($data === false) {
+        if ($input === false) {
             return null;
         }
 
-        return $this->crypt($data);
+        return $this->process($input);
     }
 
     /**
-     * Crypt.
+     * Process encrypt/decrypt operation.
      */
-    private function crypt(string $data): string
+    private function process(string $input): string
     {
         $top = 256;
         $key = $cnt = [];
 
-        for ($i = 0, $len = strlen($this->key); $i < $top; $i++) {
-            $key[$i] = ord(substr($this->key, ($i % $len) + 1, 1));
+        for ($i = 0, $il = strlen($this->key); $i < $top; $i++) {
+            $key[$i] = ord(substr($this->key, ($i % $il) + 1, 1));
             $cnt[$i] = $i;
         }
 
@@ -86,9 +86,9 @@ final class Cryptee extends Twoway
             $cnt[$a] = $t;
         }
 
-        $out = b'';
+        $ret = b'';
 
-        for ($i = 0, $a = -1, $b = -1, $len = strlen($data); $i < $len; $i++) {
+        for ($i = 0, $a = -1, $b = -1, $il = strlen($input); $i < $il; $i++) {
             $a = ($a + 1) % $top;
             $b = ($b + $cnt[$a]) % $top;
             $t = $cnt[$a];
@@ -96,9 +96,9 @@ final class Cryptee extends Twoway
             $cnt[$a] = $cnt[$b] ?? 0;
             $cnt[$b] = $t;
 
-            $out .= chr(ord(substr($data, $i, 1)) ^ $cnt[($cnt[$a] + $cnt[$b]) % $top]);
+            $ret .= chr(ord(substr($input, $i, 1)) ^ $cnt[($cnt[$a] + $cnt[$b]) % $top]);
         }
 
-        return $out;
+        return $ret;
     }
 }

@@ -45,9 +45,9 @@ final class Crypt
             );
         }
 
-        $data = openssl_encrypt($input, self::CIPHER_METHOD, $pp, iv: $iv);
+        $ret = openssl_encrypt($input, self::CIPHER_METHOD, $pp, iv: $iv);
 
-        return $encode ? Base62::encode($data) : $data;
+        return $encode ? Base62::encode($ret) : $ret;
     }
 
     /**
@@ -69,8 +69,8 @@ final class Crypt
             );
         }
 
-        $data = $decode ? Base62::decode($input) : $input;
+        $ret = $decode ? Base62::decode($input) : $input;
 
-        return openssl_decrypt($data, self::CIPHER_METHOD, $pp, iv: $iv);
+        return openssl_decrypt($ret, self::CIPHER_METHOD, $pp, iv: $iv);
     }
 }

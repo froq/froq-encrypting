@@ -51,7 +51,7 @@ abstract class Oneway
      * @return string|null
      * @since  4.5
      */
-    public static final function make(string $input, array $options = null): string|null
+    public static final function doHash(string $input, array $options = null): string|null
     {
         return (new static($options))->hash($input);
     }
@@ -64,7 +64,7 @@ abstract class Oneway
      * @return bool
      * @since  4.5
      */
-    public static final function validate(string $input, string $hash): bool
+    public static final function doVerify(string $input, string $hash): bool
     {
         return (new static())->verify($input, $hash);
     }

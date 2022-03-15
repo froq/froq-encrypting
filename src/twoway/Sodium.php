@@ -77,12 +77,12 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): string|null
+    public function encrypt(string $input, bool $raw = false): string|null
     {
         try {
-            $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
-            if ($out !== false) {
-                return $raw ? $out : base64_encode($out);
+            $ret = sodium_crypto_secretbox($input, $this->nonce, $this->key);
+            if ($ret !== false) {
+                return $raw ? $ret : base64_encode($ret);
             }
         } catch (\SodiumException) {}
 
@@ -92,19 +92,19 @@ final class Sodium extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): string|null
+    public function decrypt(string $input, bool $raw = false): string|null
     {
-        $data = $raw ? $data : base64_decode($data, true);
+        $input = $raw ? $input : base64_decode($input, true);
 
         // Invalid.
-        if ($data === false) {
+        if ($input === false) {
             return null;
         }
 
         try {
-            $out = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
-            if ($out !== false) {
-                return $out;
+            $ret = sodium_crypto_secretbox_open($input, $this->nonce, $this->key);
+            if ($ret !== false) {
+                return $ret;
             }
         } catch (\SodiumException) {}
 

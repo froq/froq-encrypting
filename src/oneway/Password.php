@@ -55,9 +55,9 @@ final class Password extends Oneway
         // Not used in function options.
         unset($options['algo']);
 
-        $hash = password_hash($input, $algo, $options);
+        $ret = password_hash($input, $algo, $options);
 
-        return ($hash !== false) ? $hash : null;
+        return ($ret !== false) ? $ret : null;
     }
 
     /**
@@ -79,7 +79,10 @@ final class Password extends Oneway
     public static final function generate(int $length, bool $puncted = false): string
     {
         if ($length < 2) {
-            throw new OnewayException('Argument $length must be greater than 1, %s given', $length);
+            throw new OnewayException(
+                'Argument $length must be greater than 1, %s given',
+                $length
+            );
         }
 
         return random_string($length, $puncted);

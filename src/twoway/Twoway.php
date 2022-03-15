@@ -12,8 +12,8 @@ use froq\encrypting\{Suid, Base62, Base64};
 /**
  * Twoway.
  *
- * An abstract class, used in `twoway` package only, also provides encrypt/decrypt
- * methods as shortcut for encode/decode methods of extender classes.
+ * An abstract class, used in `twoway` package only, also provides doEncrypt/doDecrypt
+ * methods as shortcut for encrypt/decrypt methods of extender classes.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Twoway
@@ -56,25 +56,25 @@ abstract class Twoway
     }
 
     /**
-     * Encrypt given data by given options.
+     * Encrypt given input by given options.
      *
-     * @param  string $data
+     * @param  string $input
      * @param  array  $options
      * @return string|null
      * @since  4.5
      */
-    public static final function encrypt(string $data, array $options): string|null
+    public static final function doEncrypt(string $input, array $options): string|null
     {
         // Key is required, nonce for Sodium, method for OpenSsl.
         $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
 
         if (isset($options['type'])) {
-            $data = $that->encode($data, true);
+            $input = $that->encrypt($input, true);
 
-            $data = match ($options['type']) {
-                'base62'    => $data ? Base62::encode($data, true)  : null,
-                'base64'    => $data ? Base64::encode($data)        : null,
-                'base64url' => $data ? Base64::encodeUrlSafe($data) : null,
+            $input = match ($options['type']) {
+                'base62'    => $input ? Base62::encode($input, true)  : null,
+                'base64'    => $input ? Base64::encode($input)        : null,
+                'base64url' => $input ? Base64::encodeUrlSafe($input) : null,
 
                 default => throw new TwowayException(
                     'Invalid type `%s` [valids: base62, base64, base64url]',
@@ -82,30 +82,30 @@ abstract class Twoway
                 )
             };
 
-            return $data;
+            return $input;
         }
 
-        return $that->encode($data);
+        return $that->encrypt($input);
     }
 
     /**
-     * Decrypt given data by given options.
+     * Decrypt given input by given options.
      *
-     * @param  string $data
+     * @param  string $input
      * @param  array  $options
      * @return string|null
      * @since  4.5
      */
-    public static final function decrypt(string $data, array $options): string|null
+    public static final function doDecrypt(string $input, array $options): string|null
     {
         // Key is required, nonce for Sodium, method for OpenSsl.
         $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
 
         if (isset($options['type'])) {
-            $data = match ($options['type']) {
-                'base62'    => Base62::decode($data, true),
-                'base64'    => Base64::decode($data),
-                'base64url' => Base64::decodeUrlSafe($data),
+            $input = match ($options['type']) {
+                'base62'    => Base62::decode($input, true),
+                'base64'    => Base64::decode($input),
+                'base64url' => Base64::decodeUrlSafe($input),
 
                 default => throw new TwowayException(
                     'Invalid type `%s` [valids: base62, base64, base64url]',
@@ -113,27 +113,27 @@ abstract class Twoway
                 )
             };
 
-            return $that->decode($data, true);
+            return $that->decrypt($input, true);
         }
 
-        return $that->decode($data);
+        return $that->decrypt($input);
     }
 
     /**
-     * Encode given data.
+     * Encrypt given input.
      *
-     * @param  string $data
+     * @param  string $input
      * @param  bool   $raw
      * @return string|null
      */
-    abstract public function encode(string $data, bool $raw = false): string|null;
+    abstract public function encrypt(string $input, bool $raw = false): string|null;
 
     /**
-     * Decode given data.
+     * Decrypt given input.
      *
-     * @param  string $data
+     * @param  string $input
      * @param  bool   $raw
      * @return string|null
      */
-    abstract public function decode(string $data, bool $raw = false): string|null;
+    abstract public function decrypt(string $input, bool $raw = false): string|null;
 }

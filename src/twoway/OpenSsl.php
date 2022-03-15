@@ -77,57 +77,57 @@ final class OpenSsl extends Twoway
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): string|null
+    public function encrypt(string $input, bool $raw = false): string|null
     {
         [$encKey, $autKey] = $this->keys();
 
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
 
-        $out = openssl_encrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
-        if ($out === false) {
+        $ret = openssl_encrypt($input, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        if ($ret === false) {
             return null;
         }
 
-        $out = $iv . $out;
-        $mac = hash_hmac('sha256', $out, $autKey, true);
-        $out = $mac . $out;
+        $ret = $iv . $ret;
+        $mac = hash_hmac('sha256', $ret, $autKey, true);
+        $ret = $mac . $ret;
 
-        return $raw ? $out : base64_encode($out);
+        return $raw ? $ret : base64_encode($ret);
     }
 
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): string|null
+    public function decrypt(string $input, bool $raw = false): string|null
     {
-        $data = $raw ? $data : base64_decode($data, true);
+        $input = $raw ? $input : base64_decode($input, true);
 
         // Invalid.
-        if ($data === false) {
+        if ($input === false) {
             return null;
         }
 
         [$encKey, $autKey] = $this->keys();
 
         $macLen = mb_strlen(hash('sha256', '', true), '8bit');
-        $mac    = mb_substr($data, 0, $macLen, '8bit');
-        $data   = mb_substr($data, $macLen, null, '8bit');
+        $mac    = mb_substr($input, 0, $macLen, '8bit');
+        $input  = mb_substr($input, $macLen, null, '8bit');
 
         // Validate hashes.
-        if (!hash_equals($mac, hash_hmac('sha256', $data, $autKey, true))) {
+        if (!hash_equals($mac, hash_hmac('sha256', $input, $autKey, true))) {
             return null;
         }
 
         $ivLen = openssl_cipher_iv_length($this->method);
-        $iv    = mb_substr($data, 0, $ivLen, '8bit');
-        $data  = mb_substr($data, $ivLen, null, '8bit');
+        $iv    = mb_substr($input, 0, $ivLen, '8bit');
+        $input = mb_substr($input, $ivLen, null, '8bit');
 
-        $out = openssl_decrypt($data, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
-        if ($out === false) {
+        $ret = openssl_decrypt($input, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        if ($ret === false) {
             return null;
         }
 
-        return $out;
+        return $ret;
     }
 
     /**

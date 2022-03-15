@@ -69,15 +69,15 @@ final class Sodium extends Oneway
      */
     public function hash(string $input): string|null
     {
-        $hash = false;
+        $ret = false;
 
         try { // In case any other Sodium errors happen.
-            $hash = sodium_crypto_pwhash_str(
+            $ret = sodium_crypto_pwhash_str(
                 $input, $this->options['opslimit'], $this->options['memlimit']
             );
         } catch (\SodiumException) {}
 
-        return ($hash !== false) ? $hash : null;
+        return ($ret !== false) ? $ret : null;
     }
 
     /**
