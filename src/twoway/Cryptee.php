@@ -23,21 +23,17 @@ final class Cryptee extends Twoway
     /**
      * Constructor.
      *
-     * @param  string $key
+     * @param  string     $key
+     * @param  array|null $options
      * @throws froq\encrypting\twoway\TwowayException
      */
-    public function __construct(string $key)
+    public function __construct(string $key, array $options = null)
     {
-        // Check key length.
-        if (strlen($key) < 16) {
-            throw new TwowayException(
-                'Invalid key length `%s`, minimum key length is 16 '.
-                '[tip: use %s::generateKey() method to get a key]',
-                [strlen($key), self::class]
-            );
-        }
+        parent::checkKeyLength(strlen($key));
 
-        parent::__construct($key);
+        $options = ['key' => $key] + (array) $options;
+
+        parent::__construct($options);
     }
 
     /**
@@ -47,7 +43,7 @@ final class Cryptee extends Twoway
     {
         $ret = $this->process($input);
 
-        return $raw ? $ret : base64_encode($ret);
+        return $raw ? $ret : $this->encode($ret);
     }
 
     /**
@@ -55,10 +51,10 @@ final class Cryptee extends Twoway
      */
     public function decrypt(string $input, bool $raw = false): string|null
     {
-        $input = $raw ? $input : base64_decode($input, true);
+        $input = $raw ? $input : $this->decode($input);
 
         // Invalid.
-        if ($input === false) {
+        if ($input === null) {
             return null;
         }
 
@@ -73,8 +69,8 @@ final class Cryptee extends Twoway
         $top = 256;
         $key = $cnt = [];
 
-        for ($i = 0, $il = strlen($this->key); $i < $top; $i++) {
-            $key[$i] = ord(substr($this->key, ($i % $il) + 1, 1));
+        for ($i = 0, $il = strlen($this->options['key']); $i < $top; $i++) {
+            $key[$i] = ord(substr($this->options['key'], ($i % $il) + 1, 1));
             $cnt[$i] = $i;
         }
 

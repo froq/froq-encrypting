@@ -19,39 +19,31 @@ namespace froq\encrypting\twoway;
  */
 final class Sodium extends Twoway
 {
-    /** @var string */
-    private string $nonce;
-
     /**
      * Constructor.
      *
-     * @param  string $key
-     * @param  string $nonce
+     * @param  string     $key
+     * @param  string     $nonce
+     * @param  array|null $options
      * @throws froq\encrypting\twoway\TwowayException
      */
-    public function __construct(string $key, string $nonce)
+    public function __construct(string $key, string $nonce, array $options = null)
     {
         if (!extension_loaded('sodium')) {
             throw new TwowayException('Sodium extension not loaded');
         }
 
-        $keyLength = strlen($key);
+        parent::checkKeyLength($keyLength = strlen($key));
 
-        // Check key length.
-        if ($keyLength < 16) {
+        // Key length must be 32-length.
+        if ($keyLength != SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
             throw new TwowayException(
-                'Invalid key length `%s`, minimum key length is 16 '.
-                '[tip: use %s::generateKey() method to get a key]',
-                [$keyLength, self::class]
+                'Invalid key length `%s`, key length must be %s',
+                [$keyLength, SODIUM_CRYPTO_SECRETBOX_KEYBYTES]
             );
         }
 
-        // Key size must be 32-length.
-        if ($keyLength != SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
-            $key = md5($key);
-        }
-
-        // Check nonce length.
+        // Nonce length must be 32-length.
         if (strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
             throw new TwowayException(
                 'Invalid nonce length `%s`, nonce length must be %s',
@@ -59,19 +51,9 @@ final class Sodium extends Twoway
             );
         }
 
-        $this->nonce = $nonce;
+        $options = ['key' => $key, 'nonce' => $nonce] + (array) $options;
 
-        parent::__construct($key);
-    }
-
-    /**
-     * Get nonce property.
-     *
-     * @return string
-     */
-    public function nonce(): string
-    {
-        return $this->nonce;
+        parent::__construct($options);
     }
 
     /**
@@ -79,14 +61,11 @@ final class Sodium extends Twoway
      */
     public function encrypt(string $input, bool $raw = false): string|null
     {
-        try {
-            $ret = sodium_crypto_secretbox($input, $this->nonce, $this->key);
-            if ($ret !== false) {
-                return $raw ? $ret : base64_encode($ret);
-            }
-        } catch (\SodiumException) {}
+        $ret = sodium_crypto_secretbox(
+            $input, $this->options['nonce'], $this->options['key']
+        );
 
-        return null;
+        return $raw ? $ret : $this->encode($ret);
     }
 
     /**
@@ -94,20 +73,15 @@ final class Sodium extends Twoway
      */
     public function decrypt(string $input, bool $raw = false): string|null
     {
-        $input = $raw ? $input : base64_decode($input, true);
+        $input = $raw ? $input : $this->decode($input);
 
         // Invalid.
-        if ($input === false) {
+        if ($input === null) {
             return null;
         }
 
-        try {
-            $ret = sodium_crypto_secretbox_open($input, $this->nonce, $this->key);
-            if ($ret !== false) {
-                return $ret;
-            }
-        } catch (\SodiumException) {}
-
-        return null;
+        return sodium_crypto_secretbox_open(
+            $input, $this->options['nonce'], $this->options['key']
+        );
     }
 }

@@ -26,30 +26,21 @@ final class OpenSsl extends Twoway
      */
     public const METHOD = 'aes-256-ctr';
 
-    /** @var string */
-    private string $method;
-
     /**
      * Constructor.
      *
      * @param  string      $key
      * @param  string|null $method
+     * @param  array|null  $options
      * @throws froq\encrypting\twoway\TwowayException
      */
-    public function __construct(string $key, string $method = null)
+    public function __construct(string $key, string $method = null, array $options = null)
     {
         if (!extension_loaded('openssl')) {
             throw new TwowayException('Openssl extension not loaded');
         }
 
-        // Check key length.
-        if (strlen($key) < 16) {
-            throw new TwowayException(
-                'Invalid key length `%s`, minimum key length is 16 '.
-                '[tip: use %s::generateKey() method to get a key]',
-                [strlen($key), self::class]
-            );
-        }
+        parent::checkKeyLength(strlen($key));
 
         // Check method validity.
         if ($method) {
@@ -59,19 +50,9 @@ final class OpenSsl extends Twoway
             }
         }
 
-        $this->method = $method ?? self::METHOD;
+        $options = ['key' => $key, 'method' => $method ?? self::METHOD] + (array) $options;
 
-        parent::__construct($key);
-    }
-
-    /**
-     * Get method property.
-     *
-     * @return string
-     */
-    public function method(): string
-    {
-        return $this->method;
+        parent::__construct($options);
     }
 
     /**
@@ -81,9 +62,10 @@ final class OpenSsl extends Twoway
     {
         [$encKey, $autKey] = $this->keys();
 
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->options['method']));
 
-        $ret = openssl_encrypt($input, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        $ret = openssl_encrypt($input, $this->options['method'], $encKey, OPENSSL_RAW_DATA, $iv);
+
         if ($ret === false) {
             return null;
         }
@@ -92,7 +74,7 @@ final class OpenSsl extends Twoway
         $mac = hash_hmac('sha256', $ret, $autKey, true);
         $ret = $mac . $ret;
 
-        return $raw ? $ret : base64_encode($ret);
+        return $raw ? $ret : $this->encode($ret);
     }
 
     /**
@@ -100,10 +82,10 @@ final class OpenSsl extends Twoway
      */
     public function decrypt(string $input, bool $raw = false): string|null
     {
-        $input = $raw ? $input : base64_decode($input, true);
+        $input = $raw ? $input : $this->decode($input);
 
         // Invalid.
-        if ($input === false) {
+        if ($input === null) {
             return null;
         }
 
@@ -118,11 +100,12 @@ final class OpenSsl extends Twoway
             return null;
         }
 
-        $ivLen = openssl_cipher_iv_length($this->method);
+        $ivLen = openssl_cipher_iv_length($this->options['method']);
         $iv    = mb_substr($input, 0, $ivLen, '8bit');
         $input = mb_substr($input, $ivLen, null, '8bit');
 
-        $ret = openssl_decrypt($input, $this->method, $encKey, OPENSSL_RAW_DATA, $iv);
+        $ret = openssl_decrypt($input, $this->options['method'], $encKey, OPENSSL_RAW_DATA, $iv);
+
         if ($ret === false) {
             return null;
         }
@@ -136,8 +119,8 @@ final class OpenSsl extends Twoway
     private function keys(): array
     {
         return [
-            hash_hmac('sha256', '_ENC_', $this->key, true),
-            hash_hmac('sha256', '_AUT_', $this->key, true)
+            hash_hmac('sha256', '_ENC_', $this->options['key'], true),
+            hash_hmac('sha256', '_AUT_', $this->options['key'], true)
         ];
     }
 }

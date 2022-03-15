@@ -7,13 +7,13 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\{Suid, Base62, Base64};
+use froq\encrypting\{Suid, Base, Base62, Base64};
+use froq\common\trait\OptionTrait;
 
 /**
  * Twoway.
  *
- * An abstract class, used in `twoway` package only, also provides doEncrypt/doDecrypt
- * methods as shortcut for encrypt/decrypt methods of extender classes.
+ * An abstract class, used in `twoway` package only.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Twoway
@@ -22,26 +22,17 @@ use froq\encrypting\{Suid, Base62, Base64};
  */
 abstract class Twoway
 {
-    /** @var string */
-    protected string $key;
+    use OptionTrait;
 
     /**
      * Constructor.
-     * @param string $key
-     */
-    public function __construct(string $key)
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * Get key property.
      *
-     * @return string
+     * @param  array|null $options
+     * @throws froq\encrypting\twoway\TwowayException
      */
-    public final function key(): string
+    public function __construct(array $options = null)
     {
-        return $this->key;
+        $this->setOptions($options);
     }
 
     /**
@@ -56,67 +47,87 @@ abstract class Twoway
     }
 
     /**
-     * Encrypt given input by given options.
+     * Check key length.
      *
-     * @param  string $input
-     * @param  array  $options
-     * @return string|null
-     * @since  4.5
+     * @param  int $keyLength
+     * @param  int $minLength
+     * @return void
+     * @throws froq\encrypting\twoway\TwowayException
      */
-    public static final function doEncrypt(string $input, array $options): string|null
+    public static final function checkKeyLength(int $keyLength, int $minLength = 16): void
     {
-        // Key is required, nonce for Sodium, method for OpenSsl.
-        $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
-
-        if (isset($options['type'])) {
-            $input = $that->encrypt($input, true);
-
-            $input = match ($options['type']) {
-                'base62'    => $input ? Base62::encode($input, true)  : null,
-                'base64'    => $input ? Base64::encode($input)        : null,
-                'base64url' => $input ? Base64::encodeUrlSafe($input) : null,
-
-                default => throw new TwowayException(
-                    'Invalid type `%s` [valids: base62, base64, base64url]',
-                    $options['type']
-                )
-            };
-
-            return $input;
+        // Check key length.
+        if ($keyLength < $minLength) {
+            throw new TwowayException(
+                'Invalid key length `%s`, minimum key length is %s '.
+                '[tip: use %s::generateKey() method to get a key]',
+                [$keyLength, $minLength, static::class]
+            );
         }
-
-        return $that->encrypt($input);
     }
 
     /**
-     * Decrypt given input by given options.
+     * Encode given input.
      *
      * @param  string $input
-     * @param  array  $options
      * @return string|null
-     * @since  4.5
+     * @throws froq\encrypting\twoway\TwowayException
      */
-    public static final function doDecrypt(string $input, array $options): string|null
+    public final function encode(string $input): string|null
     {
-        // Key is required, nonce for Sodium, method for OpenSsl.
-        $that = new static($options['key'] ?? '', $options['nonce'] ?? $options['method'] ?? null);
+        if (isset($this->options['convert'])) {
+            switch ($this->options['convert']) {
+                case 'hex'      : return Base::encode($input, Base::HEX_CHARS);
+                case 'base62'   : return Base62::encode($input);
+                case 'base64'   : return Base64::encode($input);
+                case 'base64url': return Base64::encodeUrlSafe($input);
 
-        if (isset($options['type'])) {
-            $input = match ($options['type']) {
-                'base62'    => Base62::decode($input, true),
-                'base64'    => Base64::decode($input),
-                'base64url' => Base64::decodeUrlSafe($input),
-
-                default => throw new TwowayException(
-                    'Invalid type `%s` [valids: base62, base64, base64url]',
-                    $options['type']
-                )
-            };
-
-            return $that->decrypt($input, true);
+                default:
+                    $base = (int) $this->options['convert'];
+                    if ($base < 2 || $base > 64) {
+                        throw new TwowayException(
+                            'Option convert must be between 2-64, %s given',
+                            $this->options['convert']
+                        );
+                    }
+                    return Base::encode($input, Base::chars($base));
+            }
         }
 
-        return $that->decrypt($input);
+        // As default.
+        return ($ret = base64_encode($input)) !== false ? $ret : null;
+    }
+
+    /**
+     * Decode given input.
+     *
+     * @param  string $input
+     * @return string|null
+     * @throws froq\encrypting\twoway\TwowayException
+     */
+    public final function decode(string $input): string|null
+    {
+        if (isset($this->options['convert'])) {
+            switch ($this->options['convert']) {
+                case 'hex'      : return Base::decode($input, Base::HEX_CHARS);
+                case 'base62'   : return Base62::decode($input);
+                case 'base64'   : return Base64::decode($input);
+                case 'base64url': return Base64::decodeUrlSafe($input);
+
+                default:
+                    $base = (int) $this->options['convert'];
+                    if ($base < 2 || $base > 64) {
+                        throw new TwowayException(
+                            'Option convert must be between 2-64, %s given',
+                            $this->options['convert']
+                        );
+                    }
+                    return Base::decode($input, Base::chars($base));
+            };
+        }
+
+        // As default.
+        return ($ret = base64_decode($input, true)) !== false ? $ret : null;
     }
 
     /**
