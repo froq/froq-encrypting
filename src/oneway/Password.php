@@ -61,24 +61,4 @@ final class Password extends Oneway
     {
         return (bool) password_verify($input, $hash);
     }
-
-    /**
-     * Generate a password by given length.
-     *
-     * @param  int  $length
-     * @param  bool $puncted
-     * @return string
-     * @throws froq\encrypting\oneway\OnewayException
-     */
-    public static final function generate(int $length, bool $puncted = false): string
-    {
-        if ($length < 2) {
-            throw new OnewayException(
-                'Argument $length must be greater than 1, %s given',
-                $length
-            );
-        }
-
-        return random_string($length, $puncted);
-    }
 }

@@ -34,6 +34,26 @@ abstract class Oneway
     }
 
     /**
+     * Generate a password by given length.
+     *
+     * @param  int  $length
+     * @param  bool $puncted
+     * @return string
+     * @throws froq\encrypting\oneway\OnewayException
+     */
+    public static final function generatePassword(int $length, bool $puncted = false): string
+    {
+        if ($length < 2) {
+            throw new OnewayException(
+                'Argument $length must be greater than 1, %s given',
+                $length
+            );
+        }
+
+        return random_string($length, $puncted);
+    }
+
+    /**
      * Hash given input.
      *
      * @param  string $input
