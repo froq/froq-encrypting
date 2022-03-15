@@ -33,6 +33,7 @@ final class Base
                  // Misc.
                  BASE32_CHARS  = '0123456789abcdefghjkmnpqrstvwxyz',
                  BASE58_CHARS  = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
+                 BASE64_CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
                  // Fun.
                  FUN_CHARS     = 'fFuUnN',
                  // Alias.
@@ -162,20 +163,17 @@ final class Base
      * @param  int|string $digits
      * @param  int        $base
      * @return int
-     * @throws froq\encrypting\EncryptingException
+     * @causes froq\encrypting\EncryptingException
      */
     public static function fromBase(int|string $digits, int $base): int
     {
-        if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
-        }
+        $chars  = self::chars($base);
+        $digits = (string) $digits;
 
-        $digits = strval($digits);
-
-        $ret = strpos(self::BASE62_CHARS, $digits[0]) | 0;
+        $ret = strpos($chars, $digits[0]);
 
         for ($i = 1, $il = strlen($digits); $i < $il; $i++) {
-            $ret = (($base * $ret) + strpos(self::BASE62_CHARS, $digits[$i])) | 0;
+            $ret = (int) (($base * $ret) + strpos($chars, $digits[$i]));
         }
 
         return $ret;
@@ -187,23 +185,41 @@ final class Base
      * @param  int|string $digits
      * @param  int        $base
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @causes froq\encrypting\EncryptingException
      */
     public static function toBase(int|string $digits, int $base): string
     {
-        if ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
-        }
-
-        $digits = intval($digits);
+        $chars  = self::chars($base);
+        $digits = (int) $digits;
 
         $ret = '';
 
         do {
-            $ret = self::BASE62_CHARS[$digits % $base] . $ret;
+            $ret = $chars[$digits % $base] . $ret;
             $digits = (int) ($digits / $base);
         } while ($digits);
 
         return $ret;
+    }
+
+    /**
+     * Chars.
+     *
+     * @param  int  $base
+     * @param  bool $native
+     * @return string
+     * @throws froq\encrypting\EncryptingException
+     */
+    public static function chars(int $base, bool $native = false): string
+    {
+        if ($base < 2 || $base > 64) {
+            throw new EncryptingException('Argument $base must be between 2-64, %s given', $base);
+        }
+
+        if ($base == 64) {
+            return self::BASE64_CHARS;
+        }
+
+        return substr($native ? self::BASE62N_CHARS : self::BASE62_CHARS, 0, $base);
     }
 }

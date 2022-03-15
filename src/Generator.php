@@ -213,13 +213,13 @@ final class Generator
             throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
         }
 
-        $chars = substr(Base::ALL_CHARS, 0, $base);
-        $charsLength = strlen($chars);
+        $chars    = Base::chars($base);
+        $charsMax = strlen($chars) - 1;
 
         $ret = '';
 
         while (strlen($ret) < $length) {
-            $ret .= $chars[random(0, $charsLength - 1)];
+            $ret .= $chars[random(0, $charsMax)];
         }
 
         return $ret;
