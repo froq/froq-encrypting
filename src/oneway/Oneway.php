@@ -26,7 +26,7 @@ abstract class Oneway
     /**
      * Constructor.
      *
-     * @param  array<string, mixed>|null $options
+     * @param  array|null $options
      */
     public function __construct(array $options = null)
     {
