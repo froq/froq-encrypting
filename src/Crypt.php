@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Crypt.
- *
  * A static class, provides encrypt/decrypt operations with "aes-256-ctr" cipher method
  * using OpenSSL utilities.
  *

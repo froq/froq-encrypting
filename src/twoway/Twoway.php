@@ -11,8 +11,6 @@ use froq\encrypting\{Suid, Base, Base62, Base64};
 use froq\common\trait\OptionTrait;
 
 /**
- * Twoway.
- *
  * An abstract class, used in `twoway` package only.
  *
  * @package froq\encrypting\twoway

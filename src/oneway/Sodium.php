@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting\oneway;
 
 /**
- * Sodium.
- *
  * A class, able to perform oneway encrypting operations utilizing sodium stuff.
  *
  * @package froq\encrypting\oneway

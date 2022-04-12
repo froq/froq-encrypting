@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting\twoway;
 
 /**
- * Open Ssl.
- *
  * A class, able to perform twoway encrypting operations utilizing OpenSsl extension.
  * Original source https://stackoverflow.com/a/30189841/362780.
  *

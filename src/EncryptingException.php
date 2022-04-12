@@ -7,15 +7,11 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\common\Exception;
-
 /**
- * Encrypting Exception.
- *
  * @package froq\encrypting
  * @object  froq\encrypting\EncryptingException
  * @author  Kerem Güneş
  * @since   1.0
  */
-class EncryptingException extends Exception
+class EncryptingException extends \froq\common\Exception
 {}

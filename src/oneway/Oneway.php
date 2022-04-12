@@ -10,8 +10,6 @@ namespace froq\encrypting\oneway;
 use froq\common\trait\OptionTrait;
 
 /**
- * Oneway.
- *
  * An abstract class, used in `oneway` package only.
  *
  * @package froq\encrypting\oneway

@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Base.
- *
  * A static class, provides encode/decode methods for base conversions.
  *
  * @package froq\encrypting

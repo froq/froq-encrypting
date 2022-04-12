@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Hash.
- *
  * A static class, generates hashes by given lengths.
  *
  * @package froq\encrypting

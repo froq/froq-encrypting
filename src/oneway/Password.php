@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting\oneway;
 
 /**
- * Password.
- *
  * A class, able to perform oneway encrypting operations utilizing password stuff.
  *
  * @package froq\encrypting\oneway

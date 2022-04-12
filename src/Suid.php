@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Suid.
- *
  * A static class, able to generate simple unique IDs with random character blocks these
  * can be used as salts, nonces or IDs.
  *

@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Uuid.
- *
  * A static class, able to generate UUIDs (v4) from random bytes and optionally with
  * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without
  * given lengths, also to generate time-based or random serials.

@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Crypter.
- *
  * A class, provides encrypt/decrypt operations using Crypt class in OOP-way.
  *
  * @package froq\encrypting

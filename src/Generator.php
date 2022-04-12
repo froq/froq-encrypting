@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Generator.
- *
  * A static class, generates UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
  * and passwords.
  *

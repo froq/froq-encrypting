@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Base 64.
- *
  * A static class, provides a Base-64 encoding/decoding methods and URL-safe stuff.
  *
  * @package froq\encrypting

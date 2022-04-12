@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting\twoway;
 
 /**
- * Cryptee.
- *
  * A class, able to perform twoway encrypting operations utilizing XOR way.
  * Original source https://github.com/k-gun/cryptee.
  *

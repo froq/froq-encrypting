@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace froq\encrypting\twoway;
 
 /**
- * Sodium.
- *
  * A class, able to perform twoway encrypting operations utilizing Sodium extension.
  *
  * @package froq\encrypting\twoway
