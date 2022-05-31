@@ -31,14 +31,14 @@ final class Hash
      * @param  int        $length
      * @param  array|null $lengths @internal
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\HashException
      */
     public static function make(string $input, int $length, array $lengths = null): string
     {
         $lengths ??= array_keys(self::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
-            throw new EncryptingException(
+            throw new HashException(
                 'Invalid length `%s` [valids: %A]',
                 [$length, $lengths]
             );
@@ -55,14 +55,14 @@ final class Hash
      * @param  string $input
      * @param  string $algo
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\HashException
      * @since  6.0
      */
     public static function makeBy(string $input, string $algo): string
     {
         if (!in_array($algo, hash_algos(), true)) {
-            throw new EncryptingException(
-                'Invalid algo %s [valids: %A]',
+            throw new HashException(
+                'Invalid algo `%s` [valids: %A]',
                 [$algo, hash_algos()]
             );
         }

@@ -57,7 +57,7 @@ final class Uuid
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.3
      */
     public static function generateHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
@@ -66,7 +66,7 @@ final class Uuid
 
         if ($format) {
             if ($hashLength != self::HASH_LENGTH) {
-                throw new EncryptingException('Format option for only 32-length hashes');
+                throw new UuidException('Format option for only 32-length hashes');
             }
 
             $hash = self::format($hash, true);
@@ -93,7 +93,7 @@ final class Uuid
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.8
      */
     public static function generateGuidHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
@@ -102,7 +102,7 @@ final class Uuid
 
         if ($format) {
             if ($hashLength != self::HASH_LENGTH) {
-                throw new EncryptingException('Format option for only 32-length hashes');
+                throw new UuidException('Format option for only 32-length hashes');
             }
 
             $hash = self::format($hash, true);
@@ -136,7 +136,7 @@ final class Uuid
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.6, 4.9
      */
     public static function generateWithTimestampHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
@@ -145,7 +145,7 @@ final class Uuid
 
         if ($format) {
             if ($hashLength != self::HASH_LENGTH) {
-                throw new EncryptingException('Format option for only 32-length hashes');
+                throw new UuidException('Format option for only 32-length hashes');
             }
 
             $hash = self::format($hash, true);
@@ -182,7 +182,7 @@ final class Uuid
      * @param  int    $hashLength
      * @param  bool   $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.9
      */
     public static function generateWithNamespaceHash(string $namespace, int $hashLength = self::HASH_LENGTH, bool $format = false): string
@@ -191,7 +191,7 @@ final class Uuid
 
         if ($format) {
             if ($hashLength != self::HASH_LENGTH) {
-                throw new EncryptingException('Format option for only 32-length hashes');
+                throw new UuidException('Format option for only 32-length hashes');
             }
 
             $hash = self::format($hash, true);
@@ -305,12 +305,12 @@ final class Uuid
      * @param  string $input
      * @param  bool   $dashed
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      */
     public static function format(string $input, bool $dashed = true): string
     {
         if (strlen($input) != self::HASH_LENGTH || !ctype_xdigit($input)) {
-            throw new EncryptingException('Input must be a 32-length x-digit');
+            throw new UuidException('Input must be a 32-length x-digit');
         }
 
         $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
@@ -328,7 +328,7 @@ final class Uuid
      * @param  bool   $dashed
      * @param  bool   $guid
      * @return string
-     * @causes froq\encrypting\EncryptingException
+     * @causes froq\encrypting\UuidException
      */
     public static function formatBinary(string $input, bool $dashed = true, bool $guid = false): string
     {

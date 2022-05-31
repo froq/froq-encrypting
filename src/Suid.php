@@ -20,19 +20,26 @@ namespace froq\encrypting;
 final class Suid
 {
     /**
-     * Generate using random_bytes() utility, with/without given base.
+     * Generate using `random_bytes()` function, with/without given base.
      *
      * @param  int $length
      * @param  int $base
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\SuidException
+     * @thanks https://github.com/ai/nanoid
      */
     public static function generate(int $length, int $base = 62): string
     {
         if ($length < 1) {
-            throw new EncryptingException('Argument $length must be greater than 1, %s` given', $length);
+            throw new SuidException(
+                'Argument $length must be greater than 1, %s given',
+                $length
+            );
         } elseif ($base < 2 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 2-62, %s given', $base);
+            throw new SuidException(
+                'Argument $base must be between 2-62, %s given',
+                $base
+            );
         }
 
         $chars = substr(BASE62_ALPHABET, 0, $base);
@@ -53,12 +60,12 @@ final class Suid
     }
 
     /**
-     * Generate in base-16.
+     * Generate by base-16.
      *
      * @param  int $length
      * @return string
+     * @causes froq\encrypting\SuidException
      * @since  5.0
-     * @causes froq\encrypting\EncryptingException
      */
     public static function generateHexes(int $length): string
     {
@@ -66,12 +73,12 @@ final class Suid
     }
 
     /**
-     * Generate in base-10.
+     * Generate by base-10.
      *
      * @param  int $length
      * @return string
+     * @causes froq\encrypting\SuidException
      * @since  5.0
-     * @causes froq\encrypting\EncryptingException
      */
     public static function generateDigits(int $length): string
     {

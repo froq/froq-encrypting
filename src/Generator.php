@@ -84,13 +84,16 @@ final class Generator
      * @param  int  $length
      * @param  bool $dated
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateSerial(int $length = 20, bool $dated = false): string
     {
         if ($length < 20) {
-            throw new EncryptingException('Argument $length must be minimun 20, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 20, %s given',
+                $length
+            );
         }
 
         return self::generateId($length, 10, $dated);
@@ -101,13 +104,16 @@ final class Generator
      *
      * @param  int $length
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateRandomSerial(int $length = 20): string
     {
         if ($length < 20) {
-            throw new EncryptingException('Argument $length must be minimun 20, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 20, %s given',
+                $length
+            );
         }
 
         return self::generateRandomId($length, 10);
@@ -120,18 +126,24 @@ final class Generator
      * @param  int  $base
      * @param  bool $dated
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateId(int $length, int $base = 10, bool $dated = false): string
     {
         if ($length < 10) {
-            throw new EncryptingException('Argument $length must be minimun 10, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 10, %s given',
+                $length
+            );
         } elseif ($base < 10 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
+            throw new GeneratorException(
+                'Argument $base must be between 10-62, %s given',
+                $base
+            );
         }
 
-        // Now (date/time object).
+        /** @var DateTime */
         $now = udate('', 'UTC');
 
         // Use a date or time prefix (eg: 20121212.. or 1355270400..).
@@ -200,15 +212,21 @@ final class Generator
      * @param  int $byteLength
      * @param  int $hashLength
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateRandomId(int $length, int $base = 10): string
     {
         if ($length < 4) {
-            throw new EncryptingException('Argument $length must be minimun 4, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 4, %s given',
+                $length
+            );
         } elseif ($base < 10 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
+            throw new GeneratorException(
+                'Argument $base must be between 10-62, %s given',
+                $base
+            );
         }
 
         $chars    = Base::chars($base);

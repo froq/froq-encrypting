@@ -44,7 +44,7 @@ final class Base
      * @param  string $input
      * @param  string $chars
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\BaseException
      * @thanks https://github.com/tuupola/base62
      */
     public static function encode(string $input, string $chars = self::BASE62_CHARS): string
@@ -54,12 +54,12 @@ final class Base
         }
 
         if ($chars == '') {
-            throw new EncryptingException('Characters cannot be empty');
+            throw new BaseException('Characters cannot be empty');
         }
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
+            throw new BaseException('Characters length must be between 2-256, %s given', $base);
         }
 
         $temp = array_map('ord', str_split($input));
@@ -82,7 +82,7 @@ final class Base
      * @param  string $input
      * @param  string $chars
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\BaseException
      * @thanks https://github.com/tuupola/base62
      */
     public static function decode(string $input, string $chars = self::BASE62_CHARS): string
@@ -92,17 +92,17 @@ final class Base
         }
 
         if ($chars == '') {
-            throw new EncryptingException('Characters cannot be empty');
+            throw new BaseException('Characters cannot be empty');
         }
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new EncryptingException('Characters length must be between 2-256, %s given', $base);
+            throw new BaseException('Characters length must be between 2-256, %s given', $base);
         }
 
         if (strlen($input) !== strspn($input, $chars)) {
             preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
-            throw new EncryptingException('Invalid characters `%s` found in given input', $match[0]);
+            throw new BaseException('Invalid characters `%s` found in given input', $match[0]);
         }
 
         $temp = array_map(fn($c) => strpos($chars, $c), str_split($input));
@@ -161,7 +161,7 @@ final class Base
      * @param  int|string $digits
      * @param  int        $base
      * @return int
-     * @causes froq\encrypting\EncryptingException
+     * @causes froq\encrypting\BaseException
      */
     public static function fromBase(int|string $digits, int $base): int
     {
@@ -183,7 +183,7 @@ final class Base
      * @param  int|string $digits
      * @param  int        $base
      * @return string
-     * @causes froq\encrypting\EncryptingException
+     * @causes froq\encrypting\BaseException
      */
     public static function toBase(int|string $digits, int $base): string
     {
@@ -206,12 +206,12 @@ final class Base
      * @param  int  $base
      * @param  bool $native
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\BaseException
      */
     public static function chars(int $base, bool $native = false): string
     {
         if ($base < 2 || $base > 64) {
-            throw new EncryptingException('Argument $base must be between 2-64, %s given', $base);
+            throw new BaseException('Argument $base must be between 2-64, %s given', $base);
         }
 
         if ($base == 64) {
