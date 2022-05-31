@@ -48,11 +48,16 @@ final class Generator
      *
      * @param  int $hashLength
      * @return string
+     * @throws froq\encrypting\GeneratorException
      * @since  4.4
      */
     public static function generateToken(int $hashLength = 32): string
     {
-        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
+        try {
+            return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
+        } catch (HashException $e) {
+            throw new GeneratorException($e->message, cause: $e);
+        }
     }
 
     /**
