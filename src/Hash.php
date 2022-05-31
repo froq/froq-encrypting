@@ -38,10 +38,34 @@ final class Hash
         $lengths ??= array_keys(self::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
-            throw new EncryptingException('Invalid length `%s` [valids: %a]', [$length, $lengths]);
+            throw new EncryptingException(
+                'Invalid length `%s` [valids: %A]',
+                [$length, $lengths]
+            );
         }
 
         $algo = self::ALGOS[$length];
+
+        return hash($algo, $input);
+    }
+
+    /**
+     * Make a hash by given algo.
+     *
+     * @param  string $input
+     * @param  string $algo
+     * @return string
+     * @throws froq\encrypting\EncryptingException
+     * @since  6.0
+     */
+    public static function makeBy(string $input, string $algo): string
+    {
+        if (!in_array($algo, hash_algos(), true)) {
+            throw new EncryptingException(
+                'Invalid algo %s [valids: %A]',
+                [$algo, hash_algos()]
+            );
+        }
 
         return hash($algo, $input);
     }
