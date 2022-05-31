@@ -24,8 +24,8 @@ class Crypter
      * @param string $iv The initialization vector.
      */
     public function __construct(
-        private string $pp,
-        private string $iv
+        public readonly string $pp,
+        public readonly string $iv
     ) {}
 
     /**
