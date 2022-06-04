@@ -34,6 +34,38 @@ abstract class Twoway
     }
 
     /**
+     * Generate a key.
+     *
+     * @param  int $length
+     * @return string
+     */
+    public static final function generateKey(int $length = 40): string
+    {
+        return Suid::generate($length);
+    }
+
+    /**
+     * Check key length.
+     *
+     * @param  int $length
+     * @param  int $minLength
+     * @return void
+     * @throws froq\encrypting\twoway\TwowayException
+     * @since  6.0
+     */
+    public static final function checkKeyLength(int $length, int $minLength = 16): void
+    {
+        // Check key length.
+        if ($length < $minLength) {
+            throw new TwowayException(
+                'Invalid key length `%s`, minimum key length is %s '.
+                '[tip: use %s::generateKey() method to get a key]',
+                [$length, $minLength, static::class]
+            );
+        }
+    }
+
+    /**
      * Encode given input.
      *
      * @param  string $input
@@ -41,7 +73,7 @@ abstract class Twoway
      * @throws froq\encrypting\twoway\TwowayException
      * @since  6.0
      */
-    public final function encode(string $input): string|null
+    protected final function encode(string $input): string|null
     {
         if (isset($this->options['convert'])) {
             switch ($this->options['convert']) {
@@ -74,7 +106,7 @@ abstract class Twoway
      * @throws froq\encrypting\twoway\TwowayException
      * @since  6.0
      */
-    public final function decode(string $input): string|null
+    protected final function decode(string $input): string|null
     {
         if (isset($this->options['convert'])) {
             switch ($this->options['convert']) {
@@ -97,38 +129,6 @@ abstract class Twoway
 
         // As default.
         return ($ret = base64_decode($input, true)) !== false ? $ret : null;
-    }
-
-    /**
-     * Generate a key.
-     *
-     * @param  int $length
-     * @return string
-     */
-    public static final function generateKey(int $length = 40): string
-    {
-        return Suid::generate($length);
-    }
-
-    /**
-     * Check key length.
-     *
-     * @param  int $length
-     * @param  int $minLength
-     * @return void
-     * @throws froq\encrypting\twoway\TwowayException
-     * @since  6.0
-     */
-    public static final function checkKeyLength(int $length, int $minLength = 16): void
-    {
-        // Check key length.
-        if ($length < $minLength) {
-            throw new TwowayException(
-                'Invalid key length `%s`, minimum key length is %s '.
-                '[tip: use %s::generateKey() method to get a key]',
-                [$length, $minLength, static::class]
-            );
-        }
     }
 
     /**
