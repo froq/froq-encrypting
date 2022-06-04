@@ -303,6 +303,7 @@ final class Generator
      * @param  int  $length
      * @param  bool $puncted
      * @return string
+     * @throws froq\encrypting\GeneratorException
      */
     public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
