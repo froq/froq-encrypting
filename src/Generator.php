@@ -306,7 +306,7 @@ final class Generator
      */
     public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
-        return oneway\Password::generate($length, $puncted);
+        return oneway\Oneway::generatePassword($length, $puncted);
     }
 
     /**
