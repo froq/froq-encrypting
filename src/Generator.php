@@ -306,7 +306,14 @@ final class Generator
      */
     public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
-        return oneway\Oneway::generatePassword($length, $puncted);
+        if ($length < 2) {
+            throw new GeneratorException(
+                'Argument $length must be greater than 1, %s given',
+                $length
+            );
+        }
+
+        return random_string($length, $puncted);
     }
 
     /**
