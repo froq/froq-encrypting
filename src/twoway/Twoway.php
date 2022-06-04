@@ -113,20 +113,20 @@ abstract class Twoway
     /**
      * Check key length.
      *
-     * @param  int $keyLength
+     * @param  int $length
      * @param  int $minLength
      * @return void
      * @throws froq\encrypting\twoway\TwowayException
      * @since  6.0
      */
-    public static final function checkKeyLength(int $keyLength, int $minLength = 16): void
+    public static final function checkKeyLength(int $length, int $minLength = 16): void
     {
         // Check key length.
-        if ($keyLength < $minLength) {
+        if ($length < $minLength) {
             throw new TwowayException(
                 'Invalid key length `%s`, minimum key length is %s '.
                 '[tip: use %s::generateKey() method to get a key]',
-                [$keyLength, $minLength, static::class]
+                [$length, $minLength, static::class]
             );
         }
     }
