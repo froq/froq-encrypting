@@ -35,7 +35,7 @@ final class OpenSsl extends Twoway
     public function __construct(string $key, string $method = null, array $options = null)
     {
         if (!extension_loaded('openssl')) {
-            throw new TwowayException('Openssl extension not loaded');
+            throw new TwowayException('OpenSSL extension not loaded');
         }
 
         parent::checkKeyLength(strlen($key));
