@@ -56,7 +56,7 @@ final class Generator
         try {
             return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
         } catch (HashException $e) {
-            throw new GeneratorException($e->message, cause: $e);
+            throw new GeneratorException($e);
         }
     }
 
