@@ -166,8 +166,8 @@ final class Uuid
     public static function generateWithNamespace(string $namespace, bool $dashed = true, bool $guid = false): string
     {
         // Namespace prefix.
-        $prefix = md5($namespace);
-        $prefix = dechex(hexdec(substr($prefix, 0, 2))) . substr($prefix, 2, 10);
+        $nshash = md5($namespace);
+        $prefix = dechex(hexdec(substr($nshash, 0, 2))) . substr($nshash, 2, 10);
 
         // Binary of namespace & 10-random bytes.
         $bytes = hex2bin($prefix) . random_bytes(10);
