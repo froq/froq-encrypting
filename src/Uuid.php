@@ -261,14 +261,14 @@ final class Uuid
     public static function validate(string $input, bool $strict = true): bool
     {
         if ($strict) {
-            // With version & dashes.
+            // With version, variant & dashes.
             return preg_test(
                 '~^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[ab89][a-f0-9]{3}-[a-f0-9]{12}$~',
                 $input
             );
         }
 
-        // With/without version & dashes.
+        // With/without version, variant & dashes.
         return preg_test(
             '~^[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}$~',
             $input
