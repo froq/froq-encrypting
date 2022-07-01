@@ -24,12 +24,6 @@ final class Uuid
     public const NULL      = '00000000-0000-0000-0000-000000000000',
                  NULL_HASH = '00000000000000000000000000000000';
 
-    /** @const string */
-    public const PATTERN_V4          = '~^[a-f0-9]{8}[a-f0-9]{4}4[a-f0-9]{3}[ab89][a-f0-9]{3}[a-f0-9]{12}$~',
-                 PATTERN_DASHED_V4   = '~^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[ab89][a-f0-9]{3}-[a-f0-9]{12}$~',
-                 PATTERN_HASH        = '~^[a-f0-9]{32}$~',
-                 PATTERN_DASHED_HASH = '~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~';
-
     /** @const int */
     public const HASH_LENGTH = 32;
 
@@ -232,32 +226,16 @@ final class Uuid
     }
 
     /**
-     * Check whether given input a valid UUID.
+     * Check whether given input a valid UUID/v4 or GUID.
      *
      * @param  string $input
-     * @param  bool   $dashed
-     * @param  bool   $cased
-     * @param  bool   $v4
+     * @param  bool   $strict
      * @return bool
      * @since  5.0
      */
-    public static function isValid(string $input, bool $dashed = true, bool $cased = false, bool $v4 = false): bool
+    public static function isValid(string $input, bool $strict = true): bool
     {
-        return self::validate($input, dashed: $dashed, cased: $cased, v4: $v4);
-    }
-
-    /**
-     * Check whether given input is a valid UUID/v4.
-     *
-     * @param  string $input
-     * @param  bool   $dashed
-     * @param  bool   $cased
-     * @return bool
-     * @since  6.0
-     */
-    public static function isValidV4(string $input, bool $dashed = true, bool $cased = false): bool
-    {
-        return self::validate($input, dashed: $dashed, cased: $cased, v4: true);
+        return self::validate($input, $strict);
     }
 
     /**
@@ -265,38 +243,49 @@ final class Uuid
      *
      * @param  string $input
      * @param  int    $length
-     * @param  bool   $dashed
-     * @param  bool   $cased
      * @return bool
      * @since  5.0
      */
-    public static function isValidHash(string $input, int $length = self::HASH_LENGTH, bool $dashed = false, bool $cased = false): bool
+    public static function isValidHash(string $input, int $length = self::HASH_LENGTH): bool
     {
-        return self::validate($input, length: $length, dashed: $dashed, cased: $cased);
+        return self::validateHash($input, $length);
     }
 
     /**
-     * Validate given input as UUUD, GUID, UUID/v4 or hash by given length.
+     * Validate given input as UUUD/v4 or GUID.
      *
-     * @param  string      $input
-     * @param  bool|int ...$options
+     * @param  string $input
+     * @param  bool   $strict
      * @return bool
-     * @since  6.0
      */
-    public static function validate(string $input, bool|int ...$options): bool
+    public static function validate(string $input, bool $strict = true): bool
     {
-        [$v4, $length, $dashed, $cased] = array_select($options, ['v4', 'length', 'dashed', 'cased']);
-
-        if ($v4) {
-            $pattern = $dashed ? self::PATTERN_DASHED_V4 : self::PATTERN_V4;
-        } else {
-            $pattern = $dashed ? self::PATTERN_DASHED_HASH : strtr(self::PATTERN_HASH, [self::HASH_LENGTH => $length]);
+        if ($strict) {
+            // With version & dashes.
+            return preg_test(
+                '~^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[ab89][a-f0-9]{3}-[a-f0-9]{12}$~',
+                $input
+            );
         }
 
-        $dashed || $input   = strtr($input, ['-' => '']); // Remove dashes.
-        $cased  && $pattern = strtoupper($pattern);       // Make case-sensitive.
+        // With/without version & dashes.
+        return preg_test(
+            '~^[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}$~',
+            $input
+        );
+    }
 
-        return preg_test($pattern, $input);
+    /**
+     * Validate given input as hash by length.
+     *
+     * @param  string $input
+     * @param  int    $length
+     * @return bool
+     */
+    public static function validateHash(string $input, int $length = self::HASH_LENGTH): bool
+    {
+        // With given length.
+        return preg_test('~^[a-f0-9]{' . $length . '}$~', $input);
     }
 
     /**
