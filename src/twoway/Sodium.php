@@ -7,13 +7,8 @@ declare(strict_types=1);
 
 namespace froq\encrypting\twoway;
 
-use froq\encrypting\twoway\{Twoway, TwowayException};
-use SodiumException;
-
 /**
- * Sodium.
- *
- * Represents a class entity which is able to perform twoway encrypting operations utilizing Sodium extension.
+ * A class, able to perform twoway encrypting operations utilizing Sodium extension.
  *
  * @package froq\encrypting\twoway
  * @object  froq\encrypting\twoway\Sodium
@@ -22,83 +17,69 @@ use SodiumException;
  */
 final class Sodium extends Twoway
 {
-    /** @var string */
-    private string $nonce;
-
     /**
      * Constructor.
      *
-     * @param  string $key
-     * @param  string $nonce
+     * @param  string     $key
+     * @param  string     $nonce
+     * @param  array|null $options
      * @throws froq\encrypting\twoway\TwowayException
      */
-    public function __construct(string $key, string $nonce)
+    public function __construct(string $key, string $nonce, array $options = null)
     {
-        extension_loaded('sodium') || throw new TwowayException('sodium extension not loaded');
-
-        $keyLength = strlen($key);
-
-        // Check key length.
-        if ($keyLength < 16) {
-            throw new TwowayException('Invalid key length `%s`, minimum key length is 16 [tip: use '
-                . 'Sodium::generateKey() method to get a strong key]', $keyLength);
+        if (!extension_loaded('sodium')) {
+            throw new TwowayException('Sodium extension not loaded');
         }
 
-        // Key size must be 32-length.
+        parent::checkKeyLength($keyLength = strlen($key));
+
+        // Key length must be 32-length.
         if ($keyLength != SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
-            $key = md5($key);
+            throw new TwowayException(
+                'Invalid key length `%s`, key length must be %s',
+                [$keyLength, SODIUM_CRYPTO_SECRETBOX_KEYBYTES]
+            );
         }
 
-        // Check nonce length.
+        // Nonce length must be 32-length.
         if (strlen($nonce) != SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
-            throw new TwowayException('Invalid nonce length `%s`, nonce length must be %s',
-                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]);
+            throw new TwowayException(
+                'Invalid nonce length `%s`, nonce length must be %s',
+                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]
+            );
         }
 
-        $this->nonce = $nonce;
+        $options = ['key' => $key, 'nonce' => $nonce] + (array) $options;
 
-        parent::__construct($key);
-    }
-
-    /**
-     * Get nonce property.
-     *
-     * @return string
-     */
-    public function nonce(): string
-    {
-        return $this->nonce;
+        parent::__construct($options);
     }
 
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function encode(string $data, bool $raw = false): string|null
+    public function encrypt(string $input, bool $raw = false): string|null
     {
-        try {
-            $out = sodium_crypto_secretbox($data, $this->nonce, $this->key);
-            if ($out !== false) {
-                return !$raw ? base64_encode($out) : $out;
-            }
-        } catch (SodiumException) {}
+        $ret = sodium_crypto_secretbox(
+            $input, $this->options['nonce'], $this->options['key']
+        );
 
-        return null;
+        return $raw ? $ret : $this->encode($ret);
     }
 
     /**
      * @inheritDoc froq\encrypting\twoway\Twoway
      */
-    public function decode(string $data, bool $raw = false): string|null
+    public function decrypt(string $input, bool $raw = false): string|null
     {
-        $data = !$raw ? base64_decode($data, true) : $data;
+        $input = $raw ? $input : $this->decode($input);
 
-        try {
-            $out = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
-            if ($out !== false) {
-                return $out;
-            }
-        } catch (SodiumException) {}
+        // Invalid.
+        if ($input === null) {
+            return null;
+        }
 
-        return null;
+        return sodium_crypto_secretbox_open(
+            $input, $this->options['nonce'], $this->options['key']
+        );
     }
 }

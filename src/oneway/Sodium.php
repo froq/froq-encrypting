@@ -7,13 +7,8 @@ declare(strict_types=1);
 
 namespace froq\encrypting\oneway;
 
-use froq\encrypting\oneway\{Oneway, OnewayException};
-use SodiumException;
-
 /**
- * Sodium.
- *
- * Represents a class entity which is able to perform oneway encrypting operations utilizing sodium stuff.
+ * A class, able to perform oneway encrypting operations utilizing sodium stuff.
  *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Sodium
@@ -23,7 +18,7 @@ use SodiumException;
 final class Sodium extends Oneway
 {
     /**
-     * Operation limit.
+     * Operations limit.
      *
      * Although there is no constant that gives 1, seems it is valid. The only existing
      * constants (SODIUM_CRYPTO_PWHASH_OPSLIMIT_*) are giving 2, 3 and 4.
@@ -31,7 +26,7 @@ final class Sodium extends Oneway
      *
      * @const int
      */
-    public const OPERATION_LIMIT = 1;
+    public const OPS_LIMIT = 1;
 
     /**
      * Memory limit.
@@ -42,18 +37,18 @@ final class Sodium extends Oneway
      *
      * @const int
      */
-    public const MEMORY_LIMIT = 1024 ** 2; // 1MB;
+    public const MEM_LIMIT = 1024 ** 2; // 1MB
 
     /**
      * Constructor.
      *
-     * @param  array<string, any|null>|null $options
+     * @param  array|null $options
      * @throws froq\encrypting\oneway\OnewayException
      */
     public function __construct(array $options = null)
     {
-        $options['opslimit'] ??= self::OPERATION_LIMIT;
-        $options['memlimit'] ??= self::MEMORY_LIMIT;
+        $options['opslimit'] ??= self::OPS_LIMIT;
+        $options['memlimit'] ??= self::MEM_LIMIT;
 
         static $minMemlimit = 1024 * 8; // 8KB
 
@@ -70,24 +65,20 @@ final class Sodium extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $in): string|null
+    public function hash(string $input): string|null
     {
-        $hash = false;
+        $ret = sodium_crypto_pwhash_str(
+            $input, $this->options['opslimit'], $this->options['memlimit']
+        );
 
-        try { // In case any other Sodium errors happen.
-            $hash = sodium_crypto_pwhash_str(
-                $in, $this->options['opslimit'], $this->options['memlimit']
-            );
-        } catch (SodiumException) {}
-
-        return ($hash !== false) ? $hash : null; // Null=Error.
+        return ($ret !== false) ? $ret : null;
     }
 
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function verify(string $in, string $hash): bool
+    public function verify(string $input, string $hash): bool
     {
-        return (bool) sodium_crypto_pwhash_str_verify($hash, $in);
+        return (bool) sodium_crypto_pwhash_str_verify($hash, $input);
     }
 }

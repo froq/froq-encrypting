@@ -7,14 +7,10 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{EncryptingException, Generator, Hash};
-
 /**
- * Uuid.
- *
- * Represents a static class which is able to generate UUIDs (v4) from random bytes and optionally with
- * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without given lengths, also
- * to generate time-based or random serials.
+ * A static class, able to generate UUIDs (v4) from random bytes and optionally with
+ * timestamp/namespaces or GUIDs from random bytes and hashes of these with/without
+ * given lengths, also to generate time-based or random serials.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Uuid
@@ -24,9 +20,15 @@ use froq\encrypting\{EncryptingException, Generator, Hash};
  */
 final class Uuid
 {
-    /** @const string @since 5.0 */
+    /** @const string */
     public const NULL      = '00000000-0000-0000-0000-000000000000',
                  NULL_HASH = '00000000000000000000000000000000';
+
+    /** @const int */
+    public const HASH_LENGTH = 32;
+
+    /** @const array<int> */
+    public const HASH_LENGTHS = [32, 16, 40, 64];
 
     /**
      * Generate a UUID with random 16-length bytes.
@@ -49,15 +51,17 @@ final class Uuid
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.3
      */
-    public static function generateHash(int $hashLength = 32, bool $format = false): string
+    public static function generateHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
     {
-        $hash = Hash::make(self::generate(false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generate(false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
+            if ($hashLength != self::HASH_LENGTH) {
+                throw new UuidException('Format option for only 32-length hashes');
+            }
 
             $hash = self::format($hash, true);
         }
@@ -83,15 +87,17 @@ final class Uuid
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.8
      */
-    public static function generateGuidHash(int $hashLength = 32, bool $format = false): string
+    public static function generateGuidHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
     {
-        $hash = Hash::make(self::generateGuid(false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generateGuid(false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
+            if ($hashLength != self::HASH_LENGTH) {
+                throw new UuidException('Format option for only 32-length hashes');
+            }
 
             $hash = self::format($hash, true);
         }
@@ -105,7 +111,7 @@ final class Uuid
      * @param  bool $dashed
      * @param  bool $guid
      * @return string
-     * @since  4.6, 4.9 Converted from generateUniq().
+     * @since  4.6, 4.9
      */
     public static function generateWithTimestamp(bool $dashed = true, bool $guid = false): string
     {
@@ -124,15 +130,17 @@ final class Uuid
      * @param  int  $hashLength
      * @param  bool $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
-     * @since  4.6, 4.9 Converted from generateUniqHash().
+     * @throws froq\encrypting\UuidException
+     * @since  4.6, 4.9
      */
-    public static function generateWithTimestampHash(int $hashLength = 32, bool $format = false): string
+    public static function generateWithTimestampHash(int $hashLength = self::HASH_LENGTH, bool $format = false): string
     {
-        $hash = Hash::make(self::generateWithTimestamp(false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generateWithTimestamp(false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
+            if ($hashLength != self::HASH_LENGTH) {
+                throw new UuidException('Format option for only 32-length hashes');
+            }
 
             $hash = self::format($hash, true);
         }
@@ -152,9 +160,8 @@ final class Uuid
     public static function generateWithNamespace(string $namespace, bool $dashed = true, bool $guid = false): string
     {
         // Namespace prefix.
-        $prefix = md5($namespace);
-        $prefix = dechex(hexdec(substr($prefix, 0, 2)) | 1)
-                              . substr($prefix, 2, 10);
+        $nshash = md5($namespace);
+        $prefix = dechex(hexdec(substr($nshash, 0, 2))) . substr($nshash, 2, 10);
 
         // Binary of namespace & 10-random bytes.
         $bytes = hex2bin($prefix) . random_bytes(10);
@@ -169,15 +176,17 @@ final class Uuid
      * @param  int    $hashLength
      * @param  bool   $format
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      * @since  4.9
      */
-    public static function generateWithNamespaceHash(string $namespace, int $hashLength = 32, bool $format = false): string
+    public static function generateWithNamespaceHash(string $namespace, int $hashLength = self::HASH_LENGTH, bool $format = false): string
     {
-        $hash = Hash::make(self::generateWithNamespace($namespace, false), $hashLength, [40, 16, 32, 64]);
+        $hash = Hash::make(self::generateWithNamespace($namespace, false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            ($hashLength == 32) || throw new EncryptingException('Format option for only 32-length hashes');
+            if ($hashLength != self::HASH_LENGTH) {
+                throw new UuidException('Format option for only 32-length hashes');
+            }
 
             $hash = self::format($hash, true);
         }
@@ -192,7 +201,7 @@ final class Uuid
      * @param  bool $dated
      * @param  bool $hexed
      * @return string
-     * @since  4.0, 4.8 Replaced with generateSimple().
+     * @since  4.0, 4.8
      */
     public static function generateSerial(bool $dashed = true, bool $hexed = false, bool $dated = false): string
     {
@@ -207,7 +216,7 @@ final class Uuid
      * @param  bool $dashed
      * @param  bool $hexed
      * @return string
-     * @since  4.0, 4.8 Replaced with generateDigit().
+     * @since  4.0, 4.8
      */
     public static function generateRandomSerial(bool $dashed = true, bool $hexed = false): string
     {
@@ -217,70 +226,107 @@ final class Uuid
     }
 
     /**
-     * Check whether given UUID is valid.
+     * Check whether given input a valid UUID/v4 or GUID.
      *
-     * @param  string $uuid
-     * @param  bool   $dashed
+     * @param  string $input
+     * @param  bool   $strict
      * @return bool
      * @since  5.0
      */
-    public static function isValid(string $uuid, bool $dashed = true): bool
+    public static function isValid(string $input, bool $strict = true): bool
     {
-        return $dashed ? preg_test('~^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$~', $uuid)
-                       : preg_test('~^[a-f0-9]{32}$~', str_replace('-', '', $uuid));
+        return self::validate($input, $strict);
     }
 
     /**
-     * Check whether given UUID hash is valid.
+     * Check whether given input is a valid hash.
      *
-     * @param  string $hash
+     * @param  string $input
+     * @param  int    $length
      * @return bool
      * @since  5.0
      */
-    public static function isValidHash(string $hash): bool
+    public static function isValidHash(string $input, int $length = self::HASH_LENGTH): bool
     {
-        return preg_test('~^[a-f0-9]{32}$~', $hash);
+        return self::validateHash($input, $length);
+    }
+
+    /**
+     * Validate given input as UUUD/v4 or GUID.
+     *
+     * @param  string $input
+     * @param  bool   $strict
+     * @return bool
+     */
+    public static function validate(string $input, bool $strict = true): bool
+    {
+        if ($strict) {
+            // With version, variant & dashes.
+            return preg_test(
+                '~^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[ab89][a-f0-9]{3}-[a-f0-9]{12}$~',
+                $input
+            );
+        }
+
+        // With/without version, variant & dashes.
+        return preg_test(
+            '~^[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}$~',
+            $input
+        );
+    }
+
+    /**
+     * Validate given input as hash by length.
+     *
+     * @param  string $input
+     * @param  int    $length
+     * @return bool
+     */
+    public static function validateHash(string $input, int $length = self::HASH_LENGTH): bool
+    {
+        // With given length.
+        return preg_test('~^[a-f0-9]{' . $length . '}$~', $input);
     }
 
     /**
      * Format.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  bool   $dashed
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\UuidException
      */
-    public static function format(string $in, bool $dashed = true): string
+    public static function format(string $input, bool $dashed = true): string
     {
-        if (strlen($in) != 32 || !ctype_xdigit($in)) {
-            throw new EncryptingException('Input must be a 32-length UUID/GUID');
+        if (strlen($input) != self::HASH_LENGTH || !ctype_xdigit($input)) {
+            throw new UuidException('Input must be a 32-length x-digit');
         }
 
-        $out = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($in, 4));
+        $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
 
-        // Drop if false.
-        $dashed || $out = str_replace('-', '', $out);
+        // Drop dashes if false.
+        $dashed || $ret = str_replace('-', '', $ret);
 
-        return $out;
+        return $ret;
     }
 
     /**
      * Format binary.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  bool   $dashed
      * @param  bool   $guid
      * @return string
-     * @causes froq\encrypting\EncryptingException
+     * @causes froq\encrypting\UuidException
      */
-    public static function formatBinary(string $in, bool $dashed = true, bool $guid = false): string
+    public static function formatBinary(string $input, bool $dashed = true, bool $guid = false): string
     {
         // GUID doesn't use 4 (version) or 8, 9, A, B.
         if (!$guid) {
-            $in[6] = chr(ord($in[6]) & 0x0f | 0x40);
-            $in[8] = chr(ord($in[8]) & 0x3f | 0x80);
+            $input[6] = chr(ord($input[6]) & 0x0f | 0x40);
+            $input[8] = chr(ord($input[8]) & 0x3f | 0x80);
         }
 
-        return self::format(bin2hex($in), $dashed);
+        return self::format(bin2hex($input), $dashed);
     }
 }

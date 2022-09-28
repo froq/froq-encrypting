@@ -7,14 +7,8 @@ declare(strict_types=1);
 
 namespace froq\encrypting;
 
-use froq\encrypting\{EncryptingException, Base, Hash, Suid, Uuid};
-use froq\encrypting\oneway\Password;
-use Error;
-
 /**
- * Generator.
- *
- * Represents a static class which is able to generate UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
+ * A static class, generates UUIDs, GUIDs, IDs, salts, nonces, tokens, serials,
  * and passwords.
  *
  * @package froq\encrypting
@@ -50,6 +44,23 @@ final class Generator
     }
 
     /**
+     * Generate a token.
+     *
+     * @param  int $hashLength
+     * @return string
+     * @throws froq\encrypting\GeneratorException
+     * @since  4.4
+     */
+    public static function generateToken(int $hashLength = 32): string
+    {
+        try {
+            return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
+        } catch (HashException $e) {
+            throw new GeneratorException($e);
+        }
+    }
+
+    /**
      * Generate a UUID.
      *
      * @param  bool $dashed
@@ -73,30 +84,21 @@ final class Generator
     }
 
     /**
-     * Generate a token.
-     *
-     * @param  int $hashLength
-     * @return string
-     * @since  4.4
-     */
-    public static function generateToken(int $hashLength = 32): string
-    {
-        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [40, 16, 32, 64]);
-    }
-
-    /**
      * Generate a serial.
      *
      * @param  int  $length
      * @param  bool $dated
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateSerial(int $length = 20, bool $dated = false): string
     {
         if ($length < 20) {
-            throw new EncryptingException('Argument $length must be minimun 20, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 20, %s given',
+                $length
+            );
         }
 
         return self::generateId($length, 10, $dated);
@@ -107,13 +109,16 @@ final class Generator
      *
      * @param  int $length
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateRandomSerial(int $length = 20): string
     {
         if ($length < 20) {
-            throw new EncryptingException('Argument $length must be minimun 20, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 20, %s given',
+                $length
+            );
         }
 
         return self::generateRandomId($length, 10);
@@ -126,35 +131,41 @@ final class Generator
      * @param  int  $base
      * @param  bool $dated
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateId(int $length, int $base = 10, bool $dated = false): string
     {
         if ($length < 10) {
-            throw new EncryptingException('Argument $length must be minimun 10, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 10, %s given',
+                $length
+            );
         } elseif ($base < 10 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
+            throw new GeneratorException(
+                'Argument $base must be between 10-62, %s given',
+                $base
+            );
         }
 
-        // Now (date/time object).
+        /** @var DateTime */
         $now = udate('', 'UTC');
 
-        // Use a date prefix or time (eg: 1401873.. or 20121229).
-        $id = !$dated ? $now->format('Uu') : $now->format('YmdHisu');
+        // Use a date or time prefix (eg: 20121212.. or 1355270400..).
+        $id = $dated ? $now->format('YmdHisu'): $now->format('Uu');
 
         if ($base == 10) {
             $ret = $id;
         } else {
             $ret = '';
             foreach (str_split($id, 10) as $i) {
-                $ret .= Base::toBase($base, $i);
+                $ret .= Base::toBase($i, $base);
             }
         }
 
         // Pad if needed.
         while (strlen($ret) < $length) {
-            $ret .= ($base == 10) ? random() : Base::toBase($base, random());
+            $ret .= ($base == 10) ? random() : Base::toBase(random(), $base);
         }
 
         $ret = substr($ret, 0, $length);
@@ -168,7 +179,7 @@ final class Generator
      * @param  int  $base
      * @param  bool $dated
      * @return string
-     * @since  4.8 Moved from Uuid.generateShort().
+     * @since  4.8
      */
     public static function generateShortId(int $base = 10, bool $dated = false): string
     {
@@ -181,7 +192,7 @@ final class Generator
      * @param  int  $base
      * @param  bool $dated
      * @return string
-     * @since  4.8 Moved from Uuid.generateLong().
+     * @since  4.8
      */
     public static function generateLongId(int $base = 10, bool $dated = false): string
     {
@@ -206,24 +217,30 @@ final class Generator
      * @param  int $byteLength
      * @param  int $hashLength
      * @return string
-     * @throws froq\encrypting\EncryptingException
+     * @throws froq\encrypting\GeneratorException
      * @since  4.8
      */
     public static function generateRandomId(int $length, int $base = 10): string
     {
         if ($length < 4) {
-            throw new EncryptingException('Argument $length must be minimun 4, %s given', $length);
+            throw new GeneratorException(
+                'Argument $length must be minimun 4, %s given',
+                $length
+            );
         } elseif ($base < 10 || $base > 62) {
-            throw new EncryptingException('Argument $base must be between 10-62, %s given', $base);
+            throw new GeneratorException(
+                'Argument $base must be between 10-62, %s given',
+                $base
+            );
         }
 
-        $chars       = substr(Base::ALL_CHARS, 0, $base);
-        $charsLength = strlen($chars);
+        $chars    = Base::chars($base);
+        $charsMax = strlen($chars) - 1;
 
         $ret = '';
 
         while (strlen($ret) < $length) {
-            $ret .= $chars[random(0, $charsLength - 1)];
+            $ret .= $chars[random(0, $charsMax)];
         }
 
         return $ret;
@@ -244,12 +261,12 @@ final class Generator
         // Session may be not loaded.
         try {
             $ret = session_create_id() ?: null;
-        } catch (Error) {}
+        } catch (\Error) {}
 
         // Let Suid to mimic it.
         $ret ??= Suid::generate(26, 36);
 
-        $hash  && $ret = Hash::make($ret, $hashLength, [40, 16, 32]);
+        $hash  && $ret = Hash::make($ret, $hashLength, [32, 40, 16]);
         $upper && $ret = strtoupper($ret);
 
         return $ret;
@@ -286,10 +303,18 @@ final class Generator
      * @param  int  $length
      * @param  bool $puncted
      * @return string
+     * @throws froq\encrypting\GeneratorException
      */
     public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
-        return Password::generate($length, $puncted);
+        if ($length < 2) {
+            throw new GeneratorException(
+                'Argument $length must be greater than 1, %s given',
+                $length
+            );
+        }
+
+        return random_string($length, $puncted);
     }
 
     /**

@@ -7,13 +7,8 @@ declare(strict_types=1);
 
 namespace froq\encrypting\oneway;
 
-use froq\encrypting\oneway\{Oneway, OnewayException};
-use froq\encrypting\Base;
-
 /**
- * Password.
- *
- * Represents a class entity which is able to perform oneway encrypting operations utilizing password stuff.
+ * A class, able to perform oneway encrypting operations utilizing password stuff.
  *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Password
@@ -37,7 +32,7 @@ final class Password extends Oneway
     /**
      * Constructor.
      *
-     * @param array<string, any|null>|null $options
+     * @param  array|null $options
      */
     public function __construct(array $options = null)
     {
@@ -50,42 +45,18 @@ final class Password extends Oneway
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function hash(string $in): string|null
+    public function hash(string $input): string|null
     {
-        $algo    = $this->options['algo'];
-        $options = $this->options;
+        $ret = password_hash($input, $this->options['algo'], $this->options);
 
-        // Not used in function options.
-        unset($options['algo']);
-
-        $hash = password_hash($in, $algo, $options);
-
-        return ($hash !== false) ? $hash : null; // Null=Error.
+        return ($ret !== false) ? $ret : null;
     }
 
     /**
      * @inheritDoc froq\encrypting\oneway\Oneway
      */
-    public function verify(string $in, string $hash): bool
+    public function verify(string $input, string $hash): bool
     {
-        return (bool) password_verify($in, $hash);
-    }
-
-    /**
-     * Generate a password by given length.
-     *
-     * @param  int  $length
-     * @param  bool $puncted
-     * @return string
-     * @throws froq\encrypting\oneway\OnewayException
-     */
-    public static final function generate(int $length, bool $puncted = false): string
-    {
-        if ($length < 2) {
-            throw new OnewayException('Invalid length value `%s`, length must be equal or greater'
-                . ' than 2', $length);
-        }
-
-        return random_string($length, $puncted);
+        return (bool) password_verify($input, $hash);
     }
 }

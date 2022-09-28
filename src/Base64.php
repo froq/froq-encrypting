@@ -8,9 +8,7 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Base 64.
- *
- * Represents a static class which provides a Base-64 encoding/decoding methods and also URL-safe stuff.
+ * A static class, provides a Base-64 encoding/decoding methods and URL-safe stuff.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Base64
@@ -23,46 +21,46 @@ final class Base64
     /**
      * Encode given input.
      *
-     * @param  string $in
+     * @param  string $input
      * @return string
      */
-    public static function encode(string $in): string
+    public static function encode(string $input): string
     {
-        return (string) base64_encode($in);
+        return base64_encode($input);
     }
 
     /**
      * Decode given input.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  bool   $strict
      * @return string
      */
-    public static function decode(string $in, bool $strict = false): string
+    public static function decode(string $input, bool $strict = false): string
     {
-        return (string) base64_decode($in, $strict);
+        return (string) base64_decode($input, $strict);
     }
 
     /**
-     * Encode given input with URL-safe method.
+     * Encode given input as URL-safe.
      *
-     * @param  string $in
+     * @param  string $input
      * @return string
      */
-    public static function encodeUrlSafe(string $in): string
+    public static function encodeUrlSafe(string $input): string
     {
-        return chop(strtr(self::encode($in), '/+', '_-'), '=');
+        return chop(strtr(base64_encode($input), '/+', '_-'), '=');
     }
 
     /**
-     * Decode given input with URL-safe method.
+     * Decode given input as URL-safe.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  bool   $strict
      * @return string
      */
-    public static function decodeUrlSafe(string $in, bool $strict = false): string
+    public static function decodeUrlSafe(string $input, bool $strict = false): string
     {
-        return self::decode(strtr($in, '_-', '/+'), $strict);
+        return (string) base64_decode(strtr($input, '_-', '/+'), $strict);
     }
 }

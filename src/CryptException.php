@@ -9,9 +9,9 @@ namespace froq\encrypting;
 
 /**
  * @package froq\encrypting
- * @object  froq\encrypting\EncryptingException
+ * @object  froq\encrypting\CryptException
  * @author  Kerem Güneş
- * @since   1.0
+ * @since   6.0
  */
-class EncryptingException extends \froq\common\Exception
+class CryptException extends EncryptingException
 {}

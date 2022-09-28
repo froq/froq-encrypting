@@ -7,11 +7,10 @@ declare(strict_types=1);
 
 namespace froq\encrypting\oneway;
 
+use froq\common\trait\OptionTrait;
+
 /**
- * Oneway.
- *
- * Represents a abstract class entity that used in `oneway` package only, and also provided make/validate
- * methods as shortcut for hash/verify methods of extender classes.
+ * An abstract class, used in `oneway` package only.
  *
  * @package froq\encrypting\oneway
  * @object  froq\encrypting\oneway\Oneway
@@ -20,77 +19,32 @@ namespace froq\encrypting\oneway;
  */
 abstract class Oneway
 {
-    /** @var array<string, any|null> */
-    protected array $options;
+    use OptionTrait;
 
     /**
      * Constructor.
      *
-     * @param array<string, any|null>|null $options
+     * @param  array|null $options
      */
     public function __construct(array $options = null)
     {
-        $this->options = $options ?? [];
-    }
-
-    /**
-     * Get options property.
-     *
-     * @return array<string, any|null>
-     */
-    public final function options(): array
-    {
-        return $this->options;
-    }
-
-    /**
-     * Make a hash.
-     *
-     * @param  string     $in
-     * @param  array|null $options
-     * @return string|null
-     * @since  4.5
-     */
-    public static final function make(string $in, array $options = null): string|null
-    {
-        return (new static($options))->hash($in);
-    }
-
-    /**
-     * Verify a hash.
-     *
-     * @param  string $in
-     * @param  string $hash
-     * @return bool
-     * @since  4.5
-     */
-    public static final function validate(string $in, string $hash): bool
-    {
-        return (new static)->verify($in, $hash);
-    }
-
-    /**
-     * @alias of validate()
-     */
-    public static final function okay(...$args)
-    {
-        return self::validate(...$args);
+        $this->setOptions($options);
     }
 
     /**
      * Hash given input.
      *
-     * @param  string $in
+     * @param  string $input
      * @return string|null
      */
-    abstract public function hash(string $in): string|null;
+    abstract public function hash(string $input): string|null;
 
     /**
      * Verify given input with given hash.
      *
-     * @param  string $in
+     * @param  string $input
      * @param  string $hash
      * @return bool
      */
-    abstract public function verify(string $in, string $hash): bool;
+    abstract public function verify(string $input, string $hash): bool;
 }

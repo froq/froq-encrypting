@@ -8,9 +8,7 @@ declare(strict_types=1);
 namespace froq\encrypting;
 
 /**
- * Base 62.
- *
- * Represents a static class which provides a Base-62 encoding/decoding methods.
+ * A static class, provides a Base-62 encoding/decoding methods.
  *
  * @package froq\encrypting
  * @object  froq\encrypting\Base62
@@ -21,41 +19,32 @@ namespace froq\encrypting;
 final class Base62
 {
     /**
-     * Encode given input as given base.
+     * Encode given input.
      *
-     * @param  string $in
-     * @param  int    $base
+     * @param  string $input
      * @param  bool   $bin
      * @return string
      */
-    public static function encode(string $in, int $base, bool $bin = false): string
+    public static function encode(string $input, bool $bin = false): string
     {
-        $bin && $in = bin2hex($in);
+        $bin && $input = bin2hex($input);
 
-        return (string) convert_base($in, $base, 62);
+        return Base::encode($input);
     }
 
     /**
-     * Decode given input as given base.
+     * Decode given input.
      *
-     * @param  string $in
-     * @param  int    $base
+     * @param  string $input
      * @param  bool   $bin
      * @return string
      */
-    public static function decode(string $in, int $base, bool $bin = false): string
+    public static function decode(string $input, bool $bin = false): string
     {
-        $in = (string) convert_base($in, 62, $base);
+        $input = Base::decode($input);
 
-        if ($bin) {
-            // Fix: "Hexadecimal input string must have an even length .." error.
-            if (strlen($in) % 2) {
-                $in .= '0';
-            }
+        $bin && $input = hex2bin($input);
 
-            $in = hex2bin($in);
-        }
-
-        return $in;
+        return $input;
     }
 }
