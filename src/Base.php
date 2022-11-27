@@ -101,8 +101,8 @@ final class Base
         }
 
         if (strlen($input) !== strspn($input, $chars)) {
-            preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
-            throw new BaseException('Invalid characters `%s` found in given input', $match[0]);
+            preg_match('~[^' . preg_quote($chars, '~') . ']+~', $input, $match);
+            throw new BaseException('Invalid characters %q found in given input', $match[0]);
         }
 
         $temp = array_map(fn($c) => strpos($chars, $c), str_split($input));

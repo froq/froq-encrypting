@@ -58,7 +58,7 @@ abstract class Twoway
         // Check key length.
         if ($length < $minLength) {
             throw new TwowayException(
-                'Invalid key length `%s`, minimum key length is %s '.
+                'Invalid key length %s, minimum key length is %s '.
                 '[tip: use %s::generateKey() method to get a key]',
                 [$length, $minLength, static::class]
             );
