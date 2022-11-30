@@ -39,7 +39,7 @@ abstract class Twoway
      * @param  int $length
      * @return string
      */
-    public static final function generateKey(int $length = 40): string
+    public static function generateKey(int $length = 40): string
     {
         return Suid::generate($length);
     }
@@ -53,7 +53,7 @@ abstract class Twoway
      * @throws froq\encrypting\twoway\TwowayException
      * @since  6.0
      */
-    public static final function checkKeyLength(int $length, int $minLength = 16): void
+    public static function checkKeyLength(int $length, int $minLength = 16): void
     {
         // Check key length.
         if ($length < $minLength) {
@@ -73,7 +73,7 @@ abstract class Twoway
      * @throws froq\encrypting\twoway\TwowayException
      * @since  6.0
      */
-    protected final function encode(string $input): string|null
+    protected function encode(string $input): string|null
     {
         if (isset($this->options['convert'])) {
             switch ($this->options['convert']) {
@@ -106,7 +106,7 @@ abstract class Twoway
      * @throws froq\encrypting\twoway\TwowayException
      * @since  6.0
      */
-    protected final function decode(string $input): string|null
+    protected function decode(string $input): string|null
     {
         if (isset($this->options['convert'])) {
             switch ($this->options['convert']) {
