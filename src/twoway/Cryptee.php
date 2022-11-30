@@ -16,7 +16,7 @@ namespace froq\encrypting\twoway;
  * @author  Kerem Güneş
  * @since   3.0
  */
-final class Cryptee extends Twoway
+class Cryptee extends Twoway
 {
     /**
      * Constructor.

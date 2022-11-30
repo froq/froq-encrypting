@@ -17,7 +17,7 @@ namespace froq\encrypting;
  * @since   3.0
  * @static
  */
-final class Generator
+class Generator
 {
     /**
      * Generate a salt.

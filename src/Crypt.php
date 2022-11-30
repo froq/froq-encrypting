@@ -19,7 +19,7 @@ namespace froq\encrypting;
  * @since   6.0
  * @static
  */
-final class Crypt
+class Crypt
 {
     /** @const string */
     public const CIPHER_METHOD = 'aes-256-ctr';

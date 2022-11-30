@@ -18,7 +18,7 @@ namespace froq\encrypting;
  * @since   3.0
  * @static
  */
-final class Uuid
+class Uuid
 {
     /** @const string */
     public const NULL      = '00000000-0000-0000-0000-000000000000',

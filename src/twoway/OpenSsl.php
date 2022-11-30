@@ -16,7 +16,7 @@ namespace froq\encrypting\twoway;
  * @author  Kerem Güneş
  * @since   3.0
  */
-final class OpenSsl extends Twoway
+class OpenSsl extends Twoway
 {
     /**
      * Default method.

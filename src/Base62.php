@@ -16,7 +16,7 @@ namespace froq\encrypting;
  * @since   5.0
  * @static
  */
-final class Base62
+class Base62
 {
     /**
      * Encode given input.

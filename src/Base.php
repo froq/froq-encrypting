@@ -16,7 +16,7 @@ namespace froq\encrypting;
  * @since   4.0
  * @static
  */
-final class Base
+class Base
 {
     /**
      * Characters.

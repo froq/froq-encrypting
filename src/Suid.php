@@ -17,7 +17,7 @@ namespace froq\encrypting;
  * @since   3.0, 5.0
  * @static
  */
-final class Suid
+class Suid
 {
     /**
      * Generate using `random_bytes()` function, with/without given base.

@@ -16,7 +16,7 @@ namespace froq\encrypting;
  * @since   4.2
  * @static
  */
-final class Base64
+class Base64
 {
     /**
      * Encode given input.

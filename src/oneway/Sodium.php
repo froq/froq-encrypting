@@ -15,7 +15,7 @@ namespace froq\encrypting\oneway;
  * @author  Kerem Güneş
  * @since   4.0
  */
-final class Sodium extends Oneway
+class Sodium extends Oneway
 {
     /**
      * Operations limit.

@@ -15,7 +15,7 @@ namespace froq\encrypting\twoway;
  * @author  Kerem Güneş
  * @since   3.0
  */
-final class Sodium extends Twoway
+class Sodium extends Twoway
 {
     /**
      * Constructor.

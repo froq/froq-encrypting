@@ -15,7 +15,7 @@ namespace froq\encrypting\oneway;
  * @author  Kerem Güneş
  * @since   1.0
  */
-final class Password extends Oneway
+class Password extends Oneway
 {
     /**
      * Default algo.
