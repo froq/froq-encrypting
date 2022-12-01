@@ -1,17 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
  * A static class, provides a Base-62 encoding/decoding methods.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Base62
+ * @class   froq\encrypting\Base62
  * @author  Kerem Güneş
  * @since   5.0
  * @static

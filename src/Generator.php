@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
@@ -12,7 +10,7 @@ namespace froq\encrypting;
  * and passwords.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Generator
+ * @class   froq\encrypting\Generator
  * @author  Kerem Güneş
  * @since   3.0
  * @static
@@ -154,7 +152,7 @@ class Generator
         // Use a date or time prefix (eg: 20121212.. or 1355270400..).
         $id = $dated ? $now->format('YmdHisu'): $now->format('Uu');
 
-        if ($base == 10) {
+        if ($base === 10) {
             $ret = $id;
         } else {
             $ret = '';
@@ -165,7 +163,7 @@ class Generator
 
         // Pad if needed.
         while (strlen($ret) < $length) {
-            $ret .= ($base == 10) ? random() : Base::toBase(random(), $base);
+            $ret .= ($base === 10) ? random() : Base::toBase(random(), $base);
         }
 
         $ret = substr($ret, 0, $length);

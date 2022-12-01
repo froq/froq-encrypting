@@ -1,19 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting\oneway;
 
 use froq\common\trait\OptionTrait;
 
 /**
- * An abstract class, used in `oneway` package only.
+ * Base class of `oneway`classes.
  *
  * @package froq\encrypting\oneway
- * @object  froq\encrypting\oneway\Oneway
+ * @class   froq\encrypting\oneway\Oneway
  * @author  Kerem Güneş
  * @since   1.0
  */

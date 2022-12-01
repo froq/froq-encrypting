@@ -1,41 +1,35 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting\oneway;
 
 /**
  * A class, able to perform oneway encrypting operations utilizing sodium stuff.
  *
  * @package froq\encrypting\oneway
- * @object  froq\encrypting\oneway\Sodium
+ * @class   froq\encrypting\oneway\Sodium
  * @author  Kerem Güneş
  * @since   4.0
  */
 class Sodium extends Oneway
 {
     /**
-     * Operations limit.
+     * Default operations limit.
      *
      * Although there is no constant that gives 1, seems it is valid. The only existing
      * constants (SODIUM_CRYPTO_PWHASH_OPSLIMIT_*) are giving 2, 3 and 4.
      * @see https://www.php.net/sodium_crypto_pwhash_str
-     *
-     * @const int
      */
     public const OPS_LIMIT = 1;
 
     /**
-     * Memory limit.
+     * Default memory limit.
      *
      * Minimum value of the existing constants (SODIUM_CRYPTO_PWHASH_MEMLIMIT_*) is 67108864
      * bytes (64MB) that I find it too excessive. So 1MB seems enough to create a good password.
      * @see https://www.php.net/sodium_crypto_pwhash_str
-     *
-     * @const int
      */
     public const MEM_LIMIT = 1024 ** 2; // 1MB
 

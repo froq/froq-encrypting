@@ -1,24 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
  * A static class, generates hashes by given lengths.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Hash
+ * @class   froq\encrypting\Hash
  * @author  Kerem Güneş
  * @since   4.0
  * @static
  */
 class Hash
 {
-    /** @const array */
+    /** Valid algos. */
     public const ALGOS = [
         8  => 'fnv1a32', 16 => 'fnv1a64', 32  => 'md5',
         40 => 'sha1',    64 => 'sha256',  128 => 'sha512'
@@ -38,7 +36,10 @@ class Hash
         $lengths ??= array_keys(self::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
-            throw new HashException('Invalid length %q [valids: %A]', [$length, $lengths]);
+            throw new HashException(
+                'Invalid length %q [valids: %A]',
+                [$length, $lengths]
+            );
         }
 
         $algo = self::ALGOS[$length];
@@ -58,7 +59,10 @@ class Hash
     public static function makeBy(string $input, string $algo): string
     {
         if (!in_array($algo, hash_algos(), true)) {
-            throw new HashException('Invalid algo %q [valids: %A]', [$algo, hash_algos()]);
+            throw new HashException(
+                'Invalid algo %q [valids: %A]',
+                [$algo, hash_algos()]
+            );
         }
 
         return hash($algo, $input);

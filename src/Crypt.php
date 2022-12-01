@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
@@ -14,14 +12,14 @@ namespace froq\encrypting;
  * Original source: https://stackoverflow.com/a/2448441/362780
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Crypt
+ * @class   froq\encrypting\Crypt
  * @author  Kerem Güneş
  * @since   6.0
  * @static
  */
 class Crypt
 {
-    /** @const string */
+    /** Used cipher method. */
     public const CIPHER_METHOD = 'aes-256-ctr';
 
     /**
@@ -36,7 +34,7 @@ class Crypt
      */
     public static function encrypt(string $input, string $pp, string $iv, bool $encode = false): string
     {
-        if (strlen($iv) != 16) {
+        if (strlen($iv) !== 16) {
             throw new CryptException(
                 'Argument $iv length must be 16 [given iv length: %s]',
                 strlen($iv)
@@ -60,7 +58,7 @@ class Crypt
      */
     public static function decrypt(string $input, string $pp, string $iv, bool $decode = false): string
     {
-        if (strlen($iv) != 16) {
+        if (strlen($iv) !== 16) {
             throw new CryptException(
                 'Argument $iv length must be 16 [given iv length: %s]',
                 strlen($iv)

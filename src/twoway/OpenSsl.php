@@ -1,28 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting\twoway;
 
 /**
- * A class, able to perform twoway encrypting operations utilizing OpenSsl extension.
- * Original source https://stackoverflow.com/a/30189841/362780.
+ * A class, able to perform twoway encrypting operations utilizing OpenSSL extension.
+ * Original source: https://stackoverflow.com/a/30189841/362780
  *
  * @package froq\encrypting\twoway
- * @object  froq\encrypting\twoway\OpenSsl
+ * @class   froq\encrypting\twoway\OpenSsl
  * @author  Kerem Güneş
  * @since   3.0
  */
 class OpenSsl extends Twoway
 {
-    /**
-     * Default method.
-     * @const string
-     */
-    public const METHOD = 'aes-256-ctr';
+    /** Default cipher method. */
+    public const CIPHER_METHOD = 'aes-256-ctr';
 
     /**
      * Constructor.
@@ -48,7 +43,7 @@ class OpenSsl extends Twoway
             }
         }
 
-        $options = ['key' => $key, 'method' => $method ?? self::METHOD] + (array) $options;
+        $options = ['key' => $key, 'method' => $method ?? self::CIPHER_METHOD] + (array) $options;
 
         parent::__construct($options);
     }

@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
@@ -12,7 +10,7 @@ namespace froq\encrypting;
  * can be used as salts, nonces or IDs.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Suid
+ * @class   froq\encrypting\Suid
  * @author  Kerem Güneş
  * @since   3.0, 5.0
  * @static

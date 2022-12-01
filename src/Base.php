@@ -1,27 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
  * A static class, provides encode/decode methods for base conversions.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Base
+ * @class   froq\encrypting\Base
  * @author  Kerem Güneş
  * @since   4.0
  * @static
  */
 class Base
 {
-    /**
-     * Characters.
-     * @const string
-     */
+    /** Characters. */
     public const BASE10_CHARS  = '0123456789',
                  BASE16_CHARS  = '0123456789abcdef',
                  BASE36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
@@ -49,11 +44,11 @@ class Base
      */
     public static function encode(string $input, string $chars = self::BASE62_CHARS): string
     {
-        if ($input == '') {
+        if ($input === '') {
             return '';
         }
 
-        if ($chars == '') {
+        if ($chars === '') {
             throw new BaseException('Characters cannot be empty');
         }
 
@@ -87,11 +82,11 @@ class Base
      */
     public static function decode(string $input, string $chars = self::BASE62_CHARS): string
     {
-        if ($input == '') {
+        if ($input === '') {
             return '';
         }
 
-        if ($chars == '') {
+        if ($chars === '') {
             throw new BaseException('Characters cannot be empty');
         }
 
@@ -214,7 +209,7 @@ class Base
             throw new BaseException('Argument $base must be between 2-64, %s given', $base);
         }
 
-        if ($base == 64) {
+        if ($base === 64) {
             return self::BASE64_CHARS;
         }
 

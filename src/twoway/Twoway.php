@@ -1,20 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting\twoway;
 
 use froq\encrypting\{Suid, Base, Base62, Base64};
 use froq\common\trait\OptionTrait;
 
 /**
- * An abstract class, used in `twoway` package only.
+ * Base class of `twoway` classes.
  *
  * @package froq\encrypting\twoway
- * @object  froq\encrypting\twoway\Twoway
+ * @class   froq\encrypting\twoway\Twoway
  * @author  Kerem Güneş
  * @since   3.0
  */
