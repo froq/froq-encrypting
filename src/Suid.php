@@ -29,15 +29,9 @@ class Suid
     public static function generate(int $length, int $base = 62): string
     {
         if ($length < 1) {
-            throw new SuidException(
-                'Argument $length must be greater than 1, %s given',
-                $length
-            );
+            throw SuidException::forInvalidLengthArgument($length);
         } elseif ($base < 2 || $base > 62) {
-            throw new SuidException(
-                'Argument $base must be between 2-62, %s given',
-                $base
-            );
+            throw SuidException::forInvalidBaseArgument($base);
         }
 
         $chars = substr(BASE62_ALPHABET, 0, $base);

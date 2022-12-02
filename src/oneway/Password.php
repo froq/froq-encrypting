@@ -39,9 +39,11 @@ class Password extends Oneway
      */
     public function hash(string $input): string|null
     {
-        $ret = password_hash($input, $this->options['algo'], $this->options);
-
-        return ($ret !== false) ? $ret : null;
+        try {
+            return password_hash($input, $this->options['algo'], $this->options);
+        } catch (\Throwable $e) {
+            throw new PasswordException($e, extract: true);
+        }
     }
 
     /**

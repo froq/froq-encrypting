@@ -36,10 +36,7 @@ class Hash
         $lengths ??= array_keys(self::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
-            throw new HashException(
-                'Invalid length %q [valids: %A]',
-                [$length, $lengths]
-            );
+            throw HashException::forInvalidLength($length, $lengths);
         }
 
         $algo = self::ALGOS[$length];
@@ -59,10 +56,7 @@ class Hash
     public static function makeBy(string $input, string $algo): string
     {
         if (!in_array($algo, hash_algos(), true)) {
-            throw new HashException(
-                'Invalid algo %q [valids: %A]',
-                [$algo, hash_algos()]
-            );
+            throw HashException::forInvalidAlgo($algo, hash_algos());
         }
 
         return hash($algo, $input);

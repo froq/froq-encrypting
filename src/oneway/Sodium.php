@@ -37,7 +37,7 @@ class Sodium extends Oneway
      * Constructor.
      *
      * @param  array|null $options
-     * @throws froq\encrypting\oneway\OnewayException
+     * @throws froq\encrypting\oneway\SodiumException
      */
     public function __construct(array $options = null)
     {
@@ -47,10 +47,10 @@ class Sodium extends Oneway
         static $minMemlimit = 1024 * 8; // 8KB
 
         if ($options['opslimit'] < 1) {
-            throw new OnewayException('Option "opslimit" is too low, minimum value is 1');
+            throw SodiumException::forInvalidOpsOption();
         }
         if ($options['memlimit'] < $minMemlimit) {
-            throw new OnewayException('Option "memlimit" is too low, minimum value is 8KB (8192 bytes)');
+            throw SodiumException::forInvalidMemOption();
         }
 
         parent::__construct($options);
@@ -61,11 +61,13 @@ class Sodium extends Oneway
      */
     public function hash(string $input): string|null
     {
-        $ret = sodium_crypto_pwhash_str(
-            $input, $this->options['opslimit'], $this->options['memlimit']
-        );
-
-        return ($ret !== false) ? $ret : null;
+        try {
+            return sodium_crypto_pwhash_str(
+                $input, $this->options['opslimit'], $this->options['memlimit']
+            );
+        } catch (\Throwable $e) {
+            throw new SodiumException($e, extract: true);
+        }
     }
 
     /**

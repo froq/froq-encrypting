@@ -22,28 +22,26 @@ class OpenSsl extends Twoway
     /**
      * Constructor.
      *
-     * @param  string      $key
-     * @param  string|null $method
-     * @param  array|null  $options
-     * @throws froq\encrypting\twoway\TwowayException
+     * @param  string     $key
+     * @param  string     $method
+     * @param  array|null $options
+     * @throws froq\encrypting\twoway\OpenSslException
      */
-    public function __construct(string $key, string $method = null, array $options = null)
+    public function __construct(string $key, string $method = self::CIPHER_METHOD, array $options = null)
     {
         if (!extension_loaded('openssl')) {
-            throw new TwowayException('OpenSSL extension not loaded');
+            throw OpenSslException::forNotFoundExtension('openssl');
         }
 
         parent::checkKeyLength(strlen($key));
 
         // Check method validity.
-        if ($method) {
-            $method = strtolower($method);
-            if (!in_array($method, openssl_get_cipher_methods(), true)) {
-                throw new TwowayException('Invalid cipher method %q', $method);
-            }
+        $method = strtolower($method);
+        if (!in_array($method, openssl_get_cipher_methods(), true)) {
+            throw OpenSslException::forInvalidCipherMethod($method);
         }
 
-        $options = ['key' => $key, 'method' => $method ?? self::CIPHER_METHOD] + (array) $options;
+        $options = ['key' => $key, 'method' => $method] + (array) $options;
 
         parent::__construct($options);
     }

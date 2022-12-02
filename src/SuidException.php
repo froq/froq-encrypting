@@ -12,4 +12,14 @@ namespace froq\encrypting;
  * @since   6.0
  */
 class SuidException extends EncryptingException
-{}
+{
+    public static function forInvalidLengthArgument(int $length): static
+    {
+        return new static('Argument $length must be greater than 1, %s given', $length);
+    }
+
+    public static function forInvalidBaseArgument(int $base): static
+    {
+        return new static('Argument $base must be between 2-62, %s given', $base);
+    }
+}

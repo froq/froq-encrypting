@@ -12,4 +12,14 @@ namespace froq\encrypting;
  * @since   6.0
  */
 class UuidException extends EncryptingException
-{}
+{
+    public static function forInvalidHashLengthToFormat(): static
+    {
+        return new static('Format option for only 32-length hashes');
+    }
+
+    public static function forInvalidInputToFormat(): static
+    {
+        return new static('Input must be a 32-length x-digit to format');
+    }
+}

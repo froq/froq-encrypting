@@ -46,16 +46,11 @@ class Generator
      *
      * @param  int $hashLength
      * @return string
-     * @throws froq\encrypting\GeneratorException
      * @since  4.4
      */
     public static function generateToken(int $hashLength = 32): string
     {
-        try {
-            return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
-        } catch (HashException $e) {
-            throw new GeneratorException($e);
-        }
+        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
     }
 
     /**
@@ -93,10 +88,7 @@ class Generator
     public static function generateSerial(int $length = 20, bool $dated = false): string
     {
         if ($length < 20) {
-            throw new GeneratorException(
-                'Argument $length must be minimun 20, %s given',
-                $length
-            );
+            throw GeneratorException::forMinimumLengthArgument(20, $length);
         }
 
         return self::generateId($length, 10, $dated);
@@ -113,10 +105,7 @@ class Generator
     public static function generateRandomSerial(int $length = 20): string
     {
         if ($length < 20) {
-            throw new GeneratorException(
-                'Argument $length must be minimun 20, %s given',
-                $length
-            );
+            throw GeneratorException::forMinimumLengthArgument(20, $length);
         }
 
         return self::generateRandomId($length, 10);
@@ -135,15 +124,9 @@ class Generator
     public static function generateId(int $length, int $base = 10, bool $dated = false): string
     {
         if ($length < 10) {
-            throw new GeneratorException(
-                'Argument $length must be minimun 10, %s given',
-                $length
-            );
+            throw GeneratorException::forMinimumLengthArgument(10, $length);
         } elseif ($base < 10 || $base > 62) {
-            throw new GeneratorException(
-                'Argument $base must be between 10-62, %s given',
-                $base
-            );
+            throw GeneratorException::forInvalidBaseArgument($base);
         }
 
         /** @var DateTime */
@@ -221,15 +204,9 @@ class Generator
     public static function generateRandomId(int $length, int $base = 10): string
     {
         if ($length < 4) {
-            throw new GeneratorException(
-                'Argument $length must be minimun 4, %s given',
-                $length
-            );
+            throw GeneratorException::forMinimumLengthArgument(4, $length);
         } elseif ($base < 10 || $base > 62) {
-            throw new GeneratorException(
-                'Argument $base must be between 10-62, %s given',
-                $base
-            );
+            throw GeneratorException::forInvalidBaseArgument($base);
         }
 
         $chars    = Base::chars($base);
@@ -306,10 +283,7 @@ class Generator
     public static function generatePassword(int $length = 8, bool $puncted = false): string
     {
         if ($length < 2) {
-            throw new GeneratorException(
-                'Argument $length must be greater than 1, %s given',
-                $length
-            );
+            throw GeneratorException::forMinimumLengthArgument(2, $length);
         }
 
         return random_string($length, $puncted);

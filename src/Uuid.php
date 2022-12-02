@@ -58,9 +58,8 @@ class Uuid
 
         if ($format) {
             if ($hashLength !== self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -94,9 +93,8 @@ class Uuid
 
         if ($format) {
             if ($hashLength !== self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -137,9 +135,8 @@ class Uuid
 
         if ($format) {
             if ($hashLength !== self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -160,6 +157,9 @@ class Uuid
         // Namespace prefix.
         $nshash = md5($namespace);
         $prefix = dechex(hexdec(substr($nshash, 0, 2))) . substr($nshash, 2, 10);
+
+        // hex2bin(): input .. even length.
+        $prefix = str_pad($prefix, 12, '0');
 
         // Binary of namespace & 10-random bytes.
         $bytes = hex2bin($prefix) . random_bytes(10);
@@ -183,9 +183,8 @@ class Uuid
 
         if ($format) {
             if ($hashLength !== self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -297,7 +296,7 @@ class Uuid
     public static function format(string $input, bool $dashed = true): string
     {
         if (strlen($input) !== self::HASH_LENGTH || !ctype_xdigit($input)) {
-            throw new UuidException('Input must be a 32-length x-digit');
+            throw UuidException::forInvalidInputToFormat();
         }
 
         $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));

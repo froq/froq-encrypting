@@ -35,10 +35,7 @@ class Crypt
     public static function encrypt(string $input, string $pp, string $iv, bool $encode = false): string
     {
         if (strlen($iv) !== 16) {
-            throw new CryptException(
-                'Argument $iv length must be 16 [given iv length: %s]',
-                strlen($iv)
-            );
+            throw CryptException::forInvalidIvArgument(strlen($iv));
         }
 
         $ret = openssl_encrypt($input, self::CIPHER_METHOD, $pp, iv: $iv);
@@ -59,10 +56,7 @@ class Crypt
     public static function decrypt(string $input, string $pp, string $iv, bool $decode = false): string
     {
         if (strlen($iv) !== 16) {
-            throw new CryptException(
-                'Argument $iv length must be 16 [given iv length: %s]',
-                strlen($iv)
-            );
+            throw CryptException::forInvalidIvArgument(strlen($iv));
         }
 
         $ret = $decode ? Base62::decode($input) : $input;

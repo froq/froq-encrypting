@@ -49,12 +49,12 @@ class Base
         }
 
         if ($chars === '') {
-            throw new BaseException('Characters cannot be empty');
+            throw BaseException::forEmptyCharacters();
         }
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new BaseException('Characters length must be between 2-256, %s given', $base);
+            throw BaseException::forInvalidCharactersLength($base);
         }
 
         $temp = array_map('ord', str_split($input));
@@ -87,17 +87,17 @@ class Base
         }
 
         if ($chars === '') {
-            throw new BaseException('Characters cannot be empty');
+            throw BaseException::forEmptyCharacters();
         }
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new BaseException('Characters length must be between 2-256, %s given', $base);
+            throw BaseException::forInvalidCharactersLength($base);
         }
 
         if (strlen($input) !== strspn($input, $chars)) {
             preg_match('~[^' . preg_quote($chars, '~') . ']+~', $input, $match);
-            throw new BaseException('Invalid characters %q found in given input', $match[0]);
+            throw BaseException::forInvalidCharacters($match[0]);
         }
 
         $temp = array_map(fn($c) => strpos($chars, $c), str_split($input));
@@ -206,7 +206,7 @@ class Base
     public static function chars(int $base, bool $native = false): string
     {
         if ($base < 2 || $base > 64) {
-            throw new BaseException('Argument $base must be between 2-64, %s given', $base);
+            throw BaseException::forInvalidBaseArgument($base);
         }
 
         if ($base === 64) {

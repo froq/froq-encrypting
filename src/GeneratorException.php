@@ -12,4 +12,14 @@ namespace froq\encrypting;
  * @since   6.0
  */
 class GeneratorException extends EncryptingException
-{}
+{
+    public static function forMinimumLengthArgument(int $minimum, int $length): static
+    {
+        return new static('Argument $length must be minimun %s, %s given', [$minimum, $length]);
+    }
+
+    public static function forInvalidBaseArgument(int $base): static
+    {
+        return new static('Argument $base must be between 10-62, %s given', $base);
+    }
+}

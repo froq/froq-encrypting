@@ -21,30 +21,24 @@ class Sodium extends Twoway
      * @param  string     $key
      * @param  string     $nonce
      * @param  array|null $options
-     * @throws froq\encrypting\twoway\TwowayException
+     * @throws froq\encrypting\twoway\SodiumException
      */
     public function __construct(string $key, string $nonce, array $options = null)
     {
         if (!extension_loaded('sodium')) {
-            throw new TwowayException('Sodium extension not loaded');
+            throw SodiumException::forNotFoundExtension('sodium');
         }
 
         parent::checkKeyLength($keyLength = strlen($key));
 
         // Key length must be 32-length.
         if ($keyLength !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
-            throw new TwowayException(
-                'Invalid key length %s, key length must be %s',
-                [$keyLength, SODIUM_CRYPTO_SECRETBOX_KEYBYTES]
-            );
+            throw SodiumException::forInvalidKeyLength($keyLength, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
         }
 
         // Nonce length must be 32-length.
         if (strlen($nonce) !== SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
-            throw new TwowayException(
-                'Invalid nonce length %s, nonce length must be %s',
-                [strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES]
-            );
+            throw SodiumException::forInvalidNonceLength(strlen($nonce), SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
         }
 
         $options = ['key' => $key, 'nonce' => $nonce] + (array) $options;

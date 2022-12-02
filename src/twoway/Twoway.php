@@ -23,8 +23,7 @@ abstract class Twoway
     /**
      * Constructor.
      *
-     * @param  array|null $options
-     * @throws froq\encrypting\twoway\TwowayException
+     * @param array|null $options
      */
     public function __construct(array $options = null)
     {
@@ -46,19 +45,16 @@ abstract class Twoway
      * Check key length.
      *
      * @param  int $length
-     * @param  int $minLength
+     * @param  int $lengthMinimum
      * @return void
-     * @throws froq\encrypting\twoway\TwowayException
+     * @throws froq\encrypting\twoway\{CrypteeException|OpenSslException|SodiumException}
      * @since  6.0
      */
-    public static function checkKeyLength(int $length, int $minLength = 16): void
+    public static function checkKeyLength(int $length, int $lengthMinimum = 16): void
     {
-        // Check key length.
-        if ($length < $minLength) {
-            throw new TwowayException(
-                'Invalid key length %s, minimum key length is %s '.
-                '[tip: use %s::generateKey() method to get a key]',
-                [$length, $minLength, static::class]
+        if ($length < $lengthMinimum) {
+            throw TwowayException::forMinimumKeyLength(
+                static::class, $length, $lengthMinimum
             );
         }
     }
@@ -68,7 +64,7 @@ abstract class Twoway
      *
      * @param  string $input
      * @return string|null
-     * @throws froq\encrypting\twoway\TwowayException
+     * @throws froq\encrypting\twoway\{CrypteeException|OpenSslException|SodiumException}
      * @since  6.0
      */
     protected function encode(string $input): string|null
@@ -83,9 +79,8 @@ abstract class Twoway
                 default:
                     $base = (int) $this->options['convert'];
                     if ($base < 2 || $base > 64) {
-                        throw new TwowayException(
-                            'Option convert must be between 2-64, %s given',
-                            $this->options['convert']
+                        throw TwowayException::forInvalidConvertOption(
+                            static::class, $this->options['convert']
                         );
                     }
                     return Base::encode($input, Base::chars($base));
@@ -101,7 +96,7 @@ abstract class Twoway
      *
      * @param  string $input
      * @return string|null
-     * @throws froq\encrypting\twoway\TwowayException
+     * @throws froq\encrypting\twoway\{CrypteeException|OpenSslException|SodiumException}
      * @since  6.0
      */
     protected function decode(string $input): string|null
@@ -116,9 +111,8 @@ abstract class Twoway
                 default:
                     $base = (int) $this->options['convert'];
                     if ($base < 2 || $base > 64) {
-                        throw new TwowayException(
-                            'Option convert must be between 2-64, %s given',
-                            $this->options['convert']
+                        throw TwowayException::forInvalidConvertOption(
+                            static::class, $this->options['convert']
                         );
                     }
                     return Base::decode($input, Base::chars($base));
