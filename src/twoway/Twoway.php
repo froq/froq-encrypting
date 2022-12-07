@@ -130,7 +130,7 @@ abstract class Twoway
      * @param  bool   $raw
      * @return string|null
      */
-    abstract public function encrypt(string $input, bool $raw = false): string|null;
+    public abstract function encrypt(string $input, bool $raw = false): string|null;
 
     /**
      * Decrypt given input.
@@ -139,5 +139,5 @@ abstract class Twoway
      * @param  bool   $raw
      * @return string|null
      */
-    abstract public function decrypt(string $input, bool $raw = false): string|null;
+    public abstract function decrypt(string $input, bool $raw = false): string|null;
 }

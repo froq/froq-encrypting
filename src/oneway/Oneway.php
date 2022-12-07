@@ -35,7 +35,7 @@ abstract class Oneway
      * @param  string $input
      * @return string|null
      */
-    abstract public function hash(string $input): string|null;
+    public abstract function hash(string $input): string|null;
 
     /**
      * Verify given input with given hash.
@@ -44,5 +44,5 @@ abstract class Oneway
      * @param  string $hash
      * @return bool
      */
-    abstract public function verify(string $input, string $hash): bool;
+    public abstract function verify(string $input, string $hash): bool;
 }
