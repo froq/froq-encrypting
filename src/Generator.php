@@ -222,32 +222,6 @@ class Generator
     }
 
     /**
-     * Generate a session ID.
-     *
-     * @param  array|null $options
-     * @return string
-     * @since  4.7
-     */
-    public static function generateSessionId(array $options = null): string
-    {
-        // Extract options with defaults.
-        extract(($options ?? []) + ['hash' => false, 'hashLength' => 32, 'upper' => false]);
-
-        // Session may be not loaded.
-        try {
-            $ret = session_create_id() ?: null;
-        } catch (\Error) {}
-
-        // Let Suid to mimic it.
-        $ret ??= Suid::generate(26, 36);
-
-        $hash  && $ret = Hash::make($ret, $hashLength, [32, 40, 16]);
-        $upper && $ret = strtoupper($ret);
-
-        return $ret;
-    }
-
-    /**
      * Generate object ID (24-length hex like Mongo.ObjectId).
      *
      * @param  bool $counted
