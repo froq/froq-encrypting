@@ -7,9 +7,9 @@ namespace froq\encrypting\oneway;
 
 /**
  * @package froq\encrypting\oneway
- * @class   froq\encrypting\oneway\OnewayException
+ * @class   froq\encrypting\oneway\PasswordException
  * @author  Kerem Güneş
- * @since   4.0
+ * @since   7.0
  */
-class OnewayException extends \froq\encrypting\EncryptingException
+class PasswordException extends OnewayException
 {}

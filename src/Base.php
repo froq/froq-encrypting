@@ -1,27 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
  * A static class, provides encode/decode methods for base conversions.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Base
+ * @class   froq\encrypting\Base
  * @author  Kerem Güneş
  * @since   4.0
  * @static
  */
-final class Base
+class Base
 {
-    /**
-     * Characters.
-     * @const string
-     */
+    /** Characters. */
     public const BASE10_CHARS  = '0123456789',
                  BASE16_CHARS  = '0123456789abcdef',
                  BASE36_CHARS  = '0123456789abcdefghijklmnopqrstuvwxyz',
@@ -49,17 +44,17 @@ final class Base
      */
     public static function encode(string $input, string $chars = self::BASE62_CHARS): string
     {
-        if ($input == '') {
+        if ($input === '') {
             return '';
         }
 
-        if ($chars == '') {
-            throw new BaseException('Characters cannot be empty');
+        if ($chars === '') {
+            throw BaseException::forEmptyCharacters();
         }
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new BaseException('Characters length must be between 2-256, %s given', $base);
+            throw BaseException::forInvalidCharactersLength($base);
         }
 
         $temp = array_map('ord', str_split($input));
@@ -87,22 +82,22 @@ final class Base
      */
     public static function decode(string $input, string $chars = self::BASE62_CHARS): string
     {
-        if ($input == '') {
+        if ($input === '') {
             return '';
         }
 
-        if ($chars == '') {
-            throw new BaseException('Characters cannot be empty');
+        if ($chars === '') {
+            throw BaseException::forEmptyCharacters();
         }
 
         $base = strlen($chars);
         if ($base < 2 || $base > 256) {
-            throw new BaseException('Characters length must be between 2-256, %s given', $base);
+            throw BaseException::forInvalidCharactersLength($base);
         }
 
         if (strlen($input) !== strspn($input, $chars)) {
-            preg_match('~[^'. preg_quote($chars, '~') .']+~', $input, $match);
-            throw new BaseException('Invalid characters `%s` found in given input', $match[0]);
+            preg_match('~[^' . preg_quote($chars, '~') . ']+~', $input, $match);
+            throw BaseException::forInvalidCharacters($match[0]);
         }
 
         $temp = array_map(fn($c) => strpos($chars, $c), str_split($input));
@@ -211,10 +206,10 @@ final class Base
     public static function chars(int $base, bool $native = false): string
     {
         if ($base < 2 || $base > 64) {
-            throw new BaseException('Argument $base must be between 2-64, %s given', $base);
+            throw BaseException::forInvalidBaseArgument($base);
         }
 
-        if ($base == 64) {
+        if ($base === 64) {
             return self::BASE64_CHARS;
         }
 

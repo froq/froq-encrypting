@@ -1,32 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting\oneway;
 
 /**
  * A class, able to perform oneway encrypting operations utilizing password stuff.
  *
  * @package froq\encrypting\oneway
- * @object  froq\encrypting\oneway\Password
+ * @class   froq\encrypting\oneway\Password
  * @author  Kerem Güneş
  * @since   1.0
  */
-final class Password extends Oneway
+class Password extends Oneway
 {
-    /**
-     * Default algo.
-     * @const string
-     */
+    /** Default algo. */
     public const ALGO = PASSWORD_DEFAULT;
 
-    /**
-     * Default cost.
-     * @const int
-     */
+    /** Default cost. */
     public const COST = 9;
 
     /**
@@ -47,9 +39,11 @@ final class Password extends Oneway
      */
     public function hash(string $input): string|null
     {
-        $ret = password_hash($input, $this->options['algo'], $this->options);
-
-        return ($ret !== false) ? $ret : null;
+        try {
+            return password_hash($input, $this->options['algo'], $this->options);
+        } catch (\Throwable $e) {
+            throw new PasswordException($e, extract: true);
+        }
     }
 
     /**

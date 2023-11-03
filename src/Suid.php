@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
@@ -12,12 +10,12 @@ namespace froq\encrypting;
  * can be used as salts, nonces or IDs.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Suid
+ * @class   froq\encrypting\Suid
  * @author  Kerem Güneş
  * @since   3.0, 5.0
  * @static
  */
-final class Suid
+class Suid
 {
     /**
      * Generate using `random_bytes()` function, with/without given base.
@@ -31,15 +29,9 @@ final class Suid
     public static function generate(int $length, int $base = 62): string
     {
         if ($length < 1) {
-            throw new SuidException(
-                'Argument $length must be greater than 1, %s given',
-                $length
-            );
+            throw SuidException::forInvalidLengthArgument($length);
         } elseif ($base < 2 || $base > 62) {
-            throw new SuidException(
-                'Argument $base must be between 2-62, %s given',
-                $base
-            );
+            throw SuidException::forInvalidBaseArgument($base);
         }
 
         $chars = substr(BASE62_ALPHABET, 0, $base);

@@ -1,22 +1,20 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
  * A static class, provides a Base-64 encoding/decoding methods and URL-safe stuff.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Base64
+ * @class   froq\encrypting\Base64
  * @author  Kerem Güneş
  * @since   4.2
  * @static
  */
-final class Base64
+class Base64
 {
     /**
      * Encode given input.

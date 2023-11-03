@@ -1,54 +1,47 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting\twoway;
 
 /**
- * A class, able to perform twoway encrypting operations utilizing OpenSsl extension.
- * Original source https://stackoverflow.com/a/30189841/362780.
+ * A class, able to perform twoway encrypting operations utilizing OpenSSL extension.
+ * Original source: https://stackoverflow.com/a/30189841/362780
  *
  * @package froq\encrypting\twoway
- * @object  froq\encrypting\twoway\OpenSsl
+ * @class   froq\encrypting\twoway\OpenSsl
  * @author  Kerem Güneş
  * @since   3.0
  */
-final class OpenSsl extends Twoway
+class OpenSsl extends Twoway
 {
-    /**
-     * Default method.
-     * @const string
-     */
-    public const METHOD = 'aes-256-ctr';
+    /** Default cipher method. */
+    public const CIPHER_METHOD = 'aes-256-ctr';
 
     /**
      * Constructor.
      *
-     * @param  string      $key
-     * @param  string|null $method
-     * @param  array|null  $options
-     * @throws froq\encrypting\twoway\TwowayException
+     * @param  string     $key
+     * @param  string     $method
+     * @param  array|null $options
+     * @throws froq\encrypting\twoway\OpenSslException
      */
-    public function __construct(string $key, string $method = null, array $options = null)
+    public function __construct(string $key, string $method = self::CIPHER_METHOD, array $options = null)
     {
         if (!extension_loaded('openssl')) {
-            throw new TwowayException('OpenSSL extension not loaded');
+            throw OpenSslException::forNotFoundExtension('openssl');
         }
 
         parent::checkKeyLength(strlen($key));
 
         // Check method validity.
-        if ($method) {
-            $method = strtolower($method);
-            if (!in_array($method, openssl_get_cipher_methods(), true)) {
-                throw new TwowayException('Invalid cipher method `%s`', $method);
-            }
+        $method = strtolower($method);
+        if (!in_array($method, openssl_get_cipher_methods(), true)) {
+            throw OpenSslException::forInvalidCipherMethod($method);
         }
 
-        $options = ['key' => $key, 'method' => $method ?? self::METHOD] + (array) $options;
+        $options = ['key' => $key, 'method' => $method] + (array) $options;
 
         parent::__construct($options);
     }

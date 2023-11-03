@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-encrypting
  */
-declare(strict_types=1);
-
 namespace froq\encrypting;
 
 /**
@@ -13,21 +11,21 @@ namespace froq\encrypting;
  * given lengths, also to generate time-based or random serials.
  *
  * @package froq\encrypting
- * @object  froq\encrypting\Uuid
+ * @class   froq\encrypting\Uuid
  * @author  Kerem Güneş
  * @since   3.0
  * @static
  */
-final class Uuid
+class Uuid
 {
-    /** @const string */
+    /** Nulls. */
     public const NULL      = '00000000-0000-0000-0000-000000000000',
                  NULL_HASH = '00000000000000000000000000000000';
 
-    /** @const int */
+    /** Format hash length. */
     public const HASH_LENGTH = 32;
 
-    /** @const array<int> */
+    /** Valid hash lengths. */
     public const HASH_LENGTHS = [32, 16, 40, 64];
 
     /**
@@ -59,10 +57,9 @@ final class Uuid
         $hash = Hash::make(self::generate(false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            if ($hashLength != self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+            if ($hashLength !== self::HASH_LENGTH) {
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -95,10 +92,9 @@ final class Uuid
         $hash = Hash::make(self::generateGuid(false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            if ($hashLength != self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+            if ($hashLength !== self::HASH_LENGTH) {
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -138,10 +134,9 @@ final class Uuid
         $hash = Hash::make(self::generateWithTimestamp(false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            if ($hashLength != self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+            if ($hashLength !== self::HASH_LENGTH) {
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -162,6 +157,9 @@ final class Uuid
         // Namespace prefix.
         $nshash = md5($namespace);
         $prefix = dechex(hexdec(substr($nshash, 0, 2))) . substr($nshash, 2, 10);
+
+        // hex2bin(): input .. even length.
+        $prefix = str_pad($prefix, 12, '0');
 
         // Binary of namespace & 10-random bytes.
         $bytes = hex2bin($prefix) . random_bytes(10);
@@ -184,10 +182,9 @@ final class Uuid
         $hash = Hash::make(self::generateWithNamespace($namespace, false), $hashLength, self::HASH_LENGTHS);
 
         if ($format) {
-            if ($hashLength != self::HASH_LENGTH) {
-                throw new UuidException('Format option for only 32-length hashes');
+            if ($hashLength !== self::HASH_LENGTH) {
+                throw UuidException::forInvalidHashLengthToFormat();
             }
-
             $hash = self::format($hash, true);
         }
 
@@ -298,8 +295,8 @@ final class Uuid
      */
     public static function format(string $input, bool $dashed = true): string
     {
-        if (strlen($input) != self::HASH_LENGTH || !ctype_xdigit($input)) {
-            throw new UuidException('Input must be a 32-length x-digit');
+        if (strlen($input) !== self::HASH_LENGTH || !ctype_xdigit($input)) {
+            throw UuidException::forInvalidInputToFormat();
         }
 
         $ret = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($input, 4));
