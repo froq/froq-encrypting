@@ -209,13 +209,13 @@ class Generator
             throw GeneratorException::forInvalidBaseArgument($base);
         }
 
-        $chars    = Base::chars($base);
-        $charsMax = strlen($chars) - 1;
+        $chars = Base::chars($base);
+        $bound = strlen($chars) - 1;
 
         $ret = '';
 
-        while (strlen($ret) < $length) {
-            $ret .= $chars[random(0, $charsMax)];
+        while ($length--) {
+            $ret .= $chars[random(0, $bound)];
         }
 
         return $ret;
@@ -233,14 +233,14 @@ class Generator
         static $counter = 0;
 
         $number = $counted ? ++$counter : random();
-        $pack   = pack('N', time())     . substr(md5(gethostname()), 0, 3)
+        $packed = pack('N', time())     . substr(md5(gethostname()), 0, 3)
                 . pack('n', getmypid()) . substr(pack('N', $number), 1, 3);
 
         $ret = '';
 
         // Convert bin pack to hex.
         for ($i = 0; $i < 12; $i++) {
-            $ret .= sprintf('%02x', ord($pack[$i]));
+            $ret .= sprintf('%02x', ord($packed[$i]));
         }
 
         return $ret;
@@ -254,7 +254,7 @@ class Generator
      * @return string
      * @throws froq\encrypting\GeneratorException
      */
-    public static function generatePassword(int $length = 8, bool $puncted = false): string
+    public static function generatePassword(int $length = 16, bool $puncted = false): string
     {
         if ($length < 2) {
             throw GeneratorException::forMinimumLengthArgument(2, $length);
@@ -268,21 +268,21 @@ class Generator
      *
      * @param  string $key
      * @param  int    $length
-     * @param  bool   $timed
      * @return string
      * @since  4.0
      */
-    public static function generateOneTimePassword(string $key, int $length = 6, bool $timed = true): string
+    public static function generateOneTimePassword(string $key, int $length = 6): string
     {
-        $number = $timed ? time() : random();
-        $pack   = pack('NNC*', $number >> 32, $number & 0xffffffff);
-        if (strlen($pack) < 8) {
-            $pack = str_pad($pack, 8, chr(0), STR_PAD_LEFT);
+        $number = random();
+        $packed = pack('NNC*', $number >> 32, $number & 0xffffffff);
+
+        if (strlen($packed) < 8) {
+            $packed = str_pad($packed, 8, chr(0), STR_PAD_LEFT);
         }
 
-        $hash   = hash_hmac('sha256', $pack, $key);
-        $offset = hexdec(substr($hash, -1)) * 2;
-        $binary = hexdec(substr($hash, $offset, 8)) & 0x7fffffff;
+        $hashed = hash_hmac('sha256', $packed, $key);
+        $offset = hexdec(substr($hashed, -1)) * 2;
+        $binary = hexdec(substr($hashed, $offset, 8)) & 0x7fffffff;
 
         $ret = (string) fmod($binary, (10 ** $length));
 
