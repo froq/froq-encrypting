@@ -24,7 +24,7 @@ class Generator
      * @param  int $base
      * @return string
      */
-    public static function generateSalt(int $length = 40, int $base = 62): string
+    public static function generateSalt(int $length = Suid::SALT_LENGTH, int $base = 62): string
     {
         try {
             return Suid::generate($length, $base);
@@ -40,7 +40,7 @@ class Generator
      * @param  int $base
      * @return string
      */
-    public static function generateNonce(int $length = 16, int $base = 16): string
+    public static function generateNonce(int $length = Suid::NONCE_LENGTH, int $base = 16): string
     {
         try {
             return Suid::generate($length, $base);

@@ -17,6 +17,12 @@ namespace froq\encrypting;
  */
 class Suid
 {
+    /** Salt length. */
+    public const SALT_LENGTH = 40;
+
+    /** Nonce length. */
+    public const NONCE_LENGTH = 16;
+
     /**
      * Generate using `random_bytes()` function, with/without given base.
      *
