@@ -26,7 +26,11 @@ class Generator
      */
     public static function generateSalt(int $length = 40, int $base = 62): string
     {
-        return Suid::generate($length, $base);
+        try {
+            return Suid::generate($length, $base);
+        } catch (SuidException $e) {
+            throw new GeneratorException($e);
+        }
     }
 
     /**
@@ -38,7 +42,11 @@ class Generator
      */
     public static function generateNonce(int $length = 16, int $base = 16): string
     {
-        return Suid::generate($length, $base);
+        try {
+            return Suid::generate($length, $base);
+        } catch (SuidException $e) {
+            throw new GeneratorException($e);
+        }
     }
 
     /**
@@ -50,7 +58,11 @@ class Generator
      */
     public static function generateToken(int $hashLength = 32): string
     {
-        return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
+        try {
+            return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
+        } catch (HashException $e) {
+            throw new GeneratorException($e);
+        }
     }
 
     /**
