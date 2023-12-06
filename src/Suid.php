@@ -41,12 +41,18 @@ class Suid
         $mask = (2 << (int) (log($charsLength - 1) / M_LN2)) - 1;
         $step = (int) ((1.6 * $mask * $length) / $charsLength);
 
+        // For ensuring length.
+        $max = $length + 1;
         $ret = '';
 
         $bytes = random_bytes($step);
-        while ($step-- && strlen($ret) < $length) {
+        while ($step-- && strlen($ret) < $max) {
             $ret .= $chars[ord($bytes[$step]) & $mask] ?? '';
         }
+
+        // @tome: Somehow, yielding invalid length by ~0.01%.
+        // For length + 1 above.
+        $ret = strcut($ret, $length);
 
         return $ret;
     }
