@@ -112,7 +112,7 @@ class Generator
     }
 
     /**
-     * Generate a time/date based ID by given length.
+     * Generate a time/date based ID.
      *
      * @param  int  $length
      * @param  int  $base
@@ -193,7 +193,7 @@ class Generator
     }
 
     /**
-     * Generate a random ID by given length.
+     * Generate a random ID.
      *
      * @param  int $length
      * @param  int $base
