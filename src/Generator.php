@@ -52,15 +52,16 @@ class Generator
     /**
      * Generate a token.
      *
-     * @param  int $hashLength
+     * @param  int         $length
+     * @param  string|null $prefix
      * @return string
      * @since  4.4
      */
-    public static function generateToken(int $hashLength = 32): string
+    public static function generateToken(int $length = Token::LENGTH, string $prefix = null): string
     {
         try {
-            return Hash::make(uniqid(random_bytes(16), true), $hashLength, [32, 40, 16, 64]);
-        } catch (HashException $e) {
+            return Token::generate($length, $prefix);
+        } catch (TokenException $e) {
             throw new GeneratorException($e);
         }
     }
