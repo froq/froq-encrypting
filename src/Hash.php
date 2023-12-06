@@ -33,13 +33,14 @@ class Hash
      */
     public static function make(string $input, int $length, array $lengths = null): string
     {
-        $lengths ??= array_keys(self::ALGOS);
+        // If none given, get from algo keys.
+        $lengths ??= array_keys(static::ALGOS);
 
         if (!in_array($length, $lengths, true)) {
             throw HashException::forInvalidLength($length, $lengths);
         }
 
-        $algo = self::ALGOS[$length];
+        $algo = static::ALGOS[$length];
 
         return hash($algo, $input);
     }
