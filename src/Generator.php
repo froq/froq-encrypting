@@ -195,8 +195,8 @@ class Generator
     /**
      * Generate a random ID by given length.
      *
-     * @param  int $byteLength
-     * @param  int $hashLength
+     * @param  int $length
+     * @param  int $base
      * @return string
      * @throws froq\encrypting\GeneratorException
      * @since  4.8
