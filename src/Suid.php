@@ -6,8 +6,8 @@
 namespace froq\encrypting;
 
 /**
- * A static class, able to generate simple unique IDs with random character blocks these
- * can be used as salts, nonces or IDs.
+ * A static class, generates (s)imple (u)nique(?) IDs with random character blocks
+ * that can be used as salts, nonces or plain IDs.
  *
  * @package froq\encrypting
  * @class   froq\encrypting\Suid

@@ -23,6 +23,7 @@ class Generator
      * @param  int $length
      * @param  int $base
      * @return string
+     * @throws froq\encrypting\GeneratorException
      */
     public static function generateSalt(int $length = Suid::SALT_LENGTH, int $base = 62): string
     {
@@ -39,6 +40,7 @@ class Generator
      * @param  int $length
      * @param  int $base
      * @return string
+     * @throws froq\encrypting\GeneratorException
      */
     public static function generateNonce(int $length = Suid::NONCE_LENGTH, int $base = 16): string
     {
@@ -55,6 +57,7 @@ class Generator
      * @param  int         $length
      * @param  string|null $prefix
      * @return string
+     * @throws froq\encrypting\GeneratorException
      * @since  4.4
      */
     public static function generateToken(int $length = Token::LENGTH, string $prefix = null): string
