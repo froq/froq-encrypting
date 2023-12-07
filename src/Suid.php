@@ -40,12 +40,12 @@ class Suid
             throw SuidException::forInvalidBaseArgument($base);
         }
 
-        $chars = substr(BASE62_ALPHABET, 0, $base);
-        $charsLength = strlen($chars);
+        $chars = strcut(BASE62_ALPHABET, $base);
+        $bound = strlen($chars);
 
         // Original source: https://github.com/ai/nanoid/blob/main/index.browser.js
-        $mask = (2 << (int) (log($charsLength - 1) / M_LN2)) - 1;
-        $step = (int) ((1.6 * $mask * $length) / $charsLength);
+        $mask = (2 << (int) (log($bound - 1) / M_LN2)) - 1;
+        $step = (int) ((1.6 * $mask * $length) / $bound);
 
         // For ensuring length.
         $max = $length + 1;
