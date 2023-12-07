@@ -18,6 +18,23 @@ namespace froq\encrypting;
 class Generator
 {
     /**
+     * Generate a token.
+     *
+     * @param  int         $length
+     * @param  string|null $prefix
+     * @return string
+     * @throws froq\encrypting\GeneratorException
+     */
+    public static function generateToken(int $length = Token::LENGTH, string $prefix = null): string
+    {
+        try {
+            return Token::generate($length, $prefix);
+        } catch (TokenException $e) {
+            throw new GeneratorException($e);
+        }
+    }
+
+    /**
      * Generate a salt.
      *
      * @param  int $length
@@ -47,24 +64,6 @@ class Generator
         try {
             return Suid::generate($length, $base);
         } catch (SuidException $e) {
-            throw new GeneratorException($e);
-        }
-    }
-
-    /**
-     * Generate a token.
-     *
-     * @param  int         $length
-     * @param  string|null $prefix
-     * @return string
-     * @throws froq\encrypting\GeneratorException
-     * @since  4.4
-     */
-    public static function generateToken(int $length = Token::LENGTH, string $prefix = null): string
-    {
-        try {
-            return Token::generate($length, $prefix);
-        } catch (TokenException $e) {
             throw new GeneratorException($e);
         }
     }
