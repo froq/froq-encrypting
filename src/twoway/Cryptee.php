@@ -21,7 +21,7 @@ class Cryptee extends Twoway
      *
      * @param  string     $key
      * @param  array|null $options
-     * @throws froq\encrypting\twoway\CrypteeException
+     * @causes froq\encrypting\twoway\CrypteeException
      */
     public function __construct(string $key, array $options = null)
     {
