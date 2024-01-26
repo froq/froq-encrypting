@@ -7,7 +7,7 @@ namespace froq\encrypting\twoway;
 
 /**
  * A class, able to perform twoway encrypting operations utilizing XOR way.
- * Original source: https://github.com/okerem/cryptee
+ * Original source: https://github.com/krmgns/cryptee
  *
  * @package froq\encrypting\twoway
  * @class   froq\encrypting\twoway\Cryptee
