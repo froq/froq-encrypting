@@ -15,6 +15,6 @@ class CryptException extends EncryptingException
 {
     public static function forInvalidIvArgument(int $length): static
     {
-        return new static('Argument $iv length must be 16 [given iv length: %s]', $length);
+        return new static('Argument $iv length must be 16 [given length: %s]', $length);
     }
 }

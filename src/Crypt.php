@@ -7,7 +7,7 @@ namespace froq\encrypting;
 
 /**
  * A static class, provides encrypt/decrypt operations with "aes-256-ctr" cipher method
- * using OpenSSL utilities.
+ * as default using OpenSSL utilities.
  *
  * Original source: https://stackoverflow.com/a/2448441/362780
  *
@@ -19,15 +19,15 @@ namespace froq\encrypting;
  */
 class Crypt
 {
-    /** Used cipher method. */
+    /** Default cipher method. */
     public const CIPHER_METHOD = 'aes-256-ctr';
 
     /**
      * Encrypt given non-encrypted input with given passphrase & initialization vector.
      *
      * @param  string $input
-     * @param  string $pp
-     * @param  string $iv
+     * @param  string $pp     The passphrase (key).
+     * @param  string $iv     The initialization vector.
      * @param  bool   $encode
      * @return string
      * @throws froq\encrypting\CryptException
@@ -38,7 +38,7 @@ class Crypt
             throw CryptException::forInvalidIvArgument(strlen($iv));
         }
 
-        $ret = openssl_encrypt($input, self::CIPHER_METHOD, $pp, iv: $iv);
+        $ret = openssl_encrypt($input, static::CIPHER_METHOD, $pp, iv: $iv);
 
         return $encode ? Base62::encode($ret) : $ret;
     }
@@ -47,8 +47,8 @@ class Crypt
      * Decrypt given encrypted input with given passphrase & initialization vector.
      *
      * @param  string $input
-     * @param  string $pp
-     * @param  string $iv
+     * @param  string $pp     The passphrase (key).
+     * @param  string $iv     The initialization vector.
      * @param  bool   $decode
      * @return string
      * @throws froq\encrypting\CryptException
@@ -61,6 +61,6 @@ class Crypt
 
         $ret = $decode ? Base62::decode($input) : $input;
 
-        return openssl_decrypt($ret, self::CIPHER_METHOD, $pp, iv: $iv);
+        return openssl_decrypt($ret, static::CIPHER_METHOD, $pp, iv: $iv);
     }
 }
