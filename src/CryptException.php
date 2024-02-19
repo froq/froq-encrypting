@@ -13,8 +13,8 @@ namespace froq\encrypting;
  */
 class CryptException extends EncryptingException
 {
-    public static function forInvalidIvArgument(int $length): static
+    public static function forInvalidPassphraseArgument(int $length): static
     {
-        return new static('Argument $iv length must be 16 [given length: %s]', $length);
+        return new static('Argument $passphrase length must be 56 [given length: %s]', $length);
     }
 }
