@@ -27,11 +27,11 @@ class Crypter
     /**
      * Encrypt given non-encrypted input.
      *
-     * @param  string $input
-     * @param  bool   $encode
+     * @param  string   $input
+     * @param  bool|int $encode
      * @return string
      */
-    public function encrypt(string $input, bool $encode = false): string
+    public function encrypt(string $input, bool|int $encode = false): string
     {
         return Crypt::encrypt($input, $this->passphrase, $encode);
     }
@@ -39,11 +39,11 @@ class Crypter
     /**
      * Decrypt given encrypted input.
      *
-     * @param  string $input
-     * @param  bool   $decode
+     * @param  string   $input
+     * @param  bool|int $decode
      * @return string
      */
-    public function decrypt(string $input, bool $decode = false): string
+    public function decrypt(string $input, bool|int $decode = false): string
     {
         return Crypt::decrypt($input, $this->passphrase, $decode);
     }

@@ -22,13 +22,13 @@ class Crypt
     /**
      * Encrypt given non-encrypted input with given passphrase.
      *
-     * @param  string $input
-     * @param  string $passphrase
-     * @param  bool   $encode
+     * @param  string   $input
+     * @param  string   $passphrase
+     * @param  bool|int $encode True for Base-62, int for any base.
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public static function encrypt(string $input, string $passphrase, bool $encode = false): string
+    public static function encrypt(string $input, string $passphrase, bool|int $encode = false): string
     {
         if (strlen($passphrase) !== 56) {
             throw CryptException::forInvalidPassphraseArgument(strlen($passphrase));
@@ -42,25 +42,25 @@ class Crypt
             $ret = (new twoway\Sodium($key, $nonce))->encrypt($input);
         }
 
-        return $encode ? Base62::encode($ret) : $ret;
+        return ($encode === false) ? $ret : Base::encode($ret, ($encode === true ? 62 : $encode));
     }
 
     /**
      * Decrypt given encrypted input with given passphrase.
      *
-     * @param  string $input
-     * @param  string $passphrase
-     * @param  bool   $decode
+     * @param  string   $input
+     * @param  string   $passphrase
+     * @param  bool|int $decode True for Base-62, int for any base.
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public static function decrypt(string $input, string $passphrase, bool $decode = false): string
+    public static function decrypt(string $input, string $passphrase, bool|int $decode = false): string
     {
         if (strlen($passphrase) !== 56) {
             throw CryptException::forInvalidPassphraseArgument(strlen($passphrase));
         }
 
-        $ret = $decode ? Base62::decode($input) : $input;
+        $ret = ($decode === false) ? $input : Base::decode($input, ($decode === true ? 62 : $decode));
 
         if (function_exists('openssl_encrypt')) {
             [$pp, $iv] = str_chunk($passphrase, 40, false);

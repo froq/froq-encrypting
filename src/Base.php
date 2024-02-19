@@ -36,17 +36,19 @@ class Base
     /**
      * Encode.
      *
-     * @param  string $input
-     * @param  string $chars
+     * @param  string     $input
+     * @param  string|int $chars
      * @return string
      * @throws froq\encrypting\BaseException
      * @thanks https://github.com/tuupola/base62
      */
-    public static function encode(string $input, string $chars = self::BASE62_CHARS): string
+    public static function encode(string $input, string|int $chars = self::BASE62_CHARS): string
     {
         if ($input === '') {
             return '';
         }
+
+        is_int($chars) && $chars = self::chars($chars);
 
         if ($chars === '') {
             throw BaseException::forEmptyCharacters();
@@ -74,17 +76,19 @@ class Base
     /**
      * Decode.
      *
-     * @param  string $input
-     * @param  string $chars
+     * @param  string     $input
+     * @param  string|int $chars
      * @return string
      * @throws froq\encrypting\BaseException
      * @thanks https://github.com/tuupola/base62
      */
-    public static function decode(string $input, string $chars = self::BASE62_CHARS): string
+    public static function decode(string $input, string|int $chars = self::BASE62_CHARS): string
     {
         if ($input === '') {
             return '';
         }
+
+        is_int($chars) && $chars = self::chars($chars);
 
         if ($chars === '') {
             throw BaseException::forEmptyCharacters();
