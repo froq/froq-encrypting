@@ -53,7 +53,7 @@ class Suid
 
         $bytes = random_bytes($step);
         while ($step-- && strlen($ret) < $max) {
-            $ret .= $chars[ord($bytes[$step]) & $mask] ?? '';
+            $ret .= $chars[ord($bytes[$step]) & $mask] ?? '0';
         }
 
         // @tome: Somehow, yielding invalid length by ~0.01%.
