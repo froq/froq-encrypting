@@ -6,7 +6,7 @@
 namespace froq\encrypting;
 
 /**
- * A static class, provides encrypt/decrypt operations with "aes-256-ctr" cipher method
+ * A class, provides encrypt/decrypt operations with "aes-256-ctr" cipher method
  * as default using OpenSSL utilities if exists, or Sodium library.
  *
  * Original source: https://stackoverflow.com/a/2448441/362780
@@ -15,69 +15,89 @@ namespace froq\encrypting;
  * @class   froq\encrypting\Crypt
  * @author  Kerem Güneş
  * @since   6.0
- * @static
  */
 class Crypt
 {
     /**
-     * Secret length (OpenSSL: 40 is passphrase, 16 is initialization vector,
-     * Sodium: 32 is key, 24 nonce). */
+     * Secret length (40 is passphrase - 16 is initialization vector for OpenSSL,
+     * 32 is key - 24 nonce for Sodium). */
     public final const SECRET_LENGTH = 56;
 
     /** Default cipher method (OpenSSL only). */
     public final const CIPHER_METHOD = 'aes-256-ctr';
 
     /**
-     * Encrypt given non-encrypted input.
+     * Constructor.
      *
-     * @param  string   $input
      * @param  string   $secret
-     * @param  bool|int $encode True for Base-62, int for any base.
-     * @return string
+     * @param  bool|int $encdec True for Base-62, int for any base between 2-62.
      * @throws froq\encrypting\CryptException
      */
-    public static function encrypt(string $input, string $secret, bool|int $encode = false): string
-    {
-        if (strlen($secret) !== self::SECRET_LENGTH) {
-            throw CryptException::forInvalidSecretArgument($secret);
+    public function __construct(
+        public readonly string $secret,
+        public readonly bool|int $encdec = false
+    ) {
+        if (strlen($this->secret) !== self::SECRET_LENGTH) {
+            throw CryptException::forInvalidSecretArgument($this->secret);
         }
 
-        if (extension_loaded('openssl')) {
-            [$pp, $iv] = str_chunk($secret, 40, false);
-            $ret = openssl_encrypt($input, 'aes-256-ctr', $pp, iv: $iv);
-        } else {
-            [$key, $nonce] = str_chunk($secret, 32, false);
-            $ret = (new twoway\Sodium($key, $nonce))->encrypt($input);
+        // Validate given base as encdec option.
+        if (is_int($this->encdec) && ($this->encdec < 2 || $this->encdec > 62)) {
+            throw CryptException::forInvalidEncdecArgument($this->encdec);
         }
-
-        return ($encode === false) ? $ret : Base::encode($ret, ($encode === true ? 62 : $encode));
     }
 
     /**
-     * Decrypt given encrypted input.
+     * Encrypt a non-encrypted input.
      *
-     * @param  string   $input
-     * @param  string   $secret
-     * @param  bool|int $decode True for Base-62, int for any base.
+     * @param  string $input
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public static function decrypt(string $input, string $secret, bool|int $decode = false): string
+    public function encrypt(string $input): string
     {
-        if (strlen($secret) !== self::SECRET_LENGTH) {
-            throw CryptException::forInvalidSecretArgument($secret);
+        try {
+            if (extension_loaded('openssl')) {
+                [$pp, $iv] = str_chunk($this->secret, 40, false);
+                $ret = openssl_encrypt($input, 'aes-256-ctr', $pp, iv: $iv);
+            } else {
+                [$key, $nonce] = str_chunk($this->secret, 32, false);
+                $ret = (new twoway\Sodium($key, $nonce))->encrypt($input);
+            }
+
+            $ret = ($this->encdec === false) ? $ret
+                 : Base::encode($ret, ($this->encdec === true ? 62 : $this->encdec));
+
+            return $ret;
+        } catch (BaseException $e) {
+            throw new CryptException($e);
         }
+    }
 
-        $ret = ($decode === false) ? $input : Base::decode($input, ($decode === true ? 62 : $decode));
+    /**
+     * Decrypt an encrypted input.
+     *
+     * @param  string $input
+     * @return string
+     * @throws froq\encrypting\CryptException
+     */
+    public function decrypt(string $input): string
+    {
+        try {
+            $ret = ($this->encdec === false) ? $input
+                 : Base::decode($input, ($this->encdec === true ? 62 : $this->encdec));
 
-        if (extension_loaded('openssl')) {
-            [$pp, $iv] = str_chunk($secret, 40, false);
-            $ret = openssl_decrypt($ret, 'aes-256-ctr', $pp, iv: $iv);
-        } else {
-            [$key, $nonce] = str_chunk($secret, 32, false);
-            $ret = (new twoway\Sodium($key, $nonce))->decrypt($ret);
+            if (extension_loaded('openssl')) {
+                [$pp, $iv] = str_chunk($this->secret, 40, false);
+                $ret = openssl_decrypt($ret, 'aes-256-ctr', $pp, iv: $iv);
+            } else {
+                [$key, $nonce] = str_chunk($this->secret, 32, false);
+                $ret = (new twoway\Sodium($key, $nonce))->decrypt($ret);
+            }
+
+            return $ret;
+        } catch (BaseException $e) {
+            throw new CryptException($e);
         }
-
-        return $ret;
     }
 }

@@ -20,4 +20,9 @@ class CryptException extends EncryptingException
             [Crypt::SECRET_LENGTH, strlen($secret)]
         );
     }
+
+    public static function forInvalidEncdecArgument(int $encdec): static
+    {
+        return new static('Argument $encdec must be between 2-62, %s given', $encdec);
+    }
 }
