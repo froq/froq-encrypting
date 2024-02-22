@@ -34,7 +34,7 @@ class Token
 
         try {
             return Hash::make(
-                uniqid($prefix, true),
+                input: uniqid($prefix, true),
                 length: $length ?? static::LENGTH,
                 lengths: [40, 16, 32, 64] // Allowed.
             );
