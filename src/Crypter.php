@@ -18,10 +18,10 @@ class Crypter
     /**
      * Constructor.
      *
-     * @param string $passphrase
+     * @param string $secret
      */
     public function __construct(
-        public readonly string $passphrase
+        public readonly string $secret
     ) {}
 
     /**
@@ -33,7 +33,7 @@ class Crypter
      */
     public function encrypt(string $input, bool|int $encode = false): string
     {
-        return Crypt::encrypt($input, $this->passphrase, $encode);
+        return Crypt::encrypt($input, $this->secret, $encode);
     }
 
     /**
@@ -45,6 +45,6 @@ class Crypter
      */
     public function decrypt(string $input, bool|int $decode = false): string
     {
-        return Crypt::decrypt($input, $this->passphrase, $decode);
+        return Crypt::decrypt($input, $this->secret, $decode);
     }
 }

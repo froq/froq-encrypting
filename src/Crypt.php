@@ -20,25 +20,33 @@ namespace froq\encrypting;
 class Crypt
 {
     /**
-     * Encrypt given non-encrypted input with given passphrase.
+     * Secret length (OpenSSL: 40 is passphrase, 16 is initialization vector,
+     * Sodium: 32 is key, 24 nonce). */
+    public final const SECRET_LENGTH = 56;
+
+    /** Default cipher method (OpenSSL only). */
+    public final const CIPHER_METHOD = 'aes-256-ctr';
+
+    /**
+     * Encrypt given non-encrypted input.
      *
      * @param  string   $input
-     * @param  string   $passphrase
+     * @param  string   $secret
      * @param  bool|int $encode True for Base-62, int for any base.
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public static function encrypt(string $input, string $passphrase, bool|int $encode = false): string
+    public static function encrypt(string $input, string $secret, bool|int $encode = false): string
     {
-        if (strlen($passphrase) !== 56) {
-            throw CryptException::forInvalidPassphraseArgument(strlen($passphrase));
+        if (strlen($secret) !== self::SECRET_LENGTH) {
+            throw CryptException::forInvalidSecretArgument($secret);
         }
 
-        if (function_exists('openssl_encrypt')) {
-            [$pp, $iv] = str_chunk($passphrase, 40, false);
+        if (extension_loaded('openssl')) {
+            [$pp, $iv] = str_chunk($secret, 40, false);
             $ret = openssl_encrypt($input, 'aes-256-ctr', $pp, iv: $iv);
         } else {
-            [$key, $nonce] = str_chunk($passphrase, 32, false);
+            [$key, $nonce] = str_chunk($secret, 32, false);
             $ret = (new twoway\Sodium($key, $nonce))->encrypt($input);
         }
 
@@ -46,27 +54,27 @@ class Crypt
     }
 
     /**
-     * Decrypt given encrypted input with given passphrase.
+     * Decrypt given encrypted input.
      *
      * @param  string   $input
-     * @param  string   $passphrase
+     * @param  string   $secret
      * @param  bool|int $decode True for Base-62, int for any base.
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public static function decrypt(string $input, string $passphrase, bool|int $decode = false): string
+    public static function decrypt(string $input, string $secret, bool|int $decode = false): string
     {
-        if (strlen($passphrase) !== 56) {
-            throw CryptException::forInvalidPassphraseArgument(strlen($passphrase));
+        if (strlen($secret) !== self::SECRET_LENGTH) {
+            throw CryptException::forInvalidSecretArgument($secret);
         }
 
         $ret = ($decode === false) ? $input : Base::decode($input, ($decode === true ? 62 : $decode));
 
-        if (function_exists('openssl_encrypt')) {
-            [$pp, $iv] = str_chunk($passphrase, 40, false);
+        if (extension_loaded('openssl')) {
+            [$pp, $iv] = str_chunk($secret, 40, false);
             $ret = openssl_decrypt($ret, 'aes-256-ctr', $pp, iv: $iv);
         } else {
-            [$key, $nonce] = str_chunk($passphrase, 32, false);
+            [$key, $nonce] = str_chunk($secret, 32, false);
             $ret = (new twoway\Sodium($key, $nonce))->decrypt($ret);
         }
 
