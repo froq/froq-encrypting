@@ -59,7 +59,7 @@ class Crypt
         try {
             if (extension_loaded('openssl')) {
                 [$pp, $iv] = str_chunk($this->secret, 40, false);
-                $ret = openssl_encrypt($input, 'aes-256-ctr', $pp, iv: $iv);
+                $ret = openssl_encrypt($input, self::CIPHER_METHOD, $pp, iv: $iv);
             } else {
                 [$key, $nonce] = str_chunk($this->secret, 32, false);
                 $ret = (new twoway\Sodium($key, $nonce))->encrypt($input);
@@ -89,7 +89,7 @@ class Crypt
 
             if (extension_loaded('openssl')) {
                 [$pp, $iv] = str_chunk($this->secret, 40, false);
-                $ret = openssl_decrypt($ret, 'aes-256-ctr', $pp, iv: $iv);
+                $ret = openssl_decrypt($ret, self::CIPHER_METHOD, $pp, iv: $iv);
             } else {
                 [$key, $nonce] = str_chunk($this->secret, 32, false);
                 $ret = (new twoway\Sodium($key, $nonce))->decrypt($ret);
