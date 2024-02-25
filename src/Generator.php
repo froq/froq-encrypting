@@ -145,7 +145,7 @@ class Generator
         }
 
         /** @var DateTime */
-        $now = udate('', 'UTC');
+        $now = datetime('', 'UTC');
 
         // Use a date or time prefix (eg: 20121212.. or 1355270400..).
         $id = $dated ? $now->format('YmdHisu'): $now->format('Uu');
