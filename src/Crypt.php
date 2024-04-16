@@ -50,11 +50,12 @@ class Crypt
     /**
      * Encrypt a non-encrypted input.
      *
-     * @param  string $input
+     * @param  string        $input
+     * @param  bool|int|null $encdec See constructor.
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public function encrypt(string $input): string
+    public function encrypt(string $input, bool|int $encdec = null): string
     {
         try {
             if (extension_loaded('openssl')) {
@@ -65,8 +66,8 @@ class Crypt
                 $ret = (new twoway\Sodium($key, $nonce))->encrypt($input);
             }
 
-            $ret = ($this->encdec === false) ? $ret
-                 : Base::encode($ret, ($this->encdec === true ? 62 : $this->encdec));
+            $enc = $encdec ??= $this->encdec;
+            $ret = ($enc === false) ? $ret : Base::encode($ret, ($enc === true ? 62 : $enc));
 
             return $ret;
         } catch (BaseException $e) {
@@ -77,15 +78,16 @@ class Crypt
     /**
      * Decrypt an encrypted input.
      *
-     * @param  string $input
+     * @param  string        $input
+     * @param  bool|int|null $encdec See constructor.
      * @return string
      * @throws froq\encrypting\CryptException
      */
-    public function decrypt(string $input): string
+    public function decrypt(string $input, bool|int $encdec = null): string
     {
         try {
-            $ret = ($this->encdec === false) ? $input
-                 : Base::decode($input, ($this->encdec === true ? 62 : $this->encdec));
+            $dec = $encdec ??= $this->encdec;
+            $ret = ($dec === false) ? $input : Base::decode($input, ($dec === true ? 62 : $dec));
 
             if (extension_loaded('openssl')) {
                 [$pp, $iv] = str_chunk($this->secret, 40, false);
