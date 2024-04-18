@@ -30,6 +30,18 @@ abstract class Oneway
     }
 
     /**
+     * Generate a random password.
+     *
+     * @param  int  $length
+     * @param  bool $puncted
+     * @return string
+     */
+    public static function generate(int $length = 10, bool $puncted = false): string
+    {
+        return random_string($length, $puncted);
+    }
+
+    /**
      * Hash given input.
      *
      * @param  string $input

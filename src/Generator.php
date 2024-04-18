@@ -269,7 +269,7 @@ class Generator
      * @return string
      * @throws froq\encrypting\GeneratorException
      */
-    public static function generatePassword(int $length = 16, bool $puncted = false): string
+    public static function generatePassword(int $length = 10, bool $puncted = false): string
     {
         if ($length < 2) {
             throw GeneratorException::forMinimumLengthArgument(2, $length);
